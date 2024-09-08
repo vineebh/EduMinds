@@ -22,21 +22,21 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-black shadow-lg">
+    <header className="bg-gradient-to-r from-neutral-900 to-zinc-600 shadow-lg ">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="text-3xl font-bold text-white">EduTech</div>
 
-        <nav className="hidden md:flex space-x-8 text-2xl">
-          <Link to="/" className="text-blue-700 hover:text-blue-900 transition duration-300 text-lg font-medium">
+        <nav className="hidden md:flex space-x-8 text-2xl text-white">
+          <Link to="/" className="   transition duration-300 text-lg font-medium">
             Home
           </Link>
-          <Link to="/courses" className="text-blue-700 hover:text-blue-900 transition duration-300 text-lg font-medium">
+          <Link to="/courses" className="   transition duration-300 text-lg font-medium">
             Courses
           </Link>
-          <Link to="/about" className="text-blue-700 hover:text-blue-900 transition duration-300 text-lg font-medium">
+          <Link to="/about" className="  transition duration-300 text-lg font-medium">
             About
           </Link>
-          <Link to="/contact" className="text-blue-700 hover:text-blue-900 transition duration-300 text-lg font-medium">
+          <Link to="/contact" className="  transition duration-300 text-lg font-medium">
             Contact
           </Link>
         </nav>
@@ -45,12 +45,12 @@ const Header = () => {
           {loginStatus ? (
             <button
               onClick={logoutHandler}
-              className="bg-blue-700 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300"
+              className="bg-gradient-to-r from-fuchsia-500 to-cyan-500  text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300"
             >
               Logout
             </button>
           ) : (
-            <Link to="/auth" className="bg-blue-700 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300">
+            <Link to="/auth" className="bg-gradient-to-r from-fuchsia-500 to-cyan-500  text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300">
               Login
             </Link>
           )}
