@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router";
-import { setIsLogin, setIdToken, setLoginStatus } from "../../store/authSlice";
-import { signInUserEmailAndPass, createUserEmailAndPass, signOutUser, signInWithGoogle } from "../../firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { createUserEmailAndPass, signInUserEmailAndPass, signInWithGoogle } from "../../firebase/auth";
+import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
 
 const Auth = () => {
   const isLogin = useSelector((state) => state.auth.islogin);
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [authData, setAuthData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({
     name: "",
     email: "",
     password: "",
@@ -17,11 +22,44 @@ const Auth = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAuthData({ ...authData, [name]: value });
+    
+    if (name === "name" && !isLogin && value.length < 3) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        name: "Name must be at least 3 characters long",
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
+    }
+
+    if (name === "password" && value.length < 8) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "Password must be at least 8 characters long",
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password, name } = authData;
+    if (!isLogin && name.length < 3) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        name: "Name must be at least 3 characters long",
+      }));
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "Password must be at least 8 characters long",
+      }));
+      return;
+    }
 
     try {
       if (isLogin) {
@@ -29,31 +67,27 @@ const Auth = () => {
         const token = response.user.accessToken;
         localStorage.setItem("idToken", token);
         dispatch(setIdToken(token));
-        dispatch(setLoginStatus());
-        navigate('/home')
+        dispatch(setLoginStatus(true));
+        navigate('/home');
       } else {
-        await createUserEmailAndPass(email, password);
-        // Optionally handle post-signup actions
+        const response = await createUserEmailAndPass(email, password);
+        const token = response.user.accessToken;
+        localStorage.setItem("idToken", token);
+        dispatch(setIdToken(token));
+        dispatch(setIsLogin(true));
+        navigate('/home');
       }
-      dispatch(setIsLogin(true));
     } catch (error) {
       console.error("Authentication error:", error.message);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        firebase: error.message,
+      }));
     }
   };
 
   const toggleAuthMode = () => {
     dispatch(setIsLogin(!isLogin));
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOutUser();
-      localStorage.removeItem("idToken");
-      dispatch(setIdToken(null));
-      dispatch(setLoginStatus());
-    } catch (error) {
-      console.error("Sign out error:", error.message);
-    }
   };
 
   const loginWithGoogleHandler = async () => {
@@ -62,13 +96,13 @@ const Auth = () => {
       const token = result.token;
       localStorage.setItem("idToken", token);
       dispatch(setIdToken(token));
-      dispatch(setLoginStatus());
-      navigate('/home')
+      dispatch(setLoginStatus(true));
+      dispatch(setIsLogin(true));
+      navigate('/home');
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);
     }
   };
-
   return (
     <div>
 
@@ -93,6 +127,7 @@ const Auth = () => {
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white"
                 />
+                {errors.name && <p className="text-red-500">{errors.name}</p>}
               </div>
 
             )}
@@ -123,6 +158,7 @@ const Auth = () => {
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md"
               />
+               {errors.password && <p className="text-red-500">{errors.password}</p>}
             </div>
             <button
               type="submit"

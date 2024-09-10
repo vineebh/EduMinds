@@ -1,24 +1,19 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { signOutUser } from "../firebase/auth";
-import { setIdToken, setIsLogin, setLoginStatus } from "../store/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setIdToken, setLoginStatus, setIsLogin } from "../store/authSlice";
 
 const Header = () => {
-  const loginStatus = useSelector((state) => state.auth.loginStatus);
+  const loginStatus = useSelector((state) => state.auth.islogin);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const logoutHandler = async () => {
-    try {
-      await signOutUser();
-      localStorage.removeItem("idToken");
-      dispatch(setIdToken(null));
-      dispatch(setLoginStatus());
-      navigate('/auth');
-    } catch (error) {
-      console.log(error);
-    }
+  const logoutHandler = () => {
+    localStorage.removeItem("idToken");
+    dispatch(setIdToken(null));
+    dispatch(setLoginStatus(false));
+    dispatch(setIsLogin(false));
+    navigate('/auth');
   };
 
   return (

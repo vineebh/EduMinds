@@ -32,20 +32,3 @@ export const signInWithGoogle = async () => {
     throw error;
   }
 };
-
-
-
-
-// export const sendPasswordResetEmail = async (email) => {
-//     return sendPasswordResetEmail(auth, email);
-// };
-
-// export const updatePassword = async (password) => {
-//     return updatePassword(auth.currentUser, password);
-// };
-
-// export const sendEmailVerification = async () => {
-//     return sendEmailVerification(auth.currentUser, {
-//         url: `${window.location.origin}/home`,
-//     });
-// };
