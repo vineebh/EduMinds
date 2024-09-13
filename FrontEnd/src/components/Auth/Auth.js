@@ -2,59 +2,106 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { setIsLogin, setIdToken, setLoginStatus } from "../../store/authSlice";
-import { signInUserEmailAndPass, createUserEmailAndPass, signOutUser, signInWithGoogle } from "../../firebase/auth";
+import { signInUserEmailAndPass, createUserEmailAndPass,signInWithGoogle } from "../../firebase/auth";
 
 const Auth = () => {
   const isLogin = useSelector((state) => state.auth.islogin);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [authData, setAuthData] = useState({
-    name: "",
-    email: "",
-    password: "",
+  name: "",
+  email: "",
+  password: "",
+  });
+  const [errors, setErrors] = useState({
+  name: "",
+  email: "",
+  password: "",
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setAuthData({ ...authData, [name]: value });
+  const { name, value } = e.target;
+  setAuthData({ ...authData, [name]: value });
+  
+  if (name === "name" && !isLogin && value.length < 3) {
+    setErrors((prevErrors) => ({
+    ...prevErrors,
+    name: "Name must be at least 3 characters long",
+    }));
+  } else {
+    setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
+  }
+
+  if (name === "password" && value.length < 8) {
+    setErrors((prevErrors) => ({
+    ...prevErrors,
+    password: "Password must be at least 8 characters long",
+    }));
+  } else {
+    setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+  }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { email, password } = authData;
+  e.preventDefault();
+  const { email, password, name } = authData;
+  if (!isLogin && name.length < 3) {
+    setErrors((prevErrors) => ({
+    ...prevErrors,
+    name: "Name must be at least 3 characters long",
+    }));
+    return;
+  }
 
-    try {
-      if (isLogin) {
-        const response = await signInUserEmailAndPass(email, password);
-        const token = response.user.accessToken;
-        localStorage.setItem("idToken", token);
-        dispatch(setIdToken(token));
-        dispatch(setLoginStatus());
-        navigate('/home');
-      } else {
-        await createUserEmailAndPass(email, password);
-      }
-      dispatch(setIsLogin(true));
-    } catch (error) {
-      console.error("Authentication error:", error.message);
+  if (password.length < 8) {
+    setErrors((prevErrors) => ({
+    ...prevErrors,
+    password: "Password must be at least 8 characters long",
+    }));
+    return;
+  }
+
+  try {
+    if (isLogin) {
+    const response = await signInUserEmailAndPass(email, password);
+    const token = response.user.accessToken;
+    localStorage.setItem("idToken", token);
+    dispatch(setIdToken(token));
+    dispatch(setLoginStatus(true));
+    navigate('/home');
+    } else {
+    const response = await createUserEmailAndPass(email, password);
+    const token = response.user.accessToken;
+    localStorage.setItem("idToken", token);
+    dispatch(setIdToken(token));
+    dispatch(setIsLogin(true));
+    navigate('/home');
     }
+  } catch (error) {
+    console.error("Authentication error:", error.message);
+    setErrors((prevErrors) => ({
+    ...prevErrors,
+    firebase: error.message,
+    }));
+  }
   };
 
   const toggleAuthMode = () => {
-    dispatch(setIsLogin(!isLogin));
+  dispatch(setIsLogin(!isLogin));
   };
 
   const loginWithGoogleHandler = async () => {
-    try {
-      const result = await signInWithGoogle();
-      const token = result.token;
-      localStorage.setItem("idToken", token);
-      dispatch(setIdToken(token));
-      dispatch(setLoginStatus());
-      navigate('/home');
-    } catch (error) {
-      console.error("Google Sign-In Error:", error.message);
-    }
+  try {
+    const result = await signInWithGoogle();
+    const token = result.token;
+    localStorage.setItem("idToken", token);
+    dispatch(setIdToken(token));
+    dispatch(setLoginStatus(true));
+    dispatch(setIsLogin(true));
+    navigate('/home');
+  } catch (error) {
+    console.error("Google Sign-In Error:", error.message);
+  }
   };
 
   return (
@@ -78,6 +125,7 @@ const Auth = () => {
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-700 rounded-md bg-gray-900 text-white"
               />
+              {errors.name && <p className="text-red-500">{errors.name}</p>}
             </div>
           )}
           <div className="mb-4">
@@ -107,6 +155,7 @@ const Auth = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-700 rounded-md bg-gray-900 text-white"
             />
+            {errors.password && <p className="text-red-500">{errors.password}</p>}
           </div>
           <button
             type="submit"
