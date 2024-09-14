@@ -36,12 +36,12 @@ const Courses = () => {
   ];
 
   return (
-    <div className=" min-h-screen bg-gradient-to-r from-slate-700 to-slate-900 p-6 ">
-      <div className="relative h-full space-y-6 py-4 ">
+    <div className="min-h-screen bg-gradient-to-r from-slate-700 to-slate-900 p-6 ">
+      <div className="relative space-y-6 py-4">
         {courses.map((data) => (
           <div
             key={data.id}
-            className="relative w-full h-[70vh] max-w-full mx-auto px-8  rounded-lg   "
+            className="relative w-full max-w-full mx-auto px-8 rounded-lg"
           >
             <Course courseData={data} />
           </div>
