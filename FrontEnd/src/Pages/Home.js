@@ -29,7 +29,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-r from-slate-700 to-slate-900 min-h-screen text-white mt-16">
+    <div className="bg-gradient-to-r from-slate-700 to-slate-900 min-h-screen text-white">
       {/* Hero Section */}
       <div className="relative w-full bg-gradient-to-r from-slate-700 to-slate-900 py-16">
         <img
@@ -37,8 +37,8 @@ const Home = () => {
           alt="Education"
           className="absolute inset-0 object-cover w-full h-full opacity-50"
         />
-        <div className="relative z-10 text-center px-4 sm:px-6 md:px-12 py-16 bg-gray-900 bg-opacity-80 rounded-lg shadow-lg mx-auto max-w-4xl">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-6 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent">
+        <div className="relative z-10 text-center px-6 sm:px-12 py-16 bg-gray-900 bg-opacity-80 rounded-lg shadow-lg mx-auto max-w-4xl">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-6 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent">
             Welcome to EduTech
           </h1>
           <p className="text-base sm:text-lg md:text-xl mb-8 text-gray-300">
@@ -48,13 +48,13 @@ const Home = () => {
             At EduTech, we provide a wide range of courses designed to help you succeed in your educational journey. Whether you’re looking to learn new skills, improve your knowledge, or advance your career, we’ve got something for everyone.
           </p>
           <Link to="/courses">
-            <button className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white px-5 py-2 sm:px-6 sm:py-3 rounded-md font-semibold hover:bg-blue-600 transition duration-300">
+            <button className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-600 transition duration-300">
               Explore Courses
             </button>
           </Link>
         </div>
       </div>
-
+    
       {/* Courses Section */}
       <div className="py-12 px-4 sm:px-6 md:px-8">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-500 mb-12 text-center">
