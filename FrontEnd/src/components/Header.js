@@ -27,6 +27,10 @@ const Header = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const handleLinkClick = () => {
+    setMenuOpen(false);
+  };
+
   return (
     <header className="bg-gradient-to-r from-neutral-900 to-zinc-600 shadow-lg fixed w-full top-0 left-0 z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -51,42 +55,57 @@ const Header = () => {
             </svg>
           </button>
           {/* Authentication Buttons for Mobile */}
-      <div className={`md:hidden w-full flex justify-center px-4 ${menuOpen ? "block" : "show"}`}>
-        {loginStatus ? (
-          <button
-            onClick={logoutHandler}
-            className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300"
-          >
-            Logout
-          </button>
-        ) : (
-          <Link
-            to="/auth"
-            className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300"
-          >
-            Login
-          </Link>
-        )}
-      </div>
+          <div className={`md:hidden w-full flex justify-center px-4 ${menuOpen ? "block" : "show"}`}>
+            {loginStatus ? (
+              <button
+                onClick={logoutHandler}
+                className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300"
+              >
+                Login
+              </Link>
+            )}
+          </div>
         </div>
 
-        {/* Navigation Links for Desktop */}
+        {/* Navigation Links for Desktop and Mobile */}
         <nav
           className={`${
             menuOpen ? "block" : "hidden"
           } md:flex space-x-8 text-lg md:text-2xl text-white absolute md:relative top-16 left-0 md:top-auto md:left-auto bg-neutral-900 md:bg-transparent w-full md:w-auto transition-transform duration-300`}
         >
-          <Link to="/" className="block py-2 px-4 md:py-0 md:px-0 hover:text-gray-300 transition duration-300 text-lg font-medium">
+          <Link
+            to="/"
+            onClick={handleLinkClick}
+            className="block py-2 px-12 md:py-0 md:px-0 hover:text-gray-300 transition duration-300 text-lg font-medium"
+          >
             Home
           </Link>
-          <Link to="/courses" className="block py-2 px-4 md:py-0 md:px-0 hover:text-gray-300 transition duration-300 text-lg font-medium">
+          <Link
+            to="/courses"
+            onClick={handleLinkClick}
+            className="block py-2 px-4 md:py-0 md:px-0 hover:text-gray-300 transition duration-300 text-lg font-medium"
+          >
             Courses
           </Link>
-          <Link to="/about" className="block py-2 px-4 md:py-0 md:px-0 hover:text-gray-300 transition duration-300 text-lg font-medium">
+          <Link
+            to="/about"
+            onClick={handleLinkClick}
+            className="block py-2 px-4 md:py-0 md:px-0 hover:text-gray-300 transition duration-300 text-lg font-medium"
+          >
             About
           </Link>
-          <Link to="/contact" className="block py-2 px-4 md:py-0 md:px-0 hover:text-gray-300 transition duration-300 text-lg font-medium">
-
+          <Link
+            to="/contact"
+            onClick={handleLinkClick}
+            className="block py-2 px-4 md:py-0 md:px-0 hover:text-gray-300 transition duration-300 text-lg font-medium"
+          >
             Contact
           </Link>
         </nav>
@@ -110,8 +129,6 @@ const Header = () => {
           )}
         </div>
       </div>
-
-      
     </header>
   );
 };
