@@ -35,7 +35,7 @@ const Assessment = () => {
 
   const submitHandler = () => {
     switch (selectedOption) {
-      case "Beginner":
+      case "Beginner"://store emailID title level date/time
         navigate("/dashboard");// pass level
         break;
       case "Intermediate":

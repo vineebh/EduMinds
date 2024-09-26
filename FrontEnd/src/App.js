@@ -10,6 +10,7 @@ import VideoPlayerPage from "./components/VideoPlayePager"; // Import the VideoP
 import Header from "./components/Header";
 import Assessment from "./Pages/Assessment";
 import Auth from "./components/Auth/Auth";
+import Exam from "./Pages/MCQ"
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/auth" element={<Auth/>} />
           <Route path="/Assessment" element={<Assessment/>} />
-
+          <Route path="/mcq" element={<Exam/>} />
           {/* New route for the video player page */}
           <Route path="/video" element={<VideoPlayerPage />} />
         </Routes>

@@ -10,7 +10,7 @@ const Videos = () => {
 
   // Fetch course data from backend
   useEffect(() => {
-    fetch("http://localhost:1000/courses")
+    fetch("http://localhost:1000/course")
       .then((res) => {
         if (!res.ok) {
           console.error("HTTP error:", res.status);

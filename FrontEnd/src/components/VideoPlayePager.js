@@ -25,7 +25,7 @@ const VideoPlayerPage = () => {
   };
 
   return (
-    <div className="bg-slate-900 min-h-screen flex flex-col items-center p-8 mt-16">
+    <div className="bg-slate-900 min-h-screen flex flex-col items-center p-8 mt-10 pt-16">
     
       <h2 className="text-4xl font-bold mb-4 text-center text-white shadow-lg p-2 rounded">
         {topic_name ? topic_name : "Now Playing"}

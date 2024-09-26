@@ -1,4 +1,4 @@
-const { database } = require('firebase-admin');
+//const { database } = require('firebase-admin');
 const mysql = require('mysql2');
 require('dotenv').config();
 

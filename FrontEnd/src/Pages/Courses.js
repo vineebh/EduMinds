@@ -1,39 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Course from "../components/Course";
 
 const Courses = () => {
-  const courses = [
-    {
-      id: 1,
-      courseName: "Python",
-      description:
-        "Python is a versatile, high-level programming language known for its simplicity, readability, and broad applicability across various fields like web development, data science, and AI.",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8E6Xlh2VtOsV4vrygfHVm6xKybmctIDBYnA&s",
-      professorName: "Dr. John Smith",
-      duration: "40 Hours",
-    },
-    {
-      id: 2,
-      courseName: "Excel",
-      description:
-        "Excel is a spreadsheet software by Microsoft used for data organization, analysis, and visualization, featuring functions, formulas, and pivot tables for efficient data management.",
-      image:
-        "https://omtsdigest.com/wp-content/uploads/2016/02/excel-1598646848.jpeg",
-      professorName: "Dr. Alice Johnson",
-      duration: "30 Hours",
-    },
-    {
-      id: 3,
-      courseName: "Data Science",
-      description:
-        "Data science is a multidisciplinary field that uses statistical methods, algorithms, and machine learning to extract insights and knowledge from structured and unstructured data for decision-making and predictive analysis.",
-      image:
-        "https://www.fsm.ac.in/blog/wp-content/uploads/2022/07/FUqHEVVUsAAbZB0.jpg",
-      professorName: "Prof. Mark Davis",
-      duration: "40 Hours",
-    },
-  ];
+  const [courses, setCourses] = useState([]);
+  const [error, setError] = useState(null);
+
+  // Fetch course data from backend
+  useEffect(() => {
+    fetch("http://localhost:1000/courses")
+      .then((res) => {
+        if (!res.ok) {
+          console.error("HTTP error:", res.status);
+          throw new Error("Network response was not ok");
+        }
+        
+        return res.json();
+      })
+      .then((data) => setCourses(data))
+      .catch((error) => {
+        console.error("Fetch error:", error);
+        setError("Failed to fetch courses. Please try again later.");
+      });
+  }, []);
+
+  if (error) {
+    return <div className="text-red-500 text-center">{error}</div>;
+  }
 
   return (
 
