@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios"; // Import axios
 import Course from "../components/Course";
 
 const Courses = () => {
@@ -7,20 +8,17 @@ const Courses = () => {
 
   // Fetch course data from backend
   useEffect(() => {
-    fetch("http://localhost:1000/courses")
-      .then((res) => {
-        if (!res.ok) {
-          console.error("HTTP error:", res.status);
-          throw new Error("Network response was not ok");
-        }
-        
-        return res.json();
-      })
-      .then((data) => setCourses(data))
-      .catch((error) => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get("http://localhost:1000/courses");
+        setCourses(response.data);
+      } catch (error) {
         console.error("Fetch error:", error);
         setError("Failed to fetch courses. Please try again later.");
-      });
+      }
+    };
+
+    fetchCourses();
   }, []);
 
   if (error) {
@@ -28,8 +26,7 @@ const Courses = () => {
   }
 
   return (
-
-    <div className="min-h-screen bg-gradient-to-r from-slate-700 to-slate-900 p-6 ">
+    <div className="min-h-screen bg-gradient-to-r from-slate-700 to-slate-900 p-6">
       <div className="relative space-y-6 py-4">
         {courses.map((data) => (
           <div
