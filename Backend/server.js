@@ -16,8 +16,8 @@ app.get('/assessment/questions/:level', async (req, res) => {
              FROM python_qna 
              WHERE level = ? 
              ORDER BY RAND() 
-             LIMIT ?`, 
-             [level, limit]
+             LIMIT ?`,
+            [level, limit]
         );
 
         if (rows.length === 0) {
@@ -67,25 +67,38 @@ app.get('/course', async (req, res) => {
     }
 });
 
-app.get('/skills', async (req,res)=>{
+app.get('/skills', async (req, res) => {
 
-    try{
-        const [data]= await db.query('select * from level where C_ID=101');
+    try {
+        const [data] = await db.query('select * from level where C_ID=101');
         res.json(data)
     }
-    catch(err){
-        res.status(500).json({error:"Error fetching data"})
+    catch (err) {
+        res.status(500).json({ error: "Error fetching data" })
     }
 })
 
-app.get('/courses', async(req,res)=>{
+app.get('/courses', async (req, res) => {
 
-    try{
-        const[data]=await db.query('select * from courses')
+    try {
+        const [data] = await db.query('select * from courses')
         res.json(data)
     }
-    catch(error){
-        res.status(500).json({error:'Courses Not Found'})
+    catch (error) {
+        res.status(500).json({ error: 'Courses Not Found' })
+    }
+})
+
+app.post('/userdata', async (req, res) => {
+
+    try {
+        const { email_id, course_title, level } = req.body;
+        await db.query('INSERT INTO users (email_id, course_title, level, datentime) VALUES (?, ?, ?, NOW())', [email_id, course_title, level]);
+        res.status(200).json({ msg: 'Data Send' })
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Data Not Send' })
+        console.log(error)
     }
 })
 

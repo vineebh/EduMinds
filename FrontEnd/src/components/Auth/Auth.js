@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; // Use 'react-router-dom' for the latest version
+import { useNavigate } from "react-router-dom";
 import { createUserEmailAndPass, signInUserEmailAndPass, signInWithGoogle } from "../../firebase/auth";
 import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
 
