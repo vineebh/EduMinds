@@ -12,10 +12,15 @@ import Assessment from "./Pages/Assessment";
 import Auth from "./components/Auth/Auth";
 import Exam from "./Pages/MCQ"
 
+
+
+
+
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
      <Header/>
+    
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
