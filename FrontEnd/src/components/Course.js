@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import '.././index.css';
 
+
 const Course = ({ courseData }) => {
   console.log(courseData)
   const { title, description, imageUrl, professorName, duration } = courseData;
