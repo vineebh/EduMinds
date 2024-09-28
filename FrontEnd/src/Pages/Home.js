@@ -56,7 +56,7 @@ const Home = () => {
           </p>
           <Link to="/courses">
 
-            <button className="bg-gradient-to-r from-fuchsia-500 to-cyan-500  text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-600 transition duration-300">
+            <button className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 hover:shadow-xl transition-shadow duration-300 hover:scale-105 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-600 transition duration-300">
 
 
               Explore Courses
