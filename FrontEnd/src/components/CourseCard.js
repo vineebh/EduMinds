@@ -3,27 +3,34 @@ import { Link } from 'react-router-dom';
 
 const CourseCard = ({ title, description, imageUrl, link }) => {
   return (
-    <div className="bg--gradient-to-l border-2 border-blue-500/50 shadow-lg rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto my-4">
+    <div className="bg-gradient-to-r from-blue-600 to-blue-400 border border-transparent shadow-xl rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl mx-auto my-6"
+         style={{ maxWidth: '400px', height: '500px' }}>
       {/* Image Section */}
       <img
         src={imageUrl}
         alt={title}
-        className="w-full h-32 sm:h-36 md:h-40 lg:h-48 object-cover"
+        className="w-full h-2/5 object-cover rounded-t-lg"
+        style={{ maxHeight: '50%' }}
       />
       
       {/* Content Section */}
-      <div className="p-4 md:p-5">
-        <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-blue-200 mb-2">
+      <div className="p-5 h-3/5 flex flex-col justify-between bg-slate-900 text-white">
+        {/* Title */}
+        <h3 className="text-lg md:text-2xl font-bold text-white mb-2">
           {title}
         </h3>
-        <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white mb-4">
-          {description}
-        </p>
         
+        {/* Description with Fixed Height and Overflow */}
+        <div className="overflow-hidden text-ellipsis" style={{ maxHeight: '9rem' }}>
+          <p className="text-sm md:text-base lg:text-lg opacity-90">
+            {description}
+          </p>
+        </div>
+
         {/* Learn More Button */}
-        <div className="flex justify-center md:justify-end">
+        <div className="flex justify-center md:justify-end mt-4">
           <Link to={link}>
-            <button className="bg-blue-600 text-xs sm:text-sm md:text-base lg:text-lg text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300 w-full md:w-auto">
+            <button className="bg-yellow-500 hover:bg-yellow-600 text-sm md:text-base text-black px-6 py-3 rounded-md shadow-lg transition-all duration-300 w-full md:w-auto">
               Learn More
             </button>
           </Link>

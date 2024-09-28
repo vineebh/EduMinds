@@ -1,16 +1,18 @@
+import PropTypes from 'prop-types'; // Import PropTypes
 import React from 'react';
-import '.././index.css'; 
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import '.././index.css';
 
 const Course = ({ courseData }) => {
-  const { courseName, description, image, professorName, duration } = courseData;
+  console.log(courseData)
+  const { title, description, imageUrl, professorName, duration } = courseData;
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const navigate = useNavigate();
 
   const enrollHandler = () => {
     if (loginStatus === true) {
-      navigate(`/Assessment/${courseName}`); // Pass courseName to the URL
+      navigate("/Assessment", { state: { courseTitle: title } }); // Pass course title as state
     } else {
       navigate('/auth');
     }
@@ -20,7 +22,7 @@ const Course = ({ courseData }) => {
     <div className="p-4 sm:p-6 lg:p-8 rounded-3xl shadow-2xl h-full bg-white bg-opacity-20 backdrop-blur-md border border-gray-700 mt-8 sm:mt-10 lg:mt-12">
       {/* Course Name */}
       <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gradient text-white text-transparent bg-clip-text text-center mb-4 sm:mb-6 lg:mb-8 drop-shadow-xl">
-        {courseName}
+        {title}
       </h1>
 
       {/* Content Layout */}
@@ -28,8 +30,8 @@ const Course = ({ courseData }) => {
         {/* Image Section */}
         <div className="w-full sm:w-1/3 mb-4 sm:mb-0 sm:pr-4 lg:pr-6">
           <img
-            src={image}
-            alt={courseName}
+            src={imageUrl}
+            alt={title} // Ensure alt text is meaningful
             className="w-full h-36 sm:h-40 md:h-48 lg:h-56 object-cover rounded-lg border-4 shadow-lg"
           />
           {/* Duration and Instructor */}
@@ -58,6 +60,17 @@ const Course = ({ courseData }) => {
       </div>
     </div>
   );
+};
+
+// Prop Types validation
+Course.propTypes = {
+  courseData: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+    professorName: PropTypes.string.isRequired,
+    duration: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default Course;

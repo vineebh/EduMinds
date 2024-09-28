@@ -1,43 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import CourseCard from '../components/CourseCard'; 
+import bg from '../assests/img/bg.jpg';
 
 const Home = () => {
-  const courses = [
-    {
-      id: 1,
-      title: "Python",
-      description:
-        "Python is a versatile, high-level programming language known for its simplicity, readability, and broad applicability across various fields like web development, data science, and AI.",
-      imageUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8E6Xlh2VtOsV4vrygfHVm6xKybmctIDBYnA&s",
-      professorName: "Dr. John Smith",
-      duration: "40 Hours",
-      link: "/courses",
-    },
-    {
-      id: 2,
-      title: "Excel",
-      description:
-        "Excel is a spreadsheet software by Microsoft used for data organization, analysis, and visualization, featuring functions, formulas, and pivot tables for efficient data management.",
-      imageUrl:
-        "https://omtsdigest.com/wp-content/uploads/2016/02/excel-1598646848.jpeg",
-      professorName: "Dr. Alice Johnson",
-      duration: "30 Hours",
-      link: "/courses",
-    },
-    {
-      id: 3,
-      title: "Data Science",
-      description:
-        "Data science is a multidisciplinary field that uses statistical methods, algorithms, and machine learning to extract insights and knowledge from structured and unstructured data for decision-making and predictive analysis.",
-      imageUrl:
-        "https://www.fsm.ac.in/blog/wp-content/uploads/2022/07/FUqHEVVUsAAbZB0.jpg",
-      professorName: "Prof. Mark Davis",
-      duration: "40 Hours",
-      link: "/courses",
-    },
-  ];
+  const [courses, setCourses] = useState([]);
+  const [error, setError] = useState(null);
+
+  // Fetch course data from backend
+  useEffect(() => {
+    fetch("http://localhost:1000/courses")
+      .then((res) => {
+        if (!res.ok) {
+          console.error("HTTP error:", res.status);
+          throw new Error("Network response was not ok");
+        }
+        
+        return res.json();
+      })
+      .then((data) => setCourses(data))
+      .catch((error) => {
+        console.error("Fetch error:", error);
+        setError("Failed to fetch courses. Please try again later.");
+      });
+  }, []);
+
+  if (error) {
+    return <div className="text-red-500 text-center">{error}</div>;
+  }
 
   return (
 
@@ -46,7 +36,7 @@ const Home = () => {
       <div className="relative w-full bg-gradient-to-r from-slate-700 to-slate-900 py-16  "> {/* Changed background to darker gray */}
 
         <img
-          src="${process.env.PUBLIC_URL}/img/bg.jpg"
+          src={bg}
           //https://img.freepik.com/free-photo/scene-with-business-person-working-futuristic-office-job_23-2151003708.jpg?t=st=1723794847~exp=1723798447~hmac=ff6fb5eb3ccf3edb81bc7ff9adcf65c4ca4a8a6f955b6cedc3328a140565e048&w=996
           alt="Education"
           className="absolute inset-0  object-fill  w-full h-full opacity-50 mt-5"
@@ -89,7 +79,7 @@ const Home = () => {
               title={course.title}
               description={course.description}
               imageUrl={course.imageUrl}
-              link={course.link} //link to course
+              link={'/courses'} //link to course
             />
             </Link>
           ))}

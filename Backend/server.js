@@ -57,9 +57,9 @@ app.post('/assessment/submit', async (req, res) => {
     }
 });
 
-app.get('/courses', async (req, res) => {
+app.get('/course', async (req, res) => {
     try {
-        const [data] = await db.query('SELECT * FROM datascience_course');
+        const [data] = await db.query('SELECT * FROM data_analytics_course');
         res.json(data);
     } catch (err) {
         console.error("Error fetching courses:", err);
@@ -77,6 +77,18 @@ app.get('/skills', async (req,res)=>{
         res.status(500).json({error:"Error fetching data"})
     }
 })
+
+app.get('/courses', async(req,res)=>{
+
+    try{
+        const[data]=await db.query('select * from courses')
+        res.json(data)
+    }
+    catch(error){
+        res.status(500).json({error:'Courses Not Found'})
+    }
+})
+
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");

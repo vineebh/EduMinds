@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom"; // Import useLocation to access passed state
 
 const Assessment = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const navigate = useNavigate();
+  const location = useLocation(); // Access location
+  const { courseTitle } = location.state || {}; // Safely access course title
 
   const skills = {
     Beginner: [
@@ -34,29 +36,24 @@ const Assessment = () => {
   };
 
   const submitHandler = () => {
-    switch (selectedOption) {
-      case "Beginner":
-        navigate("/dashboard");// pass level
-        break;
-      case "Intermediate":
-        navigate("/dashboard");// pass level
-        break;
-      case "Advanced":
-        navigate("/dashboard");// pass level
-        break;
-      default:
-        break;
+    if (selectedOption) {
+      // Store emailID title level date/time (you can expand this later)
+      const level = selectedOption; // The selected skill level
+      const dateTime = new Date().toISOString(); // Current date and time
+
+      // Pass the selected level and course title to the dashboard
+      navigate("/dashboard", { state: { level, courseTitle, dateTime } });
     }
   };
 
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-gray-800  h-full flex justify-center items-center py-12 mt-10">
-      <div className="container mx-auto px-4 sm:px-6 max-w-4xl"> {/* Increased max-width */}
+    <div className="bg-gradient-to-b from-gray-900 to-gray-800 h-full flex justify-center items-center py-12 mt-10">
+      <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
         {/* Assessment Card */}
         <div className="bg-gray-800 p-10 rounded-lg shadow-2xl flex flex-col items-center">
           {/* Title */}
           <h2 className="text-3xl font-extrabold text-white text-center mb-8 tracking-wide">
-            Rate Your Course Skills
+            Rate Your {courseTitle} Skills
           </h2>
 
           {/* Option Selection */}
@@ -79,10 +76,10 @@ const Assessment = () => {
           {/* Display All Skills */}
           <div className="text-left mb-8 w-full">
             <p className="text-lg font-medium text-white mb-6">Skills by Level:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 cursor-pointer"> {/* Increased grid spacing */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 cursor-pointer">
               {Object.entries(skills).map(([level, skillList]) => (
                 <div
-                onClick={() => handleOptionChange(level)}
+                  onClick={() => handleOptionChange(level)}
                   key={level}
                   className={`p-6 rounded-lg shadow-md ${
                     selectedOption === level ? "bg-purple-700 border-2 border-purple-500" : "bg-gray-700"

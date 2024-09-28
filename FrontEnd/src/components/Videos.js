@@ -1,29 +1,27 @@
 // Videos.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import axios from "axios"; // Import axios
 
 const Videos = () => {
   const [courses, setCourses] = useState([]);
-  console.log(courses)
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Use useNavigate for navigation
 
   // Fetch course data from backend
   useEffect(() => {
-    fetch("http://localhost:1000/courses")
-      .then((res) => {
-        if (!res.ok) {
-          console.error("HTTP error:", res.status);
-          throw new Error("Network response was not ok");
-        }
-        
-        return res.json();
-      })
-      .then((data) => setCourses(data))
-      .catch((error) => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get("http://localhost:1000/course");
+        setCourses(response.data);
+        console.log(response.data)
+      } catch (error) {
         console.error("Fetch error:", error);
         setError("Failed to fetch courses. Please try again later.");
-      });
+      }
+    };
+
+    fetchCourses();
   }, []);
 
   if (error) {
@@ -31,8 +29,8 @@ const Videos = () => {
   }
 
   // Navigate to the VideoPlayerPage with the video URL in the state
-  const handleWatchClick = (videoUrl,topic_name) => {
-    navigate("/video", { state: { videoUrl,topic_name } });
+  const handleWatchClick = (videoUrl, topic_name) => {
+    navigate("/video", { state: { videoUrl, topic_name } });
   };
 
   return (
@@ -52,7 +50,7 @@ const Videos = () => {
               <p className="text-gray-400">Duration: {course.duration}</p>
             </div>
             <button
-              onClick={() => handleWatchClick(course.video_url,course.topic_name)} // Navigate to the video page
+              onClick={() => handleWatchClick(course.video_url, course.topic_name)} // Navigate to the video page
               className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
             >
               Watch
