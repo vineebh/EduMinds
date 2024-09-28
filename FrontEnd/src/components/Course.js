@@ -1,8 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types'; // Import PropTypes
-import '.././index.css'; 
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import '.././index.css';
+
 
 const Course = ({ courseData }) => {
   console.log(courseData)
