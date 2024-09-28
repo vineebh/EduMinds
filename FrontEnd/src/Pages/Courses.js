@@ -36,8 +36,7 @@ const Courses = () => {
   ];
 
   return (
-
-    <div className="min-h-screen bg-gradient-to-r from-slate-700 to-slate-900 p-6 ">
+    <div className="min-h-screen bg-gradient-to-r from-slate-700 to-slate-900 p-6">
       <div className="relative space-y-6 py-4">
         {courses.map((data) => (
           <div
