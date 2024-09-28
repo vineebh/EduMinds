@@ -1,15 +1,14 @@
-// App.js
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Home from "./Pages/Home";
+import Auth from "./components/Auth/Auth";
+import Header from "./components/Header";
+import Home from './Pages/Home'
+import VideoPlayerPage from "./components/VideoPlayePager";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Courses from "./Pages/Courses";
 import DashBoard from "./Pages/DashBoard";
-import VideoPlayerPage from "./components/VideoPlayePager"; // Import the VideoPlayerPage
-import Header from "./components/Header";
 import Assessment from "./Pages/Assessment";
-import Auth from "./components/Auth/Auth";
 import Exam from "./Pages/MCQ"
 
 

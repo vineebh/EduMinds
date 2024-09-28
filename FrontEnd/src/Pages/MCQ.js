@@ -31,6 +31,12 @@ const Exam = () => {
         console.log('Current answers:', { ...answers, [questionId]: selectedOption }); // Log updated answers
     };
 
+    const handlePrev = () => {
+        if (currentQuestionIndex > 0) {
+            setCurrentQuestionIndex(currentQuestionIndex - 1);
+        }
+    };
+
     const handleNext = () => {
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -83,23 +89,32 @@ const Exam = () => {
                                         type="radio"
                                         name={`question-${questions[currentQuestionIndex].id}`}
                                         value={questions[currentQuestionIndex][optionKey]} // Get option value directly
-                                        className="form-radio"
+                                        className="form-radio text-blue-600"
                                         checked={answers[questions[currentQuestionIndex].id] === questions[currentQuestionIndex][optionKey]}
                                         onChange={() => handleChange(questions[currentQuestionIndex].id, questions[currentQuestionIndex][optionKey])}
                                     />
-                                    <span className="text-xl text-white font-medium">{questions[currentQuestionIndex][optionKey]}</span>
+                                    <span className="text-xl text-white font-medium ml-2">{questions[currentQuestionIndex][optionKey]}</span>
                                 </label>
                             ))}
                         </div>
                     </div>
                 )}
 
-                <button
-                    onClick={isLastQuestion ? handleSubmit : handleNext}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                    {isLastQuestion ? 'Submit' : 'Next'}
-                </button>
+                <div className="flex justify-between mt-4">
+                    <button
+                        onClick={handlePrev}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Previous
+                    </button>
+
+                    <button
+                        onClick={isLastQuestion ? handleSubmit : handleNext}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        {isLastQuestion ? 'Submit' : 'Next'}
+                    </button>
+                </div>
 
                 {result && (
                     <div className="mt-6 p-4 bg-green-100 text-green-700 text-xl rounded">
