@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'; // Import PropTypes
+import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ const Course = ({ courseData }) => {
 
   const enrollHandler = () => {
     if (loginStatus === true) {
-      navigate("/Assessment", { state: { courseTitle: title } }); // Pass course title as state
+      navigate("/Assessment")
     } else {
       navigate('/auth');
     }
