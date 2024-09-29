@@ -147,6 +147,20 @@ app.post('/userdata', async (req, res) => {
 })
 
 
+app.post('/userdata', async (req, res) => {
+
+    try {
+        const { email_id, course_title, level } = req.body;
+        await db.query('INSERT INTO users (email_id, course_title, level, datentime) VALUES (?, ?, ?, NOW())', [email_id, course_title, level]);
+        res.status(200).json({ msg: 'Data Send' })
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Data Not Send' })
+        console.log(error)
+    }
+})
+
+
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");
 });

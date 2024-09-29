@@ -49,6 +49,7 @@ const Chatbot = () => {
 
   return (
     <div className="max-w-lg mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+
       <h1 className="text-4xl font-bold text-center text-blue-700 mb-6">Edu Bot</h1>
 
       <div className="chat-container h-80 overflow-y-auto rounded-lg bg-gray-50 p-4 shadow-inner">
