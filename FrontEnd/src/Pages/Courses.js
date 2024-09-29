@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios
 import Course from "../components/Course";
+import { useSelector } from "react-redux";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState(null);
+  const userInfo = useSelector((state)=>state.auth.userInfo)
+
+  console.log(userInfo.userID)    //got email ID
 
   // Fetch course data from backend
   useEffect(() => {

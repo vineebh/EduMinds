@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Videos from "../components/Videos";
 import Article from "../components/Article";
@@ -8,26 +9,34 @@ const DashBoard = () => {
   const [view, setView] = useState("video"); // State to track the view
   const [courses, setCourses] = useState([]); // State to store fetched courses
   const [error, setError] = useState(null); // State to handle errors
+  const location = useLocation();
+  const { C_ID, level, courseTitle } = location.state || {};
+
 
   useEffect(() => {
     // Fetch courses from the API
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:1000/course");
+        const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
         setCourses(response.data); // Update state with the fetched courses
-        console.log(response.data); // Log the fetched data
       } catch (error) {
         console.error("Fetch error:", error);
         setError("Failed to fetch courses. Please try again later."); // Update state with error message
       }
     };
-
-    fetchCourses();
-  }, []); // Empty dependency array ensures this runs only once on component mount
+  
+    // Call the fetch function if C_ID is defined
+    if (C_ID) {
+      fetchCourses();
+    }
+  }, [C_ID]); // Dependency array includes C_ID to fetch courses when it changes
+  
 
   return (
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
       <section className="container mx-auto flex flex-col lg:flex-row gap-8 items-start mt-10 px-4">
+
+      <span className="text-white font-bold text-lg mb-4 text-center">{courseTitle}</span>
 
         {/* Left section - Video/Article */}
         <article className="flex-1 p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
@@ -63,7 +72,22 @@ const DashBoard = () => {
 
           {/* Conditional Rendering based on the selected view */}
           <div className="text-center text-white">
-            {view === "video" ? <Videos /> : <Article />}
+            {view === "video" ? <Videos courses={courses}/> : <Article courses={courses}/>}
+          </div>
+
+          {/* Display fetched courses */}
+          <div className="mt-6">
+            {error ? (
+              <p className="text-red-500">{error}</p>
+            ) : (
+              <ul className="text-white">
+                {courses.map((course) => (
+                  <li key={course.id} className="mb-2">
+                    {course.title}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Display fetched courses */}
@@ -84,7 +108,9 @@ const DashBoard = () => {
 
         {/* Right section - Progress Bar */}
         <aside className="w-full lg:w-1/4 p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
-          <ProgressBar />
+
+          <ProgressBar Level={level}/>
+
         </aside>
 
       </section>
