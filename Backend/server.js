@@ -133,7 +133,6 @@ app.post('/assessment/submit', async (req, res) => {
 });
 
 
-
 app.post('/userdata', async (req, res) => {
 
     try {
@@ -146,6 +145,11 @@ app.post('/userdata', async (req, res) => {
         console.log(error)
     }
 })
+
+
+app.listen(process.env.PORT, () => {
+    console.log("Server Started!");
+});
 
 
 app.listen(process.env.PORT, () => {
