@@ -7,6 +7,81 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
+app.get('/courses', async (req, res) => {
+    try {
+        const [data] = await db.query('select c_id,title,description,imageUrl,professorName,duration from courses')
+        res.json(data)
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Courses Not Found' })
+    }
+})
+
+
+app.get('/skills/:C_ID', async (req, res) => {
+    const C_ID = req.params.C_ID;
+    try {
+        // Fetch the beginner, intermediate, and advanced skills for the given C_ID
+        const [data] = await db.query(
+            'SELECT beginner, intermediate, advance FROM level WHERE C_ID = ?',
+            [C_ID]
+        );
+
+        // Check if any data was returned
+        if (data.length > 0) {
+            const skills = {
+                Beginner: data[0].beginner ? data[0].beginner.split(',') : [],
+                Intermediate: data[0].intermediate ? data[0].intermediate.split(',') : [],
+                Advanced: data[0].advance ? data[0].advance.split(',') : []
+            };
+            res.json(skills); // Send the skills back to the client
+        } else {
+            res.status(404).json({ error: "No skills found for this course ID" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error fetching data" });
+    }
+});
+
+
+app.get('/course/:c_id', async (req, res) => {
+    const c_id = parseInt(req.params.c_id, 10);
+
+    // Define a mapping of course IDs to table names
+    const courses = {
+        101: 'python_course',
+        102: 'excel_course',
+        103: 'data_analytics_course',
+    };
+
+    // Get the course title from the mapping
+    const course_title = courses[c_id];
+
+    if (!course_title) {
+        // Return an error if the course ID is not valid
+        return res.status(400).json({ error: 'Invalid course ID' });
+    }
+
+    try {
+        // Since table names cannot be parameterized, we safely include it directly in the query string
+        const query = `SELECT level, topic_name, video_url, articles FROM ${course_title}`;
+        const [data] = await db.query(query);
+
+        // Check if data was returned
+        if (data.length === 0) {
+            return res.status(404).json({ error: 'No data found for this course' });
+        }
+
+        // Send the fetched data as JSON
+        res.json(data);
+    } catch (err) {
+        console.error("Error fetching course data:", err);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+    //everything above this is dynamic api [sachin jo karna hai niche karna]
 app.get('/assessment/questions/:level', async (req, res) => {
     const level = req.params.level;
     const limit = 5;
@@ -57,36 +132,6 @@ app.post('/assessment/submit', async (req, res) => {
     }
 });
 
-app.get('/course', async (req, res) => {
-    try {
-        const [data] = await db.query('SELECT * FROM data_analytics_course');
-        res.json(data);
-    } catch (err) {
-        console.error("Error fetching courses:", err);
-        res.status(500).json({ error: 'Server Error' });
-    }
-});
-
-app.get('/skills', async (req,res)=>{
-    const C_ID = req.params.C_ID;
-    try{
-        const [data]= await db.query('select * from level where C_ID= ?',[C_ID]);
-        res.json(data)
-    }
-    catch(err){
-        res.status(500).json({error:"Error fetching data"})
-    }
-})
-
-app.get('/courses', async (req, res) => {
-    try {
-        const [data] = await db.query('select * from courses')
-        res.json(data)
-    }
-    catch (error) {
-        res.status(500).json({ error: 'Courses Not Found' })
-    }
-})
 
 
 app.post('/userdata', async (req, res) => {

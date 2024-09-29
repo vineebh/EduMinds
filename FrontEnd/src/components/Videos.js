@@ -1,28 +1,10 @@
-// Videos.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import axios from "axios"; // Import axios
 
-const Videos = () => {
-  const [courses, setCourses] = useState([]);
+const Videos = ({courses}) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Use useNavigate for navigation
-
-  /*// Fetch course data from backend
-  // useEffect(() => {
-  //   const fetchCourses = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:1000/course");
-  //       setCourses(response.data);
-  //       console.log(response.data)
-  //     } catch (error) {
-  //       console.error("Fetch error:", error);
-  //       setError("Failed to fetch courses. Please try again later.");
-  //     }
-  //   };
-
-  //   fetchCourses();
-  // }, []); */
 
   if (error) {
     return <div className="text-red-500 text-center">{error}</div>;

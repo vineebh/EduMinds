@@ -1,13 +1,13 @@
 import React from 'react';
 
-const ProgressBar = () => {
-  const courseLevel = 'Intermediate'; // Example course level
+const ProgressBar = ({Level}) => {
+
   const progressPercentage = 55; // Example progress percentage
 
   return (
     <div className="w-full max-w-xs bg-gray-800 rounded-lg shadow-lg flex flex-col p-6">
       <h3 className="text-2xl font-semibold text-white mb-2 text-center">Course Level</h3>
-      <p className="text-yellow-400 font-bold text-lg mb-4 text-center">{courseLevel}</p>
+      <p className="text-yellow-400 font-bold text-lg mb-4 text-center">{Level}</p>
       
       <div className="bg-gray-600 rounded-full h-4 w-full overflow-hidden mb-2">
         <div 

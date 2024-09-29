@@ -1,35 +1,36 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Import useLocation to access passed state
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Assessment = () => {
   const [selectedOption, setSelectedOption] = useState("");
+  const [skills, setSkills] = useState({}); // Updated to store fetched skills
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const location = useLocation(); // Access location
-  const { courseTitle } = location.state || {}; // Safely access course title
+  const location = useLocation();
+  const userInfo = useSelector((state)=>state.auth.userInfo)
+  const { courseTitle, C_ID } = location.state || {};
 
-  const skills = {
-    Beginner: [
-      "Understanding syntax",
-      "Variables and data types",
-      "Basic operators",
-      "Control flow (if statements)",
-      "Functions",
-    ],
-    Intermediate: [
-      "Object-oriented programming",
-      "Error handling and exceptions",
-      "File I/O",
-      "Modules and packages",
-      "Basic data structures (lists, dictionaries)",
-    ],
-    Advanced: [
-      "Decorators and generators",
-      "Concurrency and parallelism",
-      "Advanced data structures (sets, tuples)",
-      "Testing and debugging",
-      "Frameworks (Django, Flask)",
-    ],
-  };
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await axios.get(`http://localhost:1000/skills/${C_ID}`);
+        setSkills(response.data); // Store the dynamically fetched skills
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setError("Failed to fetch skills. Please try again later.");
+      }
+    };
+
+    if (C_ID) {
+      fetchSkills();
+    }
+  }, [C_ID]);
+
+  if (error) {
+    return <div className="text-red-500 text-center">{error}</div>;
+  }
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
@@ -37,26 +38,22 @@ const Assessment = () => {
 
   const submitHandler = () => {
     if (selectedOption) {
-      // Store emailID title level date/time (you can expand this later)
-      const level = selectedOption; // The selected skill level
-      const dateTime = new Date().toISOString(); // Current date and time
+      const level = selectedOption;
+      //const dateTime = new Date().toISOString();
 
-      // Pass the selected level and course title to the dashboard
-      navigate("/dashboard", { state: { level, courseTitle, dateTime } });
+
+      navigate("/dashboard", { state: { C_ID, level, courseTitle } });
     }
   };
 
   return (
     <div className="bg-gradient-to-b from-gray-900 to-gray-800 h-full flex justify-center items-center py-12 mt-10">
       <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
-        {/* Assessment Card */}
         <div className="bg-gray-800 p-10 rounded-lg shadow-2xl flex flex-col items-center">
-          {/* Title */}
           <h2 className="text-3xl font-extrabold text-white text-center mb-8 tracking-wide">
             Rate Your {courseTitle} Skills
           </h2>
 
-          {/* Option Selection */}
           <div className="w-full lg:w-2/2 p-4 hidden md:flex justify-around mb-10">
             {["Beginner", "Intermediate", "Advanced"].map((level) => (
               <button
@@ -73,7 +70,6 @@ const Assessment = () => {
             ))}
           </div>
 
-          {/* Display All Skills */}
           <div className="text-left mb-8 w-full">
             <p className="text-lg font-medium text-white mb-6">Skills by Level:</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 cursor-pointer">
@@ -102,7 +98,6 @@ const Assessment = () => {
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             className="py-3 px-8 text-lg rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-bold shadow-md hover:shadow-lg transition-transform duration-300 transform hover:scale-105"
             onClick={submitHandler}
