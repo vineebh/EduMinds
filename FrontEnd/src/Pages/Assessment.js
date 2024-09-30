@@ -8,6 +8,10 @@ const Assessment = () => {
   const [skills, setSkills] = useState({}); // Updated to store fetched skills
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+
+  const { title } = location.state || {}; 
+ 
   const location = useLocation();
   const userInfo = useSelector((state)=>state.auth.userInfo)
   const { courseTitle, C_ID } = location.state || {};
@@ -42,7 +46,9 @@ const Assessment = () => {
       //const dateTime = new Date().toISOString();
 
 
+
       navigate("/dashboard", { state: { C_ID, level, courseTitle } });
+
     }
   };
 
@@ -51,7 +57,7 @@ const Assessment = () => {
       <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
         <div className="bg-gray-800 p-10 rounded-lg shadow-2xl flex flex-col items-center">
           <h2 className="text-3xl font-extrabold text-white text-center mb-8 tracking-wide">
-            Rate Your {courseTitle} Skills
+            Rate Your {title} Skills
           </h2>
 
           <div className="w-full lg:w-2/2 p-4 hidden md:flex justify-around mb-10">

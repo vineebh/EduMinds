@@ -6,7 +6,10 @@ import '.././index.css';
 
 
 const Course = ({ courseData }) => {
-  const {c_id, title, description, imageUrl, professorName, duration } = courseData;
+
+
+
+
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const navigate = useNavigate();
 
