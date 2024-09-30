@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import axios from "axios"; // Import axios
 
-const Videos = () => {
-  const [courses, setCourses] = useState([]);
+const Videos = ({courses}) => {
+  
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Use useNavigate for navigation
 

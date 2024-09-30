@@ -23,7 +23,7 @@ const DashBoard = () => {
     };
 
     fetchCourses();
-  }, []); // Empty dependency array ensures this runs only once on component mount
+  }, []); 
 
   return (
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
@@ -63,7 +63,7 @@ const DashBoard = () => {
 
           {/* Conditional Rendering based on the selected view */}
           <div className="text-center text-white">
-            {view === "video" ? <Videos /> : <Article />}
+            {view === "video" ? <Videos  courses={courses}/> : <Article course={courses} />}
           </div>
 
           {/* Display fetched courses */}

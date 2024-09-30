@@ -6,14 +6,14 @@ import '.././index.css';
 
 
 const Course = ({ courseData }) => {
-  console.log(courseData)
+
   const { title, description, imageUrl, professorName, duration } = courseData;
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const navigate = useNavigate();
 
   const enrollHandler = () => {
     if (loginStatus === true) {
-      navigate("/Assessment")
+      navigate("/Assessment" ,{state : {title}})
     } else {
       navigate('/auth');
     }

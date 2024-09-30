@@ -4,8 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom"; // Import useLocati
 const Assessment = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const navigate = useNavigate();
-  const location = useLocation(); // Access location
-  const { courseTitle } = location.state || {}; // Safely access course title
+  const location = useLocation(); 
+  const { title } = location.state || {}; 
+ 
 
   const skills = {
     Beginner: [
@@ -42,7 +43,7 @@ const Assessment = () => {
       const dateTime = new Date().toISOString(); // Current date and time
 
       // Pass the selected level and course title to the dashboard
-      navigate("/dashboard", { state: { level, courseTitle, dateTime } });
+      navigate("/dashboard", { state: { level, title, dateTime } });
     }
   };
 
@@ -53,7 +54,7 @@ const Assessment = () => {
         <div className="bg-gray-800 p-10 rounded-lg shadow-2xl flex flex-col items-center">
           {/* Title */}
           <h2 className="text-3xl font-extrabold text-white text-center mb-8 tracking-wide">
-            Rate Your {courseTitle} Skills
+            Rate Your {title} Skills
           </h2>
 
           {/* Option Selection */}
