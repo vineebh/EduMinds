@@ -8,7 +8,7 @@ const Videos = ({courses}) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Use useNavigate for navigation
 
-  // Fetch course data from backend
+  /*// Fetch course data from backend
   // useEffect(() => {
   //   const fetchCourses = async () => {
   //     try {
@@ -22,7 +22,8 @@ const Videos = ({courses}) => {
   //   };
 
   //   fetchCourses();
-  // }, []);
+  // }, []); */
+
 
   if (error) {
     return <div className="text-red-500 text-center">{error}</div>;

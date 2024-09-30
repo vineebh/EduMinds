@@ -13,7 +13,7 @@ const Course = ({ courseData }) => {
 
   const enrollHandler = () => {
     if (loginStatus === true) {
-      navigate("/Assessment" ,{state : {title}})
+      navigate("/Assessment", { state: { courseTitle: title } }); // Pass course title as state
     } else {
       navigate('/auth');
     }
