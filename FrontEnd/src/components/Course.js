@@ -13,7 +13,7 @@ const Course = ({ courseData }) => {
 
   const enrollHandler = () => {
     if (loginStatus === true) {
-      navigate("/Assessment", { state: { courseTitle: title } }); // Pass course title as state
+      navigate("/Assessment", { state: { courseTitle: title } }); 
     } else {
       navigate('/auth');
     }
@@ -21,7 +21,6 @@ const Course = ({ courseData }) => {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 rounded-3xl shadow-2xl h-full bg-white bg-opacity-20 backdrop-blur-md border border-gray-700 mt-8 sm:mt-10 lg:mt-12">
-      {/* Course Name */}
       <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gradient text-white text-transparent bg-clip-text text-center mb-4 sm:mb-6 lg:mb-8 drop-shadow-xl">
         {title}
       </h1>

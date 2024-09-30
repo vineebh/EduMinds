@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { signOutUser } from "../firebase/auth";
 import { setIdToken, setLoginStatus, setIsLogin } from "../store/authSlice";
 import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Header = () => {
   const loginStatus = useSelector((state) => state.auth.islogin);
@@ -18,11 +20,13 @@ const Header = () => {
       dispatch(setIdToken(null));
       dispatch(setLoginStatus(false));
       dispatch(setIsLogin(false));
+      toast.success('User logged Successfully')
       navigate("/auth");
       handleLinkClick();
-      console.log("clicked");
+     
     } catch (error) {
-      console.error("Logout error:", error);
+      toast.error(error.message)
+      
     }
   };
 

@@ -63,7 +63,7 @@ const DashBoard = () => {
 
           {/* Conditional Rendering based on the selected view */}
           <div className="text-center text-white">
-            {view === "video" ? <Videos  courses={courses}/> : <Article course={courses} />}
+            {view === "video" ? <Videos  courses={courses}/> : <Article courses={courses} />}
           </div>
 
           {/* Display fetched courses */}
