@@ -6,6 +6,7 @@ import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const Auth = () => {
   const isLogin = useSelector((state) => state.auth.islogin);
   const navigate = useNavigate();
@@ -90,6 +91,7 @@ const Auth = () => {
       const result = await signInWithGoogle();
       const token = result.user.accessToken;
       localStorage.setItem("idToken", token);
+      localStorage.setItem("userID",result.user.email)  //store email id in local storage
       dispatch(setIdToken(token));
       dispatch(setLoginStatus(true));
       dispatch(setIsLogin(true));
