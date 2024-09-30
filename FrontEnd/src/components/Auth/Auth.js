@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createUserEmailAndPass, signInUserEmailAndPass, signInWithGoogle } from "../../firebase/auth";
-import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
+import { setIdToken, setIsLogin, setLoginStatus, setUserInfo } from "../../store/authSlice";
 
 const Auth = () => {
   const isLogin = useSelector((state) => state.auth.islogin);
@@ -98,6 +98,7 @@ const Auth = () => {
       const result = await signInWithGoogle();
       const token = result.user.accessToken;
       localStorage.setItem("idToken", token);
+      localStorage.setItem("userID",result.user.email)  //store email id in local storage
       dispatch(setIdToken(token));
       dispatch(setLoginStatus(true));
       dispatch(setIsLogin(true));
