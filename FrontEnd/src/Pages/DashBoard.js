@@ -24,6 +24,7 @@ const DashBoard = () => {
         setError("Failed to fetch courses. Please try again later."); // Update state with error message
       }
     };
+
   
     // Call the fetch function if C_ID is defined
     if (C_ID) {

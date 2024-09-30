@@ -13,4 +13,15 @@
 .shadow-all-sides {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Customize as needed */
 }
+/* Add to your CSS file */
 
+
+.fixed {
+  position: fixed;
+}
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
