@@ -64,6 +64,12 @@ const Exam = () => {
 
             const resultData = await response.json();
             setResult(`You answered ${resultData.correct} out of ${questions.length} questions correctly!`);
+            if(resultData.correct>=3){
+                console.log("Pass")
+            }
+            else{
+                console.log("Fail")
+            }
         } catch (error) {
             console.error('Error during submission:', error);
             setResult('An error occurred while submitting your answers. Please try again.');
