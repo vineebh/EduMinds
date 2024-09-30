@@ -25,9 +25,6 @@ const DashBoard = () => {
       }
     };
 
-    fetchCourses();
-  }, []); 
-
   
     // Call the fetch function if C_ID is defined
     if (C_ID) {
@@ -35,7 +32,6 @@ const DashBoard = () => {
     }
   }, [C_ID]); // Dependency array includes C_ID to fetch courses when it changes
   
-
 
   return (
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
@@ -77,7 +73,6 @@ const DashBoard = () => {
 
           {/* Conditional Rendering based on the selected view */}
           <div className="text-center text-white">
-            {view === "video" ? <Videos  courses={courses}/> : <Article course={courses} />}
             {view === "video" ? <Videos courses={courses}/> : <Article courses={courses}/>}
           </div>
 

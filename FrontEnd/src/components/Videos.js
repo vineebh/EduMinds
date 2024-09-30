@@ -3,10 +3,6 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate for naviga
 import axios from "axios"; // Import axios
 
 const Videos = ({courses}) => {
-
-  
-  const [error, setError] = useState(null);
-
   const navigate = useNavigate(); // Use useNavigate for navigation
 
 
