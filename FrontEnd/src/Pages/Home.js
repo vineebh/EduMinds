@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import CourseCard from '../components/CourseCard'; 
 import bg from '../assests/img/bg.jpg';
+import Chatbot from "../components/Chatbot";
 
 const Home = () => {
   const [courses, setCourses] = useState([]);
@@ -84,6 +85,8 @@ const Home = () => {
             </Link>
           ))}
         </div>
+
+        <Chatbot/>
       </div>
     </div>
   );

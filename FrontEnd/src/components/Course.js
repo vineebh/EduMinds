@@ -6,14 +6,13 @@ import '.././index.css';
 
 
 const Course = ({ courseData }) => {
-  console.log(courseData)
-  const { title, description, imageUrl, professorName, duration } = courseData;
+  const {c_id, title, description, imageUrl, professorName, duration } = courseData;
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const navigate = useNavigate();
 
   const enrollHandler = () => {
     if (loginStatus === true) {
-      navigate("/Assessment")
+      navigate("/Assessment", { state: { courseTitle: title, C_ID: c_id } }); // Pass course title as state
     } else {
       navigate('/auth');
     }
@@ -56,7 +55,7 @@ const Course = ({ courseData }) => {
           className="py-2 px-4 sm:py-2.5 sm:px-6 md:py-3 md:px-8 lg:py-3 lg:px-8 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
           onClick={enrollHandler}
         >
-          Enroll
+          Asses your level
         </button>
       </div>
     </div>
