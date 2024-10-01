@@ -27,13 +27,20 @@ const Article = ({courses}) => {
     <div className="text-white p-6">
       <h1 className="text-3xl font-bold mb-4">Articles</h1>
       <div className="space-y-6">
+
+        {/* {courses.map((course, index) => (
+          <div key={index} className="border border-gray-600 rounded-lg p-4">
+            <h2 className="text-2xl font-semibold">{course.articles.title}</h2>
+            <p className="text-gray-400">{course.articles.content.introduction}</p>
+
         {articlesData.map((course, index) => (
           <div key={index} className="border border-gray-600 rounded-lg p-4">
             <h2 className="text-2xl font-semibold">{course.title}</h2>
             <p className="text-gray-400">{course.description}</p>
+
             <a href="#" className="text-yellow-400 hover:underline">Read more</a>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );

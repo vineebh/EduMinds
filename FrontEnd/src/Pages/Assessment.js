@@ -8,6 +8,10 @@ const Assessment = () => {
   const [skills, setSkills] = useState({}); // Updated to store fetched skills
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+
+  const { title } = location.state || {}; 
+ 
   const location = useLocation();
   const userInfo = useSelector((state)=>state.auth.userInfo)
   const { courseTitle, C_ID } = location.state || {};
@@ -42,6 +46,7 @@ const Assessment = () => {
       //const dateTime = new Date().toISOString();
 
       navigate("/dashboard", { state: { C_ID, level, courseTitle } });
+
     }
   };
 

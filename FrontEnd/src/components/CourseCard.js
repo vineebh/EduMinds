@@ -12,7 +12,7 @@ const CourseCard = ({ title, description, imageUrl, link }) => {
         className="w-full h-2/5 object-cover rounded-t-lg"
         style={{ maxHeight: '50%' }}
       />
-      
+
       {/* Content Section */}
       <div className="p-5 h-3/5 flex flex-col justify-between bg-slate-900 text-white">
         {/* Title */}

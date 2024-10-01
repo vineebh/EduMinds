@@ -4,6 +4,12 @@ import axios from "axios"; // Import axios
 
 const Videos = ({courses}) => {
 
+  
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate(); // Use useNavigate for navigation
+
+
   // Navigate to the VideoPlayerPage with the video URL in the state
   const handleWatchClick = (videoUrl, topic_name) => {
     navigate("/video", { state: { videoUrl, topic_name } });
