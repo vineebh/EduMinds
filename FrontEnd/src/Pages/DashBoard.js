@@ -12,10 +12,11 @@ const DashBoard = () => {
   const location = useLocation();
   const { C_ID, level, courseTitle } = location.state || {};
 
-
   useEffect(() => {
     // Fetch courses from the API
     const fetchCourses = async () => {
+      if (!C_ID) return; // Prevent API call if C_ID is not defined
+
       try {
         const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
         setCourses(response.data); // Update state with the fetched courses
@@ -25,19 +26,20 @@ const DashBoard = () => {
       }
     };
 
+
   
     // Call the fetch function if C_ID is defined
     if (C_ID) {
       fetchCourses();
     }
+
   }, [C_ID]); // Dependency array includes C_ID to fetch courses when it changes
-  
 
   return (
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
       <section className="container mx-auto flex flex-col lg:flex-row gap-8 items-start mt-10 px-4">
 
-      <span className="text-white font-bold text-lg mb-4 text-center">{courseTitle}</span>
+        <span className="text-white font-bold text-lg mb-4 text-center">{courseTitle}</span>
 
         {/* Left section - Video/Article */}
         <article className="flex-1 p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
@@ -73,22 +75,7 @@ const DashBoard = () => {
 
           {/* Conditional Rendering based on the selected view */}
           <div className="text-center text-white">
-            {view === "video" ? <Videos courses={courses}/> : <Article courses={courses}/>}
-          </div>
-
-          {/* Display fetched courses */}
-          <div className="mt-6">
-            {error ? (
-              <p className="text-red-500">{error}</p>
-            ) : (
-              <ul className="text-white">
-                {courses.map((course) => (
-                  <li key={course.id} className="mb-2">
-                    {course.title}
-                  </li>
-                ))}
-              </ul>
-            )}
+            {view === "video" ? <Videos courses={courses}/> : <Article courses={courses} />}
           </div>
 
           {/* Display fetched courses */}
@@ -109,9 +96,7 @@ const DashBoard = () => {
 
         {/* Right section - Progress Bar */}
         <aside className="w-full lg:w-1/4 p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
-
-          <ProgressBar Level={level}/>
-
+          <ProgressBar Level={level} />
         </aside>
 
       </section>

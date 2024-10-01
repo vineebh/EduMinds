@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createUserEmailAndPass, signInUserEmailAndPass, signInWithGoogle } from "../../firebase/auth";
-import { setIdToken, setIsLogin, setLoginStatus, setUserInfo } from "../../store/authSlice";
+import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Auth = () => {
   const isLogin = useSelector((state) => state.auth.islogin);
@@ -23,43 +26,31 @@ const Auth = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAuthData({ ...authData, [name]: value });
-
-    if (name === "name" && !isLogin && value.length < 3) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        name: "Name must be at least 3 characters long",
-      }));
-    } else {
-      setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
-    }
-
-    if (name === "password" && value.length < 8) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        password: "Password must be at least 8 characters long",
-      }));
-    } else {
-      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password, name } = authData;
 
+    let formValid = true;
+    let newErrors = { name: "", email: "", password: "", firebase: "" };
+
+    // Form validation before submission
     if (!isLogin && name.length < 3) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        name: "Name must be at least 3 characters long",
-      }));
-      return;
+      newErrors.name = "Name must be at least 3 characters long";
+      formValid = false;
     }
 
     if (password.length < 8) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        password: "Password must be at least 8 characters long",
-      }));
+      newErrors.password = "Password must be at least 8 characters long";
+      formValid = false;
+    }
+
+    if (!formValid) {
+      setErrors(newErrors);
+      // Display toast error messages for invalid fields
+      if (newErrors.name) toast.error(newErrors.name);
+      if (newErrors.password) toast.error(newErrors.password);
       return;
     }
 
@@ -71,20 +62,22 @@ const Auth = () => {
         dispatch(setIdToken(token));
         dispatch(setLoginStatus(true));
         navigate('/courses');
+        toast.success('Login Successfully');
       } else {
         const response = await createUserEmailAndPass(email, password);
         const token = response.user.accessToken;
         localStorage.setItem("idToken", token);
         dispatch(setIdToken(token));
         dispatch(setIsLogin(true));
-        navigate('/courses');
+        navigate('/auth');
+        toast.success('User created Successfully');
       }
     } catch (error) {
-      console.error("Authentication error:", error.message);
       setErrors((prevErrors) => ({
         ...prevErrors,
         firebase: error.message,
       }));
+      toast.error(error.message);
     }
   };
 
@@ -103,10 +96,16 @@ const Auth = () => {
       dispatch(setLoginStatus(true));
       dispatch(setIsLogin(true));
       navigate('/courses');
+      toast.success('Login Successfully');
     } catch (error) {
-      console.error("Google Sign-In Error:", error.message);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        firebase: error.message,
+      }));
+      toast.error(error.message);
     }
   };
+
   return (
     <div className="bg-gray-900 min-h-screen flex items-center justify-center mt-10">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -128,7 +127,7 @@ const Auth = () => {
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-700 rounded-md bg-gray-900 text-white"
               />
-              {errors.name && <p className="text-red-500">{errors.name}</p>}
+              
             </div>
           )}
           <div className="mb-4">
@@ -158,7 +157,7 @@ const Auth = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-700 rounded-md bg-gray-900 text-white"
             />
-            {errors.password && <p className="text-red-500">{errors.password}</p>}
+            
           </div>
           <button
             type="submit"
