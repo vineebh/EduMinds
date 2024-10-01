@@ -26,7 +26,13 @@ const DashBoard = () => {
       }
     };
 
-    fetchCourses();
+
+  
+    // Call the fetch function if C_ID is defined
+    if (C_ID) {
+      fetchCourses();
+    }
+
   }, [C_ID]); // Dependency array includes C_ID to fetch courses when it changes
 
   return (

@@ -46,7 +46,6 @@ const Assessment = () => {
       //const dateTime = new Date().toISOString();
 
 
-
       navigate("/dashboard", { state: { C_ID, level, courseTitle } });
 
     }

@@ -149,6 +149,7 @@ app.post('/userdata', async (req, res) => {
 
 app.post('/userdata', async (req, res) => {
 
+
     try {
         const { email_id, course_title, level } = req.body;
         await db.query('INSERT INTO users (email_id, course_title, level, datentime) VALUES (?, ?, ?, NOW())', [email_id, course_title, level]);
