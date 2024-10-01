@@ -106,7 +106,9 @@ const DashBoard = () => {
 
         {/* Right section - Progress Bar */}
         <aside className="w-full lg:w-1/4 p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
+
           <ProgressBar Level={level} />
+          
         </aside>
       </section>
     </main>

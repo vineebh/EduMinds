@@ -3,12 +3,6 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate for naviga
 import axios from "axios"; // Import axios
 
 const Videos = ({courses}) => {
-  const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Use useNavigate for navigation
-
-  if (error) {
-    return <div className="text-red-500 text-center">{error}</div>;
-  }
 
   // Navigate to the VideoPlayerPage with the video URL in the state
   const handleWatchClick = (videoUrl, topic_name) => {
