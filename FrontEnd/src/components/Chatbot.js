@@ -59,6 +59,7 @@ const Chatbot = () => {
 
 
     <div className="flex flex-col h-full w-full max-h-screen max-w-screen mx-auto p-6 bg-white shadow-lg rounded-lg">
+
       <h1 className="text-4xl font-bold text-center text-blue-700 mb-6">
         Edubot
       </h1>
@@ -101,8 +102,7 @@ const Chatbot = () => {
           />
           <button
             className={`ml-2 px-4 py-2 rounded-lg bg-blue-600 text-white shadow-md hover:bg-blue-700 focus:outline-none transition duration-200 ${
-              isLoading ? "opacity-70 cursor-not-allowed" : ""
-=======
+              isLoading ? "opacity-70 cursor-not-allowed" : ""}
 
       {/* Chat container with height set to fill available space */}
       <div className="flex-grow overflow-y-auto rounded-lg bg-gray-50 p-4 shadow-inner">
@@ -121,7 +121,6 @@ const Chatbot = () => {
             {isLoading ? "Sending..." : "Send"}
           </button>
         </div>
-
 
       {/* Input and buttons section */}
       <div className="flex mt-6">

@@ -77,21 +77,6 @@ const DashBoard = () => {
           <div className="text-center text-white">
             {view === "video" ? <Videos courses={courses}/> : <Article courses={courses} />}
           </div>
-
-          {/* Display fetched courses */}
-          <div className="mt-6">
-            {error ? (
-              <p className="text-red-500">{error}</p>
-            ) : (
-              <ul className="text-white">
-                {courses.map((course) => (
-                  <li key={course.id} className="mb-2">
-                    {course.title}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
         </article>
 
         {/* Right section - Progress Bar */}

@@ -21,6 +21,7 @@ const articlesData = [
 
 const Article = ({courses}) => {
 
+  console.log(courses[4].articles)
 
   return (
     <div className="text-white p-6">
