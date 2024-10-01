@@ -81,7 +81,31 @@ app.get('/course/:c_id', async (req, res) => {
     }
 });
 
-    //everything above this is dynamic api [sachin jo karna hai niche karna]
+
+app.post('/userdata', async (req, res) => {
+    
+    // Destructure request body
+    const { email_id, course_title, Level } = req.body;
+
+    // Validate input data
+    if (!email_id || !course_title || !Level) {
+        return res.status(400).json({ error: 'All fields are required: email_id, course_title, level' });
+    }
+
+    try {
+        // Insert data into the database
+        const query = 'INSERT INTO users (email_id, course_title, level, datentime) VALUES (?, ?, ?, NOW())';
+        const result = await db.query(query, [email_id, course_title, Level]);
+    } catch (error) {
+        console.error("Error in /userdata:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+    //everything above this is dynamic api
+      
+    
 app.get('/assessment/questions/:level', async (req, res) => {
     const level = req.params.level;
     const limit = 5;
@@ -133,19 +157,6 @@ app.post('/assessment/submit', async (req, res) => {
 });
 
 
-app.post('/userdata', async (req, res) => {
-
-    try {
-        const { email_id, course_title, level } = req.body;
-        await db.query('INSERT INTO users (email_id, course_title, level, datentime) VALUES (?, ?, ?, NOW())', [email_id, course_title, level]);
-        res.status(200).json({ msg: 'Data Send' })
-    }
-    catch (error) {
-        res.status(500).json({ error: 'Data Not Send' })
-        console.log(error)
-    }
-})
-
 app.get('/checkuser', async (req, res) => {
     try {
         const { email } = req.body; // Ensure email is passed in the body
@@ -175,6 +186,10 @@ app.get('/checkuser', async (req, res) => {
     }
 });
 
+
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");
 });
+
+
+

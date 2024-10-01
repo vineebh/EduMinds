@@ -86,7 +86,7 @@ const Home = () => {
           ))}
         </div>
 
-        <Chatbot/>
+
       </div>
     </div>
   );

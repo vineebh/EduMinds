@@ -20,15 +20,17 @@ const articlesData = [
 ];
 
 const Article = ({courses}) => {
+
   console.log(courses[4].articles)
+
   return (
     <div className="text-white p-6">
       <h1 className="text-3xl font-bold mb-4">Articles</h1>
       <div className="space-y-6">
-        {articlesData.map((article, index) => (
+        {articlesData.map((course, index) => (
           <div key={index} className="border border-gray-600 rounded-lg p-4">
-            <h2 className="text-2xl font-semibold">{article.title}</h2>
-            <p className="text-gray-400">{article.description}</p>
+            <h2 className="text-2xl font-semibold">{course.title}</h2>
+            <p className="text-gray-400">{course.description}</p>
             <a href="#" className="text-yellow-400 hover:underline">Read more</a>
           </div>
         ))}

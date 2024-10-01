@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Exam = () => {
     const [questions, setQuestions] = useState([]);
@@ -7,12 +8,17 @@ const Exam = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [isLastQuestion, setIsLastQuestion] = useState(false);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { C_ID, level, courseTitle } = location.state || {};
+
+    const Level = (level=="Intermediate"? 1 : 2)
 
     useEffect(() => {
         const fetchQuestions = async () => {
             setLoading(true);
             try {
-                const response = await fetch('http://localhost:1000/assessment/questions/1'); // Adjust the URL to your backend
+                const response = await fetch(`http://localhost:1000/assessment/questions/${Level}`); // Adjust the URL to your backend
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
                 setQuestions(data);
@@ -65,6 +71,7 @@ const Exam = () => {
             const resultData = await response.json();
             setResult(`You answered ${resultData.correct} out of ${questions.length} questions correctly!`);
             if(resultData.correct>=3){
+              navigate("/dashboard", { state: { C_ID, level, courseTitle } });
                 console.log("Pass")
             }
             else{
