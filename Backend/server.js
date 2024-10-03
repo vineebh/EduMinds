@@ -224,7 +224,6 @@ app.get('/course/:c_id', async (req, res) => {
 });
 
 
-<<<<<<< HEAD
 app.get('/checkuser', async (req, res) => {
     try {
         const { email } = req.query; // Extract email from the query string
@@ -293,8 +292,6 @@ app.post('/userdata', async (req, res) => {
 });
 
 
-=======
->>>>>>> 8e30a245798d9fd71b9517e93a0021006551c83a
     //everything above this is dynamic api
 
 
