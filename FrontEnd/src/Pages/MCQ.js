@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -6,7 +7,6 @@ const Exam = () => {
     const [answers, setAnswers] = useState({});
     const [result, setResult] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [isLastQuestion, setIsLastQuestion] = useState(false);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
@@ -18,11 +18,13 @@ const Exam = () => {
         const fetchQuestions = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:1000/assessment/questions/${Level}`);
-                if (!response.ok) throw new Error('Network response was not ok');
-                const data = await response.json();
-                setQuestions(data);
-                console.log('Fetched questions:', data);
+                const response = await axios.post("http://localhost:1000/assessment/questions", {
+                    level: Level,
+                    c_id: C_ID,
+                    limit: 5
+                });
+                setQuestions(response.data);
+                console.log('Fetched questions:', response.data);
             } catch (error) {
                 console.error('Failed to fetch questions:', error);
             } finally {
@@ -30,7 +32,7 @@ const Exam = () => {
             }
         };
         fetchQuestions();
-    }, []);
+    }, [C_ID, Level]);
 
     const handleChange = (questionId, selectedOption) => {
 
@@ -46,36 +48,47 @@ const Exam = () => {
     };
 
     const handleNext = () => {
+        // Get the current question's ID
+        const currentQuestionId = questions[currentQuestionIndex].id;
+    
+        // Check if an answer has been selected for the current question
+        if (!answers[currentQuestionId]) {
+            alert("Please select an answer before proceeding to the next question.");
+            return; // Prevent moving to the next question if no option is selected
+        }
+    
+        // Move to the next question
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
-        } else {
-            setIsLastQuestion(true);
         }
     };
+    
 
     const handleSubmit = async () => {
         const answerArray = Object.entries(answers).map(([questionId, selectedOption]) => ({
-            questionId,
+            questionId: parseInt(questionId, 10), // Ensure the ID is a number
             selectedOption,
         }));
 
         console.log('Submitting answers:', answerArray);
 
         try {
-            const response = await fetch('http://localhost:1000/assessment/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ answers: answerArray }),
+            const response = await axios.post('http://localhost:1000/assessment/submit', {
+                c_id: C_ID,
+                answers: answerArray,
             });
 
-            if (!response.ok) throw new Error('Submission failed');
+            setResult(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
 
-            const resultData = await response.json();
-            setResult(`You answered ${resultData.correct} out of ${questions.length} questions correctly!`);
-            if (resultData.correct >= 3) {
+            if (response.data.correct >= 3) {
                 navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "New" } });
                 console.log("Pass");
             } else {
+                if (level === "Advanced") {
+                    navigate("/dashboard", { state: { C_ID, level: "Intermediate", courseTitle, State: "New" } });
+                } else {
+                    navigate("/dashboard", { state: { C_ID, level: "Beginner", courseTitle, State: "New" } });
+                }
                 console.log("Fail");
             }
         } catch (error) {
@@ -88,17 +101,22 @@ const Exam = () => {
         return <div className="text-white text-center">Loading questions...</div>;
     }
 
+    const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
     return (
-        <div className='bg-gray-900 min-h-screen py-12 sm:py-16 mt-16 px-4 sm:px-10'>
-            <div className="bg-gray-800 p-8 rounded-lg shadow-xl">
-                <h1 className="text-3xl text-white font-bold text-center mb-6">Assessment</h1>
+        <div className='bg-gray-900 min-h-screen py-12 sm:py-16 mt-10 pt-16 px-4 sm:px-10'>
+            <div className="bg-gray-800 p-10 rounded-lg shadow-2xl max-w-4xl mx-auto">
+                <h1 className="text-4xl text-white font-extrabold text-center mb-8">Assessment</h1>
 
                 {questions.length > 0 && (
-                    <div className="mb-6">
-                        <p className="text-2xl text-white font-medium">{questions[currentQuestionIndex].questions}</p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                    <div className="mb-10">
+                        <p className="text-2xl text-white font-semibold leading-relaxed mb-4">{questions[currentQuestionIndex].questions}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {['option_1', 'option_2', 'option_3', 'option_4'].map((optionKey, index) => (
-                                <label key={index} className="flex items-center mt-2 cursor-pointer">
+                                <label
+                                    key={index}
+                                    className="flex items-center p-4 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-all duration-200"
+                                >
                                     <input
                                         type="radio"
                                         name={`question-${questions[currentQuestionIndex].id}`}
@@ -107,36 +125,45 @@ const Exam = () => {
                                         checked={answers[questions[currentQuestionIndex].id] === questions[currentQuestionIndex][optionKey]}
                                         onChange={() => handleChange(questions[currentQuestionIndex].id, questions[currentQuestionIndex][optionKey])}
                                     />
-                                    <span className={`flex items-center justify-center h-5 w-5 rounded-full border-2 border-gray-600 transition-all duration-300 ease-in-out mr-2 peer-checked:bg-blue-500 peer-checked:border-transparent`}>
+                                    <span className={`flex items-center justify-center h-6 w-6 rounded-full border-2 border-gray-500 transition-all duration-300 ease-in-out mr-4 peer-checked:bg-blue-500 peer-checked:border-transparent`}>
                                         {answers[questions[currentQuestionIndex].id] === questions[currentQuestionIndex][optionKey] && (
                                             <span className="rounded-full h-3 w-3 bg-white"></span>
                                         )}
                                     </span>
-                                    <span className="text-xl text-white font-medium">{questions[currentQuestionIndex][optionKey]}</span>
+                                    <span className="text-xl text-white">{questions[currentQuestionIndex][optionKey]}</span>
                                 </label>
                             ))}
                         </div>
                     </div>
                 )}
 
-                <div className="flex justify-between mt-6">
+                <div className="flex justify-between mt-10">
                     <button
                         onClick={handlePrev}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
                     >
                         Previous
                     </button>
 
-                    <button
-                        onClick={isLastQuestion ? handleSubmit : handleNext}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    >
-                        {isLastQuestion ? 'Submit' : 'Next'}
-                    </button>
+                    {isLastQuestion ? (
+                        <button
+                            onClick={handleSubmit}
+                            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
+                        >
+                            Submit
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleNext}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
+                        >
+                            Next
+                        </button>
+                    )}
                 </div>
 
                 {result && (
-                    <div className="mt-6 p-4 bg-green-100 text-green-700 text-xl rounded">
+                    <div className="mt-8 p-6 bg-green-600 text-white font-semibold text-lg rounded-lg shadow-md">
                         {result}
                     </div>
                 )}
