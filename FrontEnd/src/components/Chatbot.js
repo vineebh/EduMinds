@@ -18,20 +18,28 @@ const Chatbot = () => {
     setUserInput(e.target.value);
   };
 
-  // Send message to Gemini
+  // Send message to Gemini with chat history
   const sendMessage = async () => {
     if (userInput.trim() === "") return;
 
     setIsLoading(true);
+
+    // Prepare the chat context (combine user and bot messages)
+    const contextMessages = chatHistory
+      .map((msg) => (msg.type === "user" ? `You: ${msg.message}` : `Bot: ${msg.message}`))
+      .join("\n");
+
+    const prompt = `${contextMessages}\nYou: ${userInput}`;
+
     try {
       // Call Gemini API to get a response
-      const result = await model.generateContent(userInput);
+      const result = await model.generateContent(prompt);
       const response = await result.response;
       console.log(response);
-      // Add Gemini's response to the chat history
+
+      // Add both user input and Gemini's response to the chat history
       setChatHistory((prevChat) => [
         ...prevChat,
-        
         { type: "user", message: userInput },
         { type: "bot", message: response.text() },
       ]);
@@ -53,7 +61,6 @@ const Chatbot = () => {
       <h1 className="text-4xl font-bold text-center text-blue-700 mb-6">Edu Bot</h1>
 
       <div className="chat-container h-80 overflow-y-auto rounded-lg bg-gray-50 p-4 shadow-inner">
-
         {chatHistory.map((message, index) => (
           <div
             key={index}
@@ -72,7 +79,6 @@ const Chatbot = () => {
           </div>
         ))}
       </div>
-
 
       {/* Input and buttons section */}
       <div className="flex mt-6">

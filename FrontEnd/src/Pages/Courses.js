@@ -9,7 +9,6 @@ const Courses = () => {
   const [error, setError] = useState(null);
   const userInfo = useSelector((state) => state.auth.userInfo);
 
-  
   // Fetch enroll data, with userInfo dependency
   useEffect(() => {
     // Fetch course data from backend
@@ -24,27 +23,30 @@ const Courses = () => {
     };
     fetchCourses();
 
+  }, []);
+
+  useEffect(() => {
     const checkEnroll = async () => {
       try {
         const res = await axios.get(
           `http://localhost:1000/checkuser?email=${userInfo.userID}`
         );
-        console.log(res.data)
+        console.log(res);
         // Handle different response statuses
         if (res.status === 200 && res.data.data) {
           // Map the enroll data if the request is successful
           setEnroll(
             res.data.data.map((course) => ({
               course_title: course.course_title,
-              level: course.level
+              level: course.level,
             }))
           );
         } else if (res.status === 404) {
           // Handle when no email or courses are found
-          if (res.data.msg === 'Email not found') {
-            setError('Email not found. Please check your email and try again.');
-          } else if (res.data.msg === 'No courses found for this email') {
-            setError('No courses found for this email.');
+          if (res.data.msg === "Email not found") {
+            setError("Email not found. Please check your email and try again.");
+          } else if (res.data.msg === "No courses found for this email") {
+            setError("No courses found for this email.");
           }
         }
       } catch (error) {
@@ -53,13 +55,9 @@ const Courses = () => {
         setError("Failed to fetch enrollment data. Please try again later.");
       }
     };
-  
-    if (userInfo.userID) {
-      checkEnroll();
-    }
-  }, [userInfo?.userID]);
-  
-  
+    checkEnroll();
+  }, [userInfo.userID]);
+
   if (error) {
     return <div className="text-red-500 text-center">{error}</div>;
   }
