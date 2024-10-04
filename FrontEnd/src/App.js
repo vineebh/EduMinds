@@ -10,6 +10,7 @@ import Courses from "./Pages/Courses";
 import DashBoard from "./Pages/DashBoard";
 import Assessment from "./Pages/Assessment";
 import Exam from "./Pages/MCQ"
+import ArticleView from "./components/ArticleView";
 
 
 
@@ -33,6 +34,7 @@ function App() {
           <Route path="/mcq" element={<Exam/>} />
           {/* New route for the video player page */}
           <Route path="/video" element={<VideoPlayerPage />} />
+          <Route path="/articleView" element={<ArticleView/>}/> 
         </Routes>
       </main>
     </div>

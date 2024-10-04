@@ -2,10 +2,10 @@ import React from 'react';
 
 const About = () => {
   return (
-    <div className="bg-gray-900 min-h-screen py-12 sm:py-16 mt-8"> {/* Adjusted vertical padding for responsiveness */}
+    <div className="bg-gray-900 min-h-screen flex items-center justify-center"> {/* Center content vertically and horizontally */}
       <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
         {/* Main Heading */}
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-6 text-center">
+        <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6 text-center">
           About Us
         </h1>
 

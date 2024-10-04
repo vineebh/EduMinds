@@ -1,55 +1,67 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React from 'react';
+import Markdown from 'react-markdown';
+import { useLocation } from 'react-router';
 
 const ArticleView = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-
-  // Initialize articleData with fallback values
-  const [articleData, setArticleData] = useState({
-    title: "No Title Available",
-    content: { full: "No content available." },
-  });
-
-  useEffect(() => {
-    if (location.state?.title && location.state?.content?.full) {
-      // Set article data from location state if available
-      setArticleData(location.state);
-    } else {
-      // Fallback to localStorage if location state is not available
-      const storedArticle = localStorage.getItem("currentArticle");
-      if (storedArticle) {
-        try {
-          const parsedArticle = JSON.parse(storedArticle);
-          if (parsedArticle?.title && parsedArticle?.content?.full) {
-            setArticleData(parsedArticle);
-          } else {
-            throw new Error("Incomplete article data in localStorage");
-          }
-        } catch (error) {
-          console.error("Failed to parse stored article:", error);
-        }
-      }
-    }
-  }, [location.state]);
+  const { articleData } = location.state;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <div className="max-w-4xl mx-auto bg-gray-800 rounded-lg p-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="bg-yellow-400 text-black px-4 py-2 rounded mb-6 hover:bg-yellow-300"
-          aria-label="Go Back"
-        >
-          Back
-        </button>
+    <div className="min-h-screen bg-gray-900 py-10 px-6">
+      <article className="w-full bg-gray-800 text-white rounded-lg shadow-2xl overflow-hidden">
+        {/* Header Section */}
+        <header className="p-8 bg-gray-700 border-b border-gray-600 shadow-md hover:shadow-lg transition-shadow duration-300">
+          <h1 className="text-5xl font-bold text-yellow-400 mb-2 mt-3">
+            {articleData.title || 'Untitled Article'}
+          </h1>
+        </header>
 
-        <h1 className="text-4xl font-bold mb-4">{articleData.title || "No Title Available"}</h1>
+        {/* Content Section */}
+        <section className="p-8 space-y-6">
+          {/* Introduction */}
+          {articleData.content.introduction ? (
+            <div className="text-lg text-gray-300 leading-relaxed">
+              <h1 className="text-3xl font-semibold text-yellow-300 mb-4">
+                Introduction
+              </h1>
+              <p>{articleData.content.introduction}</p>
+            </div>
+          ) : (
+            <div className="text-gray-400 italic">
+              No introduction available.
+            </div>
+          )}
 
-        <div className="text-lg leading-relaxed space-y-4">
-          <p>{articleData?.content?.full || "No content available."}</p>
-        </div>
-      </div>
+          {/* Main Content rendered with Markdown */}
+          {articleData.content.main_content ? (
+            <div className="prose prose-invert text-gray-300 leading-relaxed">
+              <Markdown>{articleData.content.main_content}</Markdown>
+            </div>
+          ) : (
+            <div className="text-gray-400 italic">
+              No main content available.
+            </div>
+          )}
+        </section>
+
+        {/* Conclusion Section */}
+        <section className="p-8 bg-gray-700 border-t border-gray-600">
+          {articleData.content.conclusion ? (
+            <>
+              <h2 className="text-3xl font-semibold text-yellow-300 mb-4">
+                Conclusion
+              </h2>
+              <p className="text-lg text-gray-300 leading-relaxed">
+                {articleData.content.conclusion}
+              </p>
+            </>
+          ) : (
+            <div className="text-gray-400 italic">
+              No conclusion available.
+            </div>
+          )}
+        </section>
+      </article>
     </div>
   );
 };

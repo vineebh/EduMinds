@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createUserEmailAndPass, signInUserEmailAndPass, signInWithGoogle } from "../../firebase/auth";
+import {
+  createUserEmailAndPass,
+  signInUserEmailAndPass,
+  signInWithGoogle,
+} from "../../firebase/auth";
 import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
 
 const Auth = () => {
   const isLogin = useSelector((state) => state.auth.islogin);
@@ -24,6 +30,7 @@ const Auth = () => {
     const { name, value } = e.target;
     setAuthData({ ...authData, [name]: value });
 
+    // Validate name for signup
     if (name === "name" && !isLogin && value.length < 3) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -33,6 +40,7 @@ const Auth = () => {
       setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
     }
 
+    // Validate password
     if (name === "password" && value.length < 8) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -47,6 +55,7 @@ const Auth = () => {
     e.preventDefault();
     const { email, password, name } = authData;
 
+    // Check for errors before proceeding
     if (!isLogin && name.length < 3) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -68,18 +77,20 @@ const Auth = () => {
         const response = await signInUserEmailAndPass(email, password);
         const token = response.user.accessToken;
         localStorage.setItem("idToken", token);
-        localStorage.setItem("userID",response.user.email)  //store email id in local storage
+        localStorage.setItem("userID", response.user.email); // store email id in local storage
         dispatch(setIdToken(token));
         dispatch(setLoginStatus(true));
         navigate('/courses');
+        toast.success('Login Successfully'); // Toast notification for successful login
       } else {
         const response = await createUserEmailAndPass(email, password);
         const token = response.user.accessToken;
         localStorage.setItem("idToken", token);
-        localStorage.setItem("userID",response.user.email)  //store email id in local storage
+        localStorage.setItem("userID", response.user.email); // store email id in local storage
         dispatch(setIdToken(token));
         dispatch(setIsLogin(true));
         navigate('/courses');
+        toast.success('Signup Successfully'); // Toast notification for successful signup
       }
     } catch (error) {
       console.error("Authentication error:", error.message);
@@ -87,6 +98,7 @@ const Auth = () => {
         ...prevErrors,
         firebase: error.message,
       }));
+      toast.error(error.message); // Toast notification for error
     }
   };
 
@@ -100,15 +112,18 @@ const Auth = () => {
       const result = await signInWithGoogle();
       const token = result.user.accessToken;
       localStorage.setItem("idToken", token);
-      localStorage.setItem("userID",result.user.email)  //store email id in local storage
+      localStorage.setItem("userID", result.user.email); // store email id in local storage
       dispatch(setIdToken(token));
       dispatch(setLoginStatus(true));
       dispatch(setIsLogin(true));
+      toast.success('Login Successfully'); // Toast notification for successful Google login
       navigate('/courses');
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);
+      toast.error("Google Sign-In Failed: " + error.message); // Toast notification for Google login error
     }
   };
+
   return (
     <div className="bg-gray-900 min-h-screen flex items-center justify-center mt-10">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -146,6 +161,7 @@ const Auth = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-700 rounded-md bg-gray-900 text-white"
             />
+            {errors.email && <p className="text-red-500">{errors.email}</p>}
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-gray-300 font-semibold mb-2">
@@ -182,6 +198,7 @@ const Auth = () => {
           >
             {isLogin ? "Don't Have an Account? Signup" : "Already Have an Account? Login"}
           </button>
+          {errors.firebase && <p className="text-red-500 mt-2">{errors.firebase}</p>} {/* Display Firebase error */}
         </form>
       </div>
     </div>

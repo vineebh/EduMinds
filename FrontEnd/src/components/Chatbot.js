@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
 
-const Chatbot = () => {
+const Chatbot = ({ toggleChatbot }) => {
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +26,9 @@ const Chatbot = () => {
 
     // Prepare the chat context (combine user and bot messages)
     const contextMessages = chatHistory
-      .map((msg) => (msg.type === "user" ? `You: ${msg.message}` : `Bot: ${msg.message}`))
+      .map((msg) =>
+        msg.type === "user" ? `You: ${msg.message}` : `Bot: ${msg.message}`
+      )
       .join("\n");
 
     const prompt = `${contextMessages}\nYou: ${userInput}`;
@@ -57,17 +59,27 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-4xl font-bold text-center text-blue-700 mb-6">Edu Bot</h1>
+    <div className="w-full h-full mx-auto p-3 bg-white rounded-lg border border-gray-300 shadow-md">
+      <div className="flex  items-center justify-between mb-2">
+        <h1 className="text-4xl font-bold text-center text-blue-700 ">
+          Edu Bot
+        </h1>
+        <button
+          onClick={toggleChatbot}
+          className=" px-4  py-2 text-sm bg-red-500 text-white rounded-lg shadow-md hover:bg-cyan-600 transition duration-200"
+        >
+          Close
+        </button>
+      </div>
 
-      <div className="chat-container h-80 overflow-y-auto rounded-lg bg-gray-50 p-4 shadow-inner">
+      <div className="chat-container h-80 overflow-y-auto rounded-lg bg-gray-100 p-4 shadow-inner">
         {chatHistory.map((message, index) => (
           <div
             key={index}
-            className={`flex items-start mb-4 p-3 rounded-lg shadow-sm ${
+            className={`flex items-start mb-4 p-3 rounded-lg transition-shadow duration-200 ${
               message.type === "user"
-                ? "bg-gradient-to-r from-blue-100 to-blue-200 text-gray-900"
-                : "bg-gradient-to-r from-gray-100 to-gray-200 text-blue-900"
+                ? "bg-gradient-to-r from-blue-100 to-blue-200 text-gray-900 shadow-sm"
+                : "bg-gradient-to-r from-gray-200 to-gray-300 text-blue-900 shadow-sm"
             }`}
           >
             {message.type === "user" && (
@@ -100,7 +112,7 @@ const Chatbot = () => {
         </button>
       </div>
       <button
-        className="mt-4 px-4 py-2 w-full rounded-lg bg-gray-500 text-white shadow-md hover:bg-gray-600 focus:outline-none transition duration-200"
+        className="mt-4 px-4 py-2 w-full rounded-lg bg-gray-600 text-white shadow-md hover:bg-gray-700 focus:outline-none transition duration-200"
         onClick={clearChat}
       >
         Clear Chat
