@@ -39,7 +39,7 @@ function App() {
             <Route path="/articleView" element={<ArticleView />} />
           )}
 
-          {/* New route for the video player page */}
+
         </Routes>
       </main>
     </div>

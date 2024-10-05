@@ -51,7 +51,9 @@ const Exam = () => {
         const currentQuestionId = questions[currentQuestionIndex].id;
     
         if (!answers[currentQuestionId]) {
+
             toast.error("Please select an answer before proceeding to the next question.")
+
             return;
         }
     
