@@ -6,7 +6,7 @@ import { setIdToken, setLoginStatus, setIsLogin } from "../store/authSlice";
 import { IoMdClose } from "react-icons/io";
 
 const Header = () => {
-  const loginStatus = useSelector((state) => state.auth.islogin);
+  const loginStatus = useSelector((state) => state.auth.loginStatus);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -154,7 +154,7 @@ const Header = () => {
           >
             Contact
           </Link>
-          {loginStatus ? (
+          { loginStatus? (
             <button
               onClick={logoutHandler}
                className="py-1 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"

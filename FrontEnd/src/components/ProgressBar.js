@@ -5,7 +5,7 @@ const ProgressBar = ({Level}) => {
   const progressPercentage = 55; // Example progress percentage
 
   return (
-    <div className="w-full max-w-xs bg-gray-800 rounded-lg shadow-lg flex flex-col p-6">
+    <div className=" lg:fixed w-full  max-w-[350px] bg-gray-800 border border-white  shadow-xl   rounded-lg shadow-lg flex flex-col p-6">
       <h3 className="text-2xl font-semibold text-white mb-2 text-center">Course Level</h3>
       <p className="text-yellow-400 font-bold text-lg mb-4 text-center">{Level}</p>
       

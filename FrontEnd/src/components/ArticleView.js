@@ -8,7 +8,7 @@ const ArticleView = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 py-10 px-6">
-      <article className="w-full bg-gray-800 text-white rounded-lg shadow-2xl overflow-hidden">
+      <article className=" max-w-5xl m-auto bg-gray-800 text-white rounded-lg shadow-2xl overflow-hidden">
         {/* Header Section */}
         <header className="p-8 bg-gray-700 border-b border-gray-600 shadow-md hover:shadow-lg transition-shadow duration-300">
           <h1 className="text-5xl font-bold text-yellow-400 mb-2 mt-3">

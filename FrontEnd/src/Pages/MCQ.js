@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Exam = () => {
     const [questions, setQuestions] = useState([]);
@@ -26,7 +28,7 @@ const Exam = () => {
                 setQuestions(response.data);
                 console.log('Fetched questions:', response.data);
             } catch (error) {
-                console.error('Failed to fetch questions:', error);
+                toast.error('Failed to fetch questions:', error)
             } finally {
                 setLoading(false);
             }
@@ -36,7 +38,7 @@ const Exam = () => {
 
     const handleChange = (questionId, selectedOption) => {
         setAnswers({ ...answers, [questionId]: selectedOption });
-        console.log('Current answers:', { ...answers, [questionId]: selectedOption });
+        
     };
 
     const handlePrev = () => {
@@ -49,7 +51,7 @@ const Exam = () => {
         const currentQuestionId = questions[currentQuestionIndex].id;
     
         if (!answers[currentQuestionId]) {
-            alert("Please select an answer before proceeding to the next question.");
+            toast.error("Please select an answer before proceeding to the next question.")
             return;
         }
     
@@ -76,17 +78,21 @@ const Exam = () => {
 
             if (response.data.correct >= 3) {
                 navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "New" } });
-                console.log("Pass");
+                // toast.success('You are Enrolled in', courseTitle)
+                
             } else {
                 if (level === "Advanced") {
                     navigate("/dashboard", { state: { C_ID, level: "Intermediate", courseTitle, State: "New" } });
+                    // toast.success('You are Enrolled in', courseTitle)
                 } else {
                     navigate("/dashboard", { state: { C_ID, level: "Beginner", courseTitle, State: "New" } });
+                    // toast.success('You are Enrolled in', courseTitle)
                 }
                 console.log("Fail");
             }
         } catch (error) {
             console.error('Error during submission:', error);
+            toast.error('Error during submission:', error)
             setResult('An error occurred while submitting your answers. Please try again.');
         }
     };
