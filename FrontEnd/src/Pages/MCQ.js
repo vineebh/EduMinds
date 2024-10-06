@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Exam = () => {
     const [questions, setQuestions] = useState([]);
@@ -51,7 +53,9 @@ const Exam = () => {
         const currentQuestionId = questions[currentQuestionIndex].id;
     
         if (!answers[currentQuestionId]) {
+
             toast.error("Please select an answer before proceeding to the next question.")
+
             return;
         }
     

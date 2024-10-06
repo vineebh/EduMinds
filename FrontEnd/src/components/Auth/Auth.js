@@ -7,8 +7,9 @@ import {
   signInWithGoogle,
 } from "../../firebase/auth";
 import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
+
 
 const Auth = () => {
   const [isLogin, setLogin] = useState(false);
@@ -80,8 +81,11 @@ const Auth = () => {
         localStorage.setItem("userID", response.user.email); // store email id in local storage
         dispatch(setIdToken(token));
         dispatch(setLoginStatus(true));
-        navigate("/courses");
+
+        navigate(window.history.back());
         toast.success("Login Successfully"); // Toast notification for successful login
+
+
       } else {
         const response = await createUserEmailAndPass(email, password);
         const token = response.user.accessToken;
@@ -89,8 +93,10 @@ const Auth = () => {
         localStorage.setItem("userID", response.user.email); // store email id in local storage
         dispatch(setIdToken(token));
         dispatch(setIsLogin(true));
-        navigate("/courses");
+
+        navigate(window.history.back());
         toast.success("Signup Successfully"); // Toast notification for successful signup
+
       }
     } catch (error) {
       console.error("Authentication error:", error.message);
@@ -121,9 +127,10 @@ const Auth = () => {
       localStorage.setItem("userID", result.user.email); // store email id in local storage
       dispatch(setIdToken(token));
       dispatch(setLoginStatus(true));
-      dispatch(setIsLogin(true));
+      dispatch(setIsLogin(true))
       toast.success("Login Successfully"); // Toast notification for successful Google login
-      navigate("/courses");
+      navigate(window.history.back());
+
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);
       toast.error("Google Sign-In Failed: " + error.message); // Toast notification for Google login error
@@ -217,10 +224,12 @@ const Auth = () => {
               ? "Don't Have an Account? Signup"
               : "Already Have an Account? Login"}
           </button>
+
           {errors.firebase && (
             <p className="text-red-500 mt-2">{errors.firebase}</p>
           )}{" "}
           {/* Display Firebase error */}
+
         </form>
       </div>
     </div>

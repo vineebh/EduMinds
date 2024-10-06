@@ -42,7 +42,6 @@ const Courses = () => {
             }))
           );
         }
-        console.log(res.data)
       } catch (error) {
         // Handle Axios error for 404
         if (error.response && error.response.status === 404) {
@@ -64,6 +63,8 @@ const Courses = () => {
       checkEnroll();
     }
   }, [userInfo?.userID]);
+  
+  
 
   
   if (error) {

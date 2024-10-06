@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 03, 2024 at 03:48 PM
+-- Generation Time: Oct 04, 2024 at 01:35 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -445,8 +445,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email_id`, `course_title`, `level`, `datentime`) VALUES
-(1, 'edumindsup20@gmail.com', 'Python', 'Intermediate', '2024-10-02 22:40:50'),
-(4, 'akkii77580@gg.co', 'Excel', 'Beginner', '2024-10-02 23:19:32');
+(4, 'akkii77580@gg.co', 'Excel', 'Beginner', '2024-10-02 23:19:32'),
+(10, 'edumindsup20@gmail.com', 'Excel', 'Advanced', '2024-10-03 20:47:16'),
+(11, 'edumindsup20@gmail.com', 'Data Analysis', 'Beginner', '2024-10-03 20:48:26');
 
 --
 -- Indexes for dumped tables
@@ -462,6 +463,12 @@ ALTER TABLE `courses`
 -- Indexes for table `data_analytics_course`
 --
 ALTER TABLE `data_analytics_course`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `data_analytics_qna`
+--
+ALTER TABLE `data_analytics_qna`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -514,7 +521,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // useNavigate added
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Videos from "../components/Videos";
 import Article from "../components/Article";
 import ProgressBar from "../components/ProgressBar";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,9 +17,25 @@ const DashBoard = () => {
   const [loading, setLoading] = useState(true);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const location = useLocation();
+  const navigate = useNavigate(); // useNavigate hook to programmatically navigate
   const { C_ID, level, courseTitle, State } = location.state || {};
-  console.log(location)
   const [Level, setLevel] = useState(0);
+
+  // Adjust browser history to prevent going back
+  useEffect(() => {
+    // Prevent back navigation
+    const handlePopState = (event) => {
+      event.preventDefault();
+      navigate("/courses");  // Redirect user to courses page when back button is pressed
+    };
+
+    window.history.pushState(null, null);  // Prevent user from going back
+    window.addEventListener("popstate", handlePopState);  // Listen to back navigation
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);  // Cleanup event listener
+    };
+  }, [navigate]); 
 
   useEffect(() => {
     const postUserData = async () => {
@@ -74,7 +92,8 @@ const DashBoard = () => {
     } else if (level === "Advanced") {
       setLevel(3);
     }
-  }, []);
+  }, [level]);
+
 
   const filteredData = courses.filter((data) => data.level === Level);
 
@@ -83,7 +102,7 @@ const DashBoard = () => {
       <section className="container mx-auto flex flex-col lg:flex-row gap-8 items-start mt-10 px-4">
         {/* Left section - Video/Article */}
 
-        <article className="relative m-auto shadow-2xl flex-1 border lg:border-none p-6 bg-gray-800 border-gray-600 rounded-lg transition-all duration-300 ease-in-out hover:shadow-2xl">
+        <article className="relative shadow-2xl flex-1 border lg:border-none p-6 bg-gray-800 border-gray-600 rounded-lg transition-all duration-300 ease-in-out hover:shadow-2xl">
           <h1 className="text-white font-bold text-3xl mb-6 text-center">
             {courseTitle}
           </h1>

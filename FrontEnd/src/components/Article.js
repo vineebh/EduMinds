@@ -11,7 +11,6 @@ const Article = ({ courses }) => {
   }
 
 
-
   return (
     <div className="text-white p-6">
       <h1 className="text-3xl font-bold mb-4">Articles</h1>
@@ -30,7 +29,7 @@ const Article = ({ courses }) => {
             <div key={index} className="border border-gray-600 rounded-lg p-4 bg-slate-800">
               <h2 className="text-2xl font-semibold text-yellow-300">{articleData.title}</h2>
               <p className="text-gray-400 mt-2">{articleData.content.introduction}</p>
-              <div className="mt-4">
+              <div className="mt-4 text-yellow-300">
               <button onClick={()=> {readMoreHandler(articleData)}}>Read more</button>
               </div>
             </div>

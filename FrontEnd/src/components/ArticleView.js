@@ -8,7 +8,9 @@ const ArticleView = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 py-10 px-6">
+
       <article className=" max-w-5xl m-auto bg-gray-800 text-white rounded-lg shadow-2xl overflow-hidden">
+
         {/* Header Section */}
         <header className="p-8 bg-gray-700 border-b border-gray-600 shadow-md hover:shadow-lg transition-shadow duration-300">
           <h1 className="text-5xl font-bold text-yellow-400 mb-2 mt-3">
@@ -60,6 +62,13 @@ const ArticleView = () => {
               No conclusion available.
             </div>
           )}
+          {/* Back Button */}
+        <button
+          onClick={() => window.history.back()}
+          className="mt-4 px-6 py-2 bg-yellow-400 text-black rounded-lg shadow-md hover:bg-gray-700 hover:text-white transition duration-200"
+        >
+          Back to Videos
+        </button>
         </section>
       </article>
     </div>
