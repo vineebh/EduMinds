@@ -83,7 +83,7 @@ const DashBoard = () => {
       <section className="container mx-auto flex flex-col lg:flex-row gap-8 items-start mt-10 px-4">
         {/* Left section - Video/Article */}
 
-        <article className="relative shadow-2xl flex-1 border lg:border-none p-6 bg-gray-800 border-gray-600 rounded-lg transition-all duration-300 ease-in-out hover:shadow-2xl">
+        <article className="relative m-auto shadow-2xl flex-1 border lg:border-none p-6 bg-gray-800 border-gray-600 rounded-lg transition-all duration-300 ease-in-out hover:shadow-2xl">
           <h1 className="text-white font-bold text-3xl mb-6 text-center">
             {courseTitle}
           </h1>

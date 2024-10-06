@@ -13,7 +13,7 @@ const Videos = ({ courses }) => {
       <h2 className="text-3xl font-bold mb-6 text-center">Video Lectures</h2>
 
       {/* Render the list of video lectures */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+      <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-1 gap-6">
         {courses.map((course, index) => (
           <div
             key={index}

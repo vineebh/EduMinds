@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 function App() {
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#1B2433]">
       <Header />
 
       <main className="flex-grow">

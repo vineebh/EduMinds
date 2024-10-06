@@ -47,7 +47,7 @@ const Assessment = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-gray-800 h-full flex justify-center items-center py-12 mt-10">
+    <div className="bg-[#1B2433] max-h-lvh flex justify-center items-center py-12 mt-10">
       <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
         <div className="bg-gray-800 p-10 rounded-lg shadow-2xl flex flex-col items-center">
           <h2 className="text-3xl font-extrabold text-white text-center mb-8 tracking-wide">
