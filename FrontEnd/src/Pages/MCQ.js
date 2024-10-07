@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 const Exam = () => {
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});

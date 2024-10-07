@@ -50,7 +50,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="bg-gray-900 fixed lg:pt-16 inset-0 flex items-center justify-center sm:py-16">
+    <div className="bg-gray-900 fixed inset-0 flex items-center justify-center sm:py-16 ">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-3xl w-full mt-20">
         {/* Contact Heading */}
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-6 text-center">
@@ -71,30 +71,26 @@ const Contact = () => {
               type="text"
               id="name"
               placeholder="Your Name"
-              value={contactData.name || ''}
+              value={contactData.name}
               onChange={handleChange}
               className="w-full p-3 border border-gray-700 rounded-md bg-gray-900 text-white"
             />
-            {errors.name && <p className="text-red-500 mt-1">{errors.name}</p>}
           </div>
 
           {/* Email Input */}
-          {!loginStatus && (
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-white font-semibold mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Your Email"
-                value={contactData.email || ''}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-700 rounded-md bg-gray-900 text-white"
-              />
-              {errors.email && <p className="text-red-500 mt-1">{errors.email}</p>}
-            </div>
-          )}
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-white font-semibold mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Your Email"
+              value={contactData.email}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-700 rounded-md bg-gray-900 text-white"
+            />
+          </div>
 
           {/* Message Input */}
           <div className="mb-4">
@@ -105,11 +101,10 @@ const Contact = () => {
               id="message"
               rows="4"
               placeholder="Your Message"
-              value={contactData.message || ''}
+              value={contactData.message}
               onChange={handleChange}
               className="w-full p-3 border border-gray-700 rounded-md bg-gray-900 text-white"
             />
-            {errors.message && <p className="text-red-500 mt-1">{errors.message}</p>}
           </div>
 
           {/* Submit Button */}

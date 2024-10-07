@@ -10,7 +10,6 @@ import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
 
-
 const Auth = () => {
   const [isLogin, setLogin] = useState(false);
   const navigate = useNavigate();

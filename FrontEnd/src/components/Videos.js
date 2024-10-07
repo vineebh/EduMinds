@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate for naviga
 const Videos = ({ courses }) => {
   const navigate = useNavigate(); // Use useNavigate for navigation
 
-  // Navigate to the VideoPlayerPage with the video URL in the state
-  const handleWatchClick = (videoUrl, topic_name) => {
-    navigate("/video", { state: { videoUrl, topic_name } });
+  // Navigate to the VideoPlayerPage with the video URL and other necessary data
+  const handleWatchClick = (videoUrl, topic_name, index) => {
+    navigate("/video", {
+      state: { videoUrl, topic_name, videos: courses, currentIndex: index },
+    });
   };
 
   return (
@@ -19,12 +21,14 @@ const Videos = ({ courses }) => {
             key={index}
             className="bg-gray-800 border lg:flex lg:flex-row lg:items-center border-gray-600 rounded-lg p-4 shadow-lg transition-transform transform hover:scale-105 cursor-pointer flex flex-col justify-between"
           >
-            <div className="flex-grow mb-4  ">
+            <div className="flex-grow mb-4">
               <h3 className="text-xl font-semibold mb-2">{course.topic_name}</h3>
-              <span className="text-sm text-gray-400">5 points</span> {/* Show points only on mobile */}
+              <span className="text-sm text-gray-400">5 points</span>
             </div>
             <button
-              onClick={() => handleWatchClick(course.video_url, course.topic_name)}
+              onClick={() =>
+                handleWatchClick(course.video_url, course.topic_name, index)
+              }
               className="w-full lg:w-20 lg:h-10 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
             >
               Watch

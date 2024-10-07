@@ -1,11 +1,14 @@
 import React, { useState, useRef } from "react";
 import ReactPlayer from "react-player";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Chatbot from "./Chatbot";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
 
 const VideoPlayerPage = () => {
   const location = useLocation();
-  const { videoUrl, topic_name } = location.state || {};
+  const navigate = useNavigate();
+  const { videoUrl, topic_name, videos, currentIndex } = location.state || {};
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
@@ -16,11 +19,31 @@ const VideoPlayerPage = () => {
   };
 
   const handleSpeedChange = (event) => {
-    setPlaybackSpeed(parseFloat(event.target.value)); // Ensure speed is a number
+    setPlaybackSpeed(parseFloat(event.target.value));
   };
 
   const handleVolumeChange = (event) => {
-    setVolume(parseFloat(event.target.value)); // Ensure volume is a number
+    setVolume(parseFloat(event.target.value));
+  };
+
+  const handleNextVideo = () => {
+    // Check if there are more videos in the list
+    if (videos && Array.isArray(videos) && currentIndex < videos.length - 1) {
+      const nextVideo = videos[currentIndex + 1]; // Get the next video
+
+      // Navigate to the next video with updated state
+      navigate("/video", {
+        state: { 
+          videoUrl: nextVideo.video_url,  // Ensure correct property for video URL
+          topic_name: nextVideo.topic_name, // Ensure correct property for topic name
+          videos, 
+          currentIndex: currentIndex + 1 
+        },
+      });
+    } else {
+      // If no more videos, show alert or perform some other action
+      toast.error("You have reached the last video.");
+    }
   };
 
   return (
@@ -40,10 +63,10 @@ const VideoPlayerPage = () => {
               controls={true}
               playIcon={true}
               width="100%"
-              height="400px" // Adjusted height
+              height="400px"
               className="react-player"
-              playbackRate={playbackSpeed} // Set playback speed
-              volume={volume} // Set volume
+              playbackRate={playbackSpeed}
+              volume={volume}
             />
           ) : (
             <div className="text-center text-gray-400 py-8">
@@ -56,7 +79,9 @@ const VideoPlayerPage = () => {
       {/* Controls for Playback Speed and Volume */}
       <div className="flex flex-col md:flex-row items-center gap-x-6 mt-4">
         <div className="flex items-center">
-          <label className="text-white" htmlFor="playback-speed">Playback Speed:</label>
+          <label className="text-white" htmlFor="playback-speed">
+            Playback Speed:
+          </label>
           <select
             id="playback-speed"
             value={playbackSpeed}
@@ -70,7 +95,9 @@ const VideoPlayerPage = () => {
           </select>
         </div>
         <div className="flex items-center mt-2 md:mt-0">
-          <label className="text-white" htmlFor="volume">Volume:</label>
+          <label className="text-white" htmlFor="volume">
+            Volume:
+          </label>
           <input
             type="range"
             id="volume"
@@ -87,15 +114,21 @@ const VideoPlayerPage = () => {
       {/* Toggle Button for Chatbot */}
       <div className="flex items-center gap-x-6 mt-10 justify-center flex-wrap">
         <button
+          onClick={() => window.history.back()}
+          className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
+        >
+          Prev
+        </button>
+        <button
           onClick={toggleChatbot}
-          className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-200"
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-200"
         >
           {isChatbotVisible ? "Hide Chatbot" : "Ask Doubt to AI"}
         </button>
 
-        {/* Back Button */}
+        {/* Next Button */}
         <button
-          onClick={() => window.history.back()}
+          onClick={handleNextVideo}
           className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
         >
           Back
@@ -105,13 +138,11 @@ const VideoPlayerPage = () => {
       {/* Chatbot Modal */}
       {isChatbotVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center w-full">
-          {/* Modal Content */}
           <div className="relative bg-white rounded-lg shadow-lg w-3/4 h-max z-10 overflow-hidden">
             <div className="h-full w-full">
               <Chatbot toggleChatbot={toggleChatbot} />
             </div>
           </div>
-          {/* Overlay */}
           <div
             className="fixed inset-0 bg-black opacity-50 z-0"
             onClick={toggleChatbot}

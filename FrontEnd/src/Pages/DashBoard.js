@@ -15,25 +15,30 @@ const DashBoard = () => {
   const [loading, setLoading] = useState(true);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const location = useLocation();
-  const navigate = useNavigate(); // useNavigate hook to programmatically navigate
+  const navigate = useNavigate();
   const { C_ID, level, courseTitle, State } = location.state || {};
   const [Level, setLevel] = useState(0);
 
-  // Adjust browser history to prevent going back
+  // Prevent back navigation to the assessment page
   useEffect(() => {
-    // Prevent back navigation
+    // Replace the current entry in the history stack
+    window.history.replaceState(null, document.title);
+
     const handlePopState = (event) => {
       event.preventDefault();
-      navigate("/courses");  // Redirect user to courses page when back button is pressed
+      navigate("/courses"); // Redirect user to courses page when back button is pressed
     };
 
-    window.history.pushState(null, null);  // Prevent user from going back
-    window.addEventListener("popstate", handlePopState);  // Listen to back navigation
+    window.addEventListener("popstate", handlePopState);
 
     return () => {
-      window.removeEventListener("popstate", handlePopState);  // Cleanup event listener
+      window.removeEventListener("popstate", handlePopState); // Cleanup event listener
     };
-  }, [navigate]); 
+  }, [navigate]);
+
+  useEffect(() => {
+    setView("video"); // Reset view to video on component mount
+  }, []);
 
   useEffect(() => {
     const postUserData = async () => {
@@ -46,10 +51,6 @@ const DashBoard = () => {
         console.log("Response:", response.data);
         return true;
       } catch (error) {
-        console.error(
-          "Post error:",
-          error.response ? error.response.data : error.message
-        );
         setError("Failed to enroll course. Please try again later.");
         return false;
       }
@@ -59,15 +60,9 @@ const DashBoard = () => {
       if (!C_ID) return;
 
       try {
-        const response = await axios.get(
-          `http://localhost:1000/course/${C_ID}`
-        );
+        const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
         setCourses(response.data);
       } catch (error) {
-        console.error(
-          "Fetch error:",
-          error.response ? error.response.data : error.message
-        );
         setError("Failed to fetch courses. Please try again later.");
       } finally {
         setLoading(false);
@@ -125,10 +120,10 @@ const DashBoard = () => {
           </h1>
 
           <div className="h-1 w-3/4 mx-auto bg-gradient-to-r from-gray-800 via-yellow-500 to-gray-800 my-4 rounded-full"></div>
-          <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
+          <aside className="lg:hidden w-full flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
             <ProgressBar Level={level} />
           </aside>
-          {/* Toggle Switch */}
+
           <label className="flex items-center justify-center mt-8 mb-6 cursor-pointer relative">
             <input
               type="checkbox"
@@ -158,17 +153,15 @@ const DashBoard = () => {
             </div>
           </label>
 
-          {/* Conditional Rendering based on the selected view */}
           <div className="mt-8">
             {view === "video" ? (
-              <Videos courses={filteredData} />
+              <Videos key={view} courses={filteredData} />
             ) : (
               <Article courses={filteredData} />
             )}
           </div>
         </article>
 
-        {/* Right section - Progress Bar */}
         <aside className="hidden lg:block lg:w-1/4 p-2 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
           <ProgressBar Level={level} />
         </aside>
