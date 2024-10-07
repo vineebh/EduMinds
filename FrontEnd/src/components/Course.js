@@ -20,7 +20,7 @@ const Course = ({ courseData , Enroll }) => {
     if (loginStatus === true) {
       if (enrolledCourse) {
         const Level = enrolledCourse.level; // Get the level of the matched course
-        navigate("/dashboard", { state: { C_ID: c_id, level: Level, courseTitle: title ,State: "Continue"} });
+        navigate("/dashboard", { state: { C_ID: c_id, level: Level, courseTitle: title ,State: "Continue",from: "/courses"} });
       } else {
         navigate("/Assessment", { state: { courseTitle: title, C_ID: c_id } });
       }        

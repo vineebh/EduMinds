@@ -38,8 +38,8 @@ const Assessment = () => {
     if (selectedOption) {
       const level = selectedOption;
       if (selectedOption === "Beginner"){ 
-        navigate("/dashboard" , { state: { C_ID, level, courseTitle ,State: "New"} , });
-      }
+        navigate("/dashboard" , { state: { C_ID, level, courseTitle ,State: "New",from: '/assessment'} , });
+      }//location.pathname
       else {
         navigate("/mcq" , { state: { C_ID, level, courseTitle }});
       }

@@ -77,19 +77,16 @@ const Exam = () => {
                 answers: answerArray,
             });
 
-            setResult(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
 
             if (response.data.correct >= 3) {
-                navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "New" } });
-                // toast.success('You are Enrolled in', courseTitle)
-                
+                toast.success(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
+                navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "New",from: '/mcq' } });
             } else {
+                toast.warning(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
                 if (level === "Advanced") {
-                    navigate("/dashboard", { state: { C_ID, level: "Intermediate", courseTitle, State: "New" } });
-                    // toast.success('You are Enrolled in', courseTitle)
+                    navigate("/dashboard", { state: { C_ID, level: "Intermediate", courseTitle, State: "New",from: '/mcq'  } });
                 } else {
-                    navigate("/dashboard", { state: { C_ID, level: "Beginner", courseTitle, State: "New" } });
-                    // toast.success('You are Enrolled in', courseTitle)
+                    navigate("/dashboard", { state: { C_ID, level: "Beginner", courseTitle, State: "New",from: '/mcq'  } });
                 }
                 console.log("Fail");
             }

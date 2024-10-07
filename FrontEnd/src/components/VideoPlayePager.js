@@ -131,7 +131,7 @@ const VideoPlayerPage = () => {
           onClick={handleNextVideo}
           className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
         >
-          Next
+          Back
         </button>
       </div>
 
