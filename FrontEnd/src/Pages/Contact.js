@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setContactData } from '../store/contectSlice';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Contact = () => {
   const dispatch = useDispatch();
   const loginStatus = useSelector((state) => state.auth.loginStatus);
+  const userInfo = useSelector((state) => state.auth.userInfo);
   const contactData = useSelector((state) => state.contact.contactData);
 
   const [errors, setErrors] = useState({});
+
+  // Pre-fill the email field if the user is logged in
+  useEffect(() => {
+    if (loginStatus && userInfo?.userID) {
+      dispatch(setContactData({ email: userInfo.userID }));
+    }
+  }, [loginStatus, userInfo, dispatch]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -30,7 +40,10 @@ const Contact = () => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length === 0) {
       localStorage.setItem('contactData', JSON.stringify(contactData));
-      alert('Message sent!');
+      toast.success('Message sent!');
+      
+      // Reset form fields by dispatching an action
+      dispatch(setContactData({ name: "", email: loginStatus ? userInfo.userID : "", message: "" }));
     } else {
       setErrors(formErrors);
     }
