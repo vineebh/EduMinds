@@ -15,9 +15,26 @@ const DashBoard = () => {
   const [loading, setLoading] = useState(true);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const location = useLocation();
+  const navigate = useNavigate(); // useNavigate hook to programmatically navigate
   const { C_ID, level, courseTitle, State } = location.state || {};
   const [Level, setLevel] = useState(0);
   const navigate = useNavigate();  // Use navigate for programmatic navigation
+
+  // Adjust browser history to prevent going back
+  useEffect(() => {
+    // Prevent back navigation
+    const handlePopState = (event) => {
+      event.preventDefault();
+      navigate("/courses");  // Redirect user to courses page when back button is pressed
+    };
+
+    window.history.pushState(null, null);  // Prevent user from going back
+    window.addEventListener("popstate", handlePopState);  // Listen to back navigation
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);  // Cleanup event listener
+    };
+  }, [navigate]); 
 
   useEffect(() => {
     const postUserData = async () => {

@@ -115,7 +115,7 @@ const Chatbot = ({ toggleChatbot }) => {
 
         className="mt-4 px-2 py-2 w-full rounded-lg bg-gray-600 text-white shadow-md hover:bg-gray-700 focus:outline-none transition duration-200"
 
- 
+
         onClick={clearChat}
       >
         Clear Chat
