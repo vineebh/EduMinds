@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // useNavigate added
+import { useLocation, useNavigate } from "react-router-dom";  // Import useNavigate and useLocation
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Videos from "../components/Videos";
@@ -43,17 +43,15 @@ const DashBoard = () => {
           course_title: courseTitle,
           Level: level,
         });
-        if (response.success) {
-          toast.success("enrolled");
-        }
-
         console.log("Response:", response.data);
+        return true;
       } catch (error) {
         console.error(
           "Post error:",
           error.response ? error.response.data : error.message
         );
         setError("Failed to enroll course. Please try again later.");
+        return false;
       }
     };
 
@@ -77,7 +75,9 @@ const DashBoard = () => {
     };
 
     if (State === "New") {
-      postUserData();
+      if (postUserData()) {
+        toast.success('You are Enrolled in '+courseTitle+' at level '+level)
+      }
     }
     fetchCourses();
   }, [C_ID, courseTitle, level, userInfo?.userID, State]);
@@ -92,6 +92,26 @@ const DashBoard = () => {
     }
   }, [level]);
 
+  useEffect(() => {
+    // Check if the user is coming from "/assessment" or "/mcq"
+    const previousPage = location.state?.from;
+    const isComingFromAssessmentOrMCQ = previousPage === "/assessment" || previousPage === "/mcq";
+
+    if (isComingFromAssessmentOrMCQ) {
+      // Prevent back navigation
+      const handlePopState = (event) => {
+        event.preventDefault();
+        navigate("/courses");  // Redirect user to courses page when back button is pressed
+      };
+
+      window.history.pushState(null, null);  // Prevent user from going back
+      window.addEventListener("popstate", handlePopState);  // Listen to back navigation
+
+      return () => {
+        window.removeEventListener("popstate", handlePopState);  // Cleanup event listener
+      };
+    }
+  }, [navigate, location.state?.from]);
 
   const filteredData = courses.filter((data) => data.level === Level);
 
@@ -99,7 +119,6 @@ const DashBoard = () => {
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
       <section className="container mx-auto flex flex-col lg:flex-row gap-8 items-start mt-10 px-4">
         {/* Left section - Video/Article */}
-
         <article className="relative shadow-2xl flex-1 border lg:border-none p-6 bg-gray-800 border-gray-600 rounded-lg transition-all duration-300 ease-in-out hover:shadow-2xl">
           <h1 className="text-white font-bold text-3xl mb-6 text-center">
             {courseTitle}
