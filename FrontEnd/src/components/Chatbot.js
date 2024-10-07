@@ -71,7 +71,6 @@ const Chatbot = ({ toggleChatbot }) => {
           Close
         </button>
       </div>
-
       <div className="chat-container h-80 overflow-y-auto rounded-lg bg-gray-100 p-4 shadow-inner">
         {chatHistory.map((message, index) => (
           <div

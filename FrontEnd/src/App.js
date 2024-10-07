@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Routes, useSearchParams } from "react-router-dom";
-import { Route, Routes, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Auth from "./components/Auth/Auth";
 import Header from "./components/Header";
@@ -13,9 +12,8 @@ import DashBoard from "./Pages/DashBoard";
 import Assessment from "./Pages/Assessment";
 import Exam from "./Pages/MCQ";
 import ArticleView from "./components/ArticleView";
-import { useSelector } from "react-redux";
-import Exam from "./Pages/MCQ";
-import ArticleView from "./components/ArticleView";
+
+
 
 
 function App() {
