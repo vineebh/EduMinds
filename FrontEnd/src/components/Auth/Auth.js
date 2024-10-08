@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createUserEmailAndPass, signInUserEmailAndPass, signInWithGoogle } from "../../firebase/auth";
+import {
+  createUserEmailAndPass,
+  signInUserEmailAndPass,
+  signInWithGoogle,
+} from "../../firebase/auth";
 import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+
 
 const Auth = () => {
-  const isLogin = useSelector((state) => state.auth.islogin);
+  const [isLogin, setLogin] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [authData, setAuthData] = useState({
@@ -24,6 +31,7 @@ const Auth = () => {
     const { name, value } = e.target;
     setAuthData({ ...authData, [name]: value });
 
+    // Validate name for signup
     if (name === "name" && !isLogin && value.length < 3) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -33,6 +41,7 @@ const Auth = () => {
       setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
     }
 
+    // Validate password
     if (name === "password" && value.length < 8) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -47,6 +56,7 @@ const Auth = () => {
     e.preventDefault();
     const { email, password, name } = authData;
 
+    // Check for errors before proceeding
     if (!isLogin && name.length < 3) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -68,16 +78,25 @@ const Auth = () => {
         const response = await signInUserEmailAndPass(email, password);
         const token = response.user.accessToken;
         localStorage.setItem("idToken", token);
+        localStorage.setItem("userID", response.user.email); // store email id in local storage
         dispatch(setIdToken(token));
         dispatch(setLoginStatus(true));
-        navigate('/courses');
+
+        navigate(window.history.back());
+        toast.success("Login Successfully"); // Toast notification for successful login
+
+
       } else {
         const response = await createUserEmailAndPass(email, password);
         const token = response.user.accessToken;
         localStorage.setItem("idToken", token);
+        localStorage.setItem("userID", response.user.email); // store email id in local storage
         dispatch(setIdToken(token));
         dispatch(setIsLogin(true));
-        navigate('/courses');
+
+        navigate(window.history.back());
+        toast.success("Signup Successfully"); // Toast notification for successful signup
+
       }
     } catch (error) {
       console.error("Authentication error:", error.message);
@@ -85,11 +104,18 @@ const Auth = () => {
         ...prevErrors,
         firebase: error.message,
       }));
+      toast.error(error.message); // Toast notification for error
     }
   };
 
   const toggleAuthMode = () => {
-    dispatch(setIsLogin(!isLogin));
+    setLogin((login) => !login);
+    setAuthData({
+      name: "",
+      email: "",
+      password: "",
+    });
+
     setErrors({ name: "", email: "", password: "", firebase: "" });
   };
 
@@ -98,25 +124,32 @@ const Auth = () => {
       const result = await signInWithGoogle();
       const token = result.user.accessToken;
       localStorage.setItem("idToken", token);
-      localStorage.setItem("userID",result.user.email)  //store email id in local storage
+      localStorage.setItem("userID", result.user.email); // store email id in local storage
       dispatch(setIdToken(token));
       dispatch(setLoginStatus(true));
-      dispatch(setIsLogin(true));
-      navigate('/courses');
+      dispatch(setIsLogin(true))
+      toast.success("Login Successfully"); // Toast notification for successful Google login
+      navigate(window.history.back());
+
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);
+      toast.error("Google Sign-In Failed: " + error.message); // Toast notification for Google login error
     }
   };
+
   return (
-    <div className="bg-gray-900 min-h-screen flex items-center justify-center mt-10">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div className="bg-gray-900 min-h-screen flex items-center justify-center fixed inset-0 px-6">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md h-auto">
         <h1 className="text-3xl font-bold text-red-500 mb-6 text-center">
           {isLogin ? "Login" : "Signup"}
         </h1>
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <div className="mb-4">
-              <label htmlFor="name" className="block text-gray-300 font-semibold mb-2">
+              <label
+                htmlFor="name"
+                className="block text-gray-300 font-semibold mb-2"
+              >
                 Full Name
               </label>
               <input
@@ -132,7 +165,10 @@ const Auth = () => {
             </div>
           )}
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-300 font-semibold mb-2">
+            <label
+              htmlFor="email"
+              className="block text-gray-300 font-semibold mb-2"
+            >
               Email
             </label>
             <input
@@ -144,9 +180,13 @@ const Auth = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-700 rounded-md bg-gray-900 text-white"
             />
+            {errors.email && <p className="text-red-500">{errors.email}</p>}
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-300 font-semibold mb-2">
+            <label
+              htmlFor="password"
+              className="block text-gray-300 font-semibold mb-2"
+            >
               Password
             </label>
             <input
@@ -158,7 +198,9 @@ const Auth = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-700 rounded-md bg-gray-900 text-white"
             />
-            {errors.password && <p className="text-red-500">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-red-500">{errors.password}</p>
+            )}
           </div>
           <button
             type="submit"
@@ -178,8 +220,16 @@ const Auth = () => {
             className="bg-gray-700 text-white px-6 py-3 rounded-md font-semibold hover:bg-gray-600 transition duration-300 w-full mt-3"
             onClick={toggleAuthMode}
           >
-            {isLogin ? "Don't Have an Account? Signup" : "Already Have an Account? Login"}
+            {isLogin
+              ? "Don't Have an Account? Signup"
+              : "Already Have an Account? Login"}
           </button>
+
+          {errors.firebase && (
+            <p className="text-red-500 mt-2">{errors.firebase}</p>
+          )}{" "}
+          {/* Display Firebase error */}
+
         </form>
       </div>
     </div>

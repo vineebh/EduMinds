@@ -6,7 +6,7 @@ const userID = localStorage.getItem("userID")
 const authSlice = createSlice({
   name: "auth",
   initialState: { 
-    islogin: !!initialToken, // Set based on token existence
+    // Set based on token existence
     idToken: initialToken,
     loginStatus: !!initialToken,
     userInfo: {userID}

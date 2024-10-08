@@ -9,8 +9,10 @@ const Courses = () => {
   const [error, setError] = useState(null);
   const userInfo = useSelector((state) => state.auth.userInfo);
 
-  // Fetch course data from backend
+
+  // Fetch enroll data, with userInfo dependency
   useEffect(() => {
+    // Fetch course data from backend
     const fetchCourses = async () => {
       try {
         const response = await axios.get("http://localhost:1000/courses");
@@ -21,30 +23,50 @@ const Courses = () => {
       }
     };
     fetchCourses();
-  }, []); // This effect runs only once, when the component mounts.
 
-  // Fetch enroll data, with userInfo dependency
+  }, []);
+
   useEffect(() => {
     const checkEnroll = async () => {
       try {
         const res = await axios.get(
           `http://localhost:1000/checkuser?email=${userInfo.userID}`
         );
-        setEnroll(
-          res.data.data.map((course) => ({ course_title: course.course_title, level: course.level }))
-        );
+  
+        // Handle 200 OK response and data exists
+        if (res.status === 200 && res.data.data) {
+          setEnroll(
+            res.data.data.map((course) => ({
+              course_title: course.course_title,
+              level: course.level,
+            }))
+          );
+        }
       } catch (error) {
-        console.error("Fetch error:", error);
-        setError("Failed to fetch enrollment data. Please try again later.");
+        // Handle Axios error for 404
+        if (error.response && error.response.status === 404) {
+          const msg = error.response.data.msg;
+          if (msg === 'Email not found') {
+            setError('Email not found. Please check your email and try again.');
+          } else if (msg === 'No courses found for this email') {
+            setError('No courses found for this email.');
+          }
+        } else {
+          // Handle other types of errors (500, network issues, etc.)
+          console.error("Fetch error:", error);
+          setError("Failed to fetch enrollment data. Please try again later.");
+        }
       }
     };
   
-    if (userInfo?.userID) {
+    if (userInfo.userID) {
       checkEnroll();
     }
-  }, [userInfo?.userID]);  
+  }, [userInfo?.userID]);
 
-  console.log(enroll)
+  
+
+  
   if (error) {
     return <div className="text-red-500 text-center">{error}</div>;
   }
