@@ -31,6 +31,20 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/*" element={<Home/>}/>
+
+          {!loginStatus && <Route path="/auth" element={<Auth />} />}
+
+          {loginStatus && <Route path="/mcq" element={<Exam />} />}
+          {loginStatus && <Route path="/dashboard" element={<DashBoard />} />}
+
+          {loginStatus && <Route path="/Assessment" element={<Assessment />} />}
+          {loginStatus && <Route path="/video" element={<VideoPlayerPage />} />}
+          {loginStatus && (
+            <Route path="/articleView" element={<ArticleView />} />
+          )}
+
+          {/* New route for the video player page */}
 
           <Route path="/*" element={<Home/>}/>
           {!loginStatus && <Route path="/auth" element={<Auth />} />}

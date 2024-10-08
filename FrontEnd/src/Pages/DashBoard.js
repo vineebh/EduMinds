@@ -43,9 +43,7 @@ const DashBoard = () => {
       if (!C_ID) return;
 
       try {
-        const response = await axios.get(
-          `http://localhost:1000/course/${C_ID}`
-        );
+        const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
         setCourses(response.data);
       } catch (error) {
         console.error(
@@ -161,4 +159,4 @@ const DashBoard = () => {
   );
 };
 
-export default DashBoard;
+export default DashBoard;
