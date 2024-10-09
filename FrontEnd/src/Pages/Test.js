@@ -1,44 +1,52 @@
 import axios from "axios";
+import { useLocation } from 'react-router';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const MCQ = () => {
+const Test = () => {
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
     const [result, setResult] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
     const location = useLocation();
-    const { C_ID, level, courseTitle } = location.state || {};
-
-    const Level = (level === "Intermediate" ? 1 : 2);
-
+    const { C_ID , topic } = location.state;
+    
     useEffect(() => {
+        let isMounted = true;  // Add a flag to check if the component is still mounted
         const fetchQuestions = async () => {
             setLoading(true);
             try {
-                const response = await axios.post("http://localhost:1000/assessment/questions", {
-                    level: Level,
+                const response = await axios.post("http://localhost:1000/assessment/chapterQ", {
+                    topic: topic,
                     c_id: C_ID,
-                    limit: 5
+                    limit: 3
                 });
-                setQuestions(response.data);
-                console.log('Fetched questions:', response.data);
+                if (isMounted) {
+                    setQuestions(response.data);  // Update state only if the component is still mounted
+                }
             } catch (error) {
-                toast.error('Failed to fetch questions:', error)
+                if (isMounted) {
+                    // Improved error message handling
+                    const errorMsg = error.response?.data?.error || 'Failed to fetch questions';
+                    toast.error(errorMsg);
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
         fetchQuestions();
-    }, [C_ID, Level]);
+        return () => {
+            isMounted = false;  // Cleanup flag on unmount
+        };
+    }, [C_ID, topic]);
+    
 
     const handleChange = (questionId, selectedOption) => {
         setAnswers({ ...answers, [questionId]: selectedOption });
-        
     };
 
     const handlePrev = () => {
@@ -51,9 +59,7 @@ const MCQ = () => {
         const currentQuestionId = questions[currentQuestionIndex].id;
     
         if (!answers[currentQuestionId]) {
-
-            toast.error("Please select an answer before proceeding to the next question.")
-
+            toast.error("Please select an answer before proceeding to the next question.");
             return;
         }
     
@@ -68,30 +74,16 @@ const MCQ = () => {
             selectedOption,
         }));
 
-        console.log('Submitting answers:', answerArray);
-
         try {
             const response = await axios.post('http://localhost:1000/assessment/submit', {
                 c_id: C_ID,
                 answers: answerArray,
             });
-
-
-            if (response.data.correct >= 3) {
-                toast.success(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
-                navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "New",from: '/mcq' } });
-            } else {
-                toast.warning(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
-                if (level === "Advanced") {
-                    navigate("/dashboard", { state: { C_ID, level: "Intermediate", courseTitle, State: "New",from: '/mcq'  } });
-                } else {
-                    navigate("/dashboard", { state: { C_ID, level: "Beginner", courseTitle, State: "New",from: '/mcq'  } });
-                }
-                console.log("Fail");
-            }
+            toast.success(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
+            window.history.back();
         } catch (error) {
             console.error('Error during submission:', error);
-            toast.error('Error during submission:', error)
+            toast.error('Error during submission');
             setResult('An error occurred while submitting your answers. Please try again.');
         }
     };
@@ -100,6 +92,7 @@ const MCQ = () => {
         return <div className="text-white text-center">Loading questions...</div>;
     }
 
+    const isFirstQuestion = currentQuestionIndex > 0;
     const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
     return (
@@ -137,12 +130,14 @@ const MCQ = () => {
                 )}
 
                 <div className="flex justify-between mt-10">
-                    <button
-                        onClick={handlePrev}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
-                    >
-                        Previous
-                    </button>
+                    {isFirstQuestion && (
+                        <button
+                            onClick={handlePrev}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
+                        >
+                            Previous
+                        </button>
+                    )}
 
                     {isLastQuestion ? (
                         <button
@@ -171,4 +166,4 @@ const MCQ = () => {
     );
 };
 
-export default MCQ;
+export default Test;

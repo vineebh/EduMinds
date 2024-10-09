@@ -2,7 +2,7 @@ import React from 'react';
 
 const About = () => {
   return (
-    <div className="bg-gray-900 min-h-screen lg:pt-16 flex items-center justify-center">
+    <div className="bg-gray-900 min-h-screen lg:pt-16 flex items-center justify-center"> {/* Center content vertically and horizontally */}
       <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
         {/* Main Heading */}
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6 text-center">

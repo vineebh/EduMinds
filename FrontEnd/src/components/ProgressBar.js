@@ -1,8 +1,8 @@
 import React from 'react';
 
-const ProgressBar = ({Level}) => {
+const ProgressBar = ({Level,pp,points}) => {
 
-  const progressPercentage = 55; // Example progress percentage
+  const progressPercentage = parseInt(pp); // Example progress percentage
 
   return (
     <div className=" lg:fixed w-full  max-w-[350px] bg-gray-800 border border-white  shadow-xl   rounded-lg shadow-lg flex flex-col p-6">
@@ -17,6 +17,7 @@ const ProgressBar = ({Level}) => {
       </div>
       
       <p className="text-gray-300 text-center">{progressPercentage}% Completed</p>
+      <p className="text-yellow-400 text-lg mt-4 text-center">{points} points</p>
     </div>
   );
 };
