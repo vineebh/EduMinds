@@ -246,7 +246,7 @@ app.get('/course/:c_id', async (req, res) => {
 
     try {
         // Since table names cannot be parameterized, we safely include it directly in the query string
-        const query = `SELECT level, topic_name, video_url, articles FROM ${course_title}`;
+        const query = `SELECT id, level, topic_name, video_url, articles FROM ${course_title}`;
         const [data] = await db.query(query);
 
         // Check if data was returned
@@ -332,7 +332,73 @@ app.post('/userdata', async (req, res) => {
 
 
     //everything above this is dynamic api
-
+    app.post('/profile', async (req, res) => {
+        try {
+            const { email_id, course_title, level } = req.body;
+    
+            if (!email_id || !course_title||!level||!test_passed) {
+                return res.status(400).json({error:'All field are required fields'});
+            }
+    
+            const selectQuery = `
+                SELECT chapters_completed FROM profiles 
+                WHERE email_id = ? AND course_title = ?`;
+            
+            const [selectResult] = await db.query(selectQuery, [email_id, course_title]);
+    
+            let chapters_completed = 0;
+    
+            if (selectResult.length > 0) {
+                chapters_completed = selectResult[0].chapters_completed;
+            }
+    
+            chapters_completed += 1;
+    
+            let updateFields = [];
+            let updateValues = [];
+    
+            if (level) {
+                updateFields.push('level = ?');
+                updateValues.push(level);
+            }
+    
+            updateFields.push('chapters_completed = ?');
+            updateValues.push(chapters_completed);
+    
+            updateFields.push('last_update_date = NOW()');
+    
+            updateValues.push(email_id, course_title);
+    
+            const updateQuery = `
+                UPDATE profiles 
+                SET ${updateFields.join(', ')} 
+                WHERE email_id = ? AND course_title = ?`;
+    
+            const [updateResult] = await db.query(updateQuery, updateValues);
+    
+            if (updateResult.affectedRows === 0) {
+                const insertQuery = `
+                    INSERT INTO profiles (email_id, course_title, level, chapters_completed, last_update_date) 
+                    VALUES (?, ?, ?, ?, NOW())`;
+    
+                const insertValues = [email_id, course_title, level || '', chapters_completed || 0];
+    
+                db.query(insertQuery, insertValues, (error, result) => {
+                    if (error) {
+                        console.error('Error inserting data:', error);
+                        return res.status(500).json({ message: 'Error enrolling user' });
+                    }
+                    console.log(result);
+                    res.status(201).json({ message: 'User enrolled successfully' });
+                });
+            } else {
+                res.status(200).json({ message: 'Profile updated successfully' });
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");
