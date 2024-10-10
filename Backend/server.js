@@ -216,7 +216,6 @@ app.get('/course/:c_id', async (req, res) => {
     }
 
     try {
-
         const query = `SELECT id, level, topic_name, video_url, articles FROM ${course_title}`;
         const [data] = await db.query(query);
 
@@ -234,28 +233,49 @@ app.get('/course/:c_id', async (req, res) => {
 // Route to log watched videos
 
 app.post('/watched_videos', async (req, res) => {
-    const { email_id, video_id } = req.body;
-    try {
-      await db.query('INSERT INTO watched_videos (email_id, video_id) VALUES (?, ?)', [email_id, video_id]);
-      res.status(201).send('Video marked as watched');
-    } catch (error) {
-      console.error("Error marking video as watched:", error);
-      res.status(500).send('Server error');
+    const { email_id, watched_video_id } = req.body;
+
+    if (!email_id || !watched_video_id) {
+        return res.status(400).json({ error: 'Invalid input: email_id and watched_video_id are required' });
     }
-  });
+
+    try {
+        const [existingRecord] = await db.query(
+            'SELECT COUNT(*) AS count FROM progress WHERE email_id = ? AND watched_video_id = ?',
+            [email_id, watched_video_id]
+        );
+        
+        if (existingRecord[0].count > 0) {
+            return res.status(200).json({ message: 'Video already marked as watched' });
+        }        
+
+        await db.query('INSERT INTO progress (email_id, watched_video_id,last_updated) VALUES (?, ?, NOW())', [email_id, watched_video_id]);
+        res.status(201).json({ message: 'Video marked as watched' });
+    } catch (error) {
+        console.error("Error marking video as watched:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
   
 
 app.get('/watched_videos/:email', async (req, res) => {
     const email = req.params.email;
-    try {
-      const [rows] = await db.query('SELECT video_id FROM watched_videos WHERE email_id = ?', [email]);
-      const watchedVideoIds = rows.map(row => row.video_id);
-      res.json(watchedVideoIds);
-    } catch (error) {
-      console.error("Error fetching watched videos:", error);
-      res.status(500).send('Server error');
+
+    if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
     }
-  });
+
+    try {
+        const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ?', [email]);
+        const watchedVideoIds = rows.map(row => row.video_id);
+        res.status(200).json(watchedVideoIds);
+    } catch (error) {
+        console.error("Error fetching watched videos:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
   
 
 
@@ -327,7 +347,6 @@ app.get('/watched_videos/:email', async (req, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     });
-
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");

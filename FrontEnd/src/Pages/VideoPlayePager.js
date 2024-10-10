@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { videoUrl, topic_name, videos, currentIndex, userEmail } = location.state || {}; // Add userEmail
+  const { videoUrl, topic_name, videos, currentIndex} = location.state || {}; // Add userEmail
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
@@ -21,15 +21,24 @@ const VideoPlayerPage = () => {
   // Fetch watched videos on component mount
   useEffect(() => {
     const fetchWatchedVideos = async () => {
-      try {
-        const response = await axios.get(`http://localhost:1000/watched-videos/${email_id}`);
-        setWatchedVideos(response.data);
-      } catch (error) {
-        console.error("Error fetching watched videos:", error);
-      }
+        if (!email_id) return; // Safety check to avoid making requests with undefined email_id
+
+        try {
+            const response = await axios.get(`http://localhost:1000/watched_videos/${email_id}`);
+            
+            if (response.status === 200) {
+                setWatchedVideos(response.data); // Assuming response.data is an array of video IDs
+            } else {
+                throw new Error("Failed to fetch watched videos");
+            }
+        } catch (error) {
+            console.error("Error fetching watched videos:", error);
+        }
     };
+
     fetchWatchedVideos();
-  }, [userEmail]);
+  }, [email_id]);
+
 
   // Toggle Chatbot Visibility
   const toggleChatbot = () => {
@@ -44,18 +53,18 @@ const VideoPlayerPage = () => {
     // Mark the current video as watched in the database
     if (!watchedVideos.includes(currentIndex)) {
       try {
-        await axios.post('http://localhost:1000/watched-videos', {
-          email_id: userEmail,
-          video_id: currentIndex,
+        const response = await axios.post('http://localhost:1000/watched_videos', {
+          email_id,
+          video_id: currentIndex, // Ensure currentIndex refers to the video ID
         });
-        setWatchedVideos([...watchedVideos, currentIndex]);
-        console.log("Video marked as watched:", currentIndex);
+        if (response.status === 201) { // 201 for created response
+          setWatchedVideos(prev => [...prev, currentIndex]); // Update the watched videos list
+          console.log("Video marked as watched:", currentIndex);
+        }
       } catch (error) {
         console.error("Error marking video as watched:", error);
-      }
+      }      
     }
-
-    console.log("Updated watched videos:", watchedVideos);
   };
 
   // Handle speed change
@@ -88,7 +97,7 @@ const VideoPlayerPage = () => {
             topic_name: nextVideo.topic_name,
             videos,
             currentIndex: currentIndex + 1,
-            userEmail, // Pass userEmail to the next video
+            email_id, // Pass userEmail to the next video
           },
         });
       } else {

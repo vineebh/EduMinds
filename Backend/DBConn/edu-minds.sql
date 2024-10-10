@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 09, 2024 at 05:47 PM
+-- Generation Time: Oct 10, 2024 at 05:45 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -41,9 +41,9 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`c_id`, `title`, `description`, `imageUrl`, `professorName`, `duration`) VALUES
-(101, 'Python', 'Python is a high-level, interpreted programming language that has gained global popularity due to its simplicity and versatility. With Python, developers can build a wide range of applications, from simple automation scripts to complex web and desktop applications, scientific computations, and machine learning models. Python emphasizes code readability and syntax that allows developers to write fewer lines of code compared to languages like Java or C++. Its extensive standard library supports ma', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8E6Xlh2VtOsV4vrygfHVm6xKybmctIDBYnA&s', 'Jenny\'s Lectures CS IT', '30 Hours'),
-(102, 'Excel', 'Microsoft Excel is one of the most essential software programs used in businesses, organizations, and educational institutions worldwide. At its core, Excel is a spreadsheet tool that allows users to organize, calculate, and analyze data with ease. However, its capabilities extend far beyond simple data management. Excel supports advanced features such as pivot tables, VLOOKUP, and INDEX-MATCH for relational data analysis, and its in-built charting tools provide users with powerful data visualiz', 'https://omtsdigest.com/wp-content/uploads/2016/02/excel-1598646848.jpeg', 'Learnit Training', '28 Hours'),
-(103, 'Data Analysis', 'Data analysis is the scientific method of transforming raw data into actionable insights. As industries generate increasing volumes of data, the demand for skilled data analysts is growing rapidly. Data analysis encompasses various methodologies, including statistical analysis, data mining, machine learning, and predictive modeling. This course dives deep into the foundational concepts of data analysis, covering both theoretical and practical aspects. Students will learn how to manipulate data u', 'https://www.shutterstock.com/image-photo/close-businesswoman-holding-graphs-hand-600nw-229854826.jpg', 'Top VarSity', '45 Hours');
+(101, 'Python', 'This comprehensive Python course offers a series of in-depth videos and articles tailored for learners at all levels, from beginners to advanced. The curriculum begins with foundational topics such as data types, loops, and functions, and gradually advances to more complex subjects like object-oriented programming, file handling, and popular libraries such as NumPy, Pandas, and Matplotlib.\r\n\r\nLearners will engage in real-world projects and examples, gaining practical experience in Python applica', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8E6Xlh2VtOsV4vrygfHVm6xKybmctIDBYnA&s', 'Jenny\'s Lectures CS IT', '30 Hours'),
+(102, 'Excel', 'This Excel course is a comprehensive series designed for learners at all levels, from beginners to advanced users, offering a combination of video lessons and article-based resources. The course covers essential features such as formulas, functions, and data visualization techniques using charts and graphs, and progresses to advanced topics like pivot tables, VLOOKUP, and automation with macros and VBA.\r\n\r\nLearners will engage in real-world examples and projects, allowing them to apply their ski', 'https://omtsdigest.com/wp-content/uploads/2016/02/excel-1598646848.jpeg', 'Learnit Training', '28 Hours'),
+(103, 'Data Analysis', 'This Data Analysis course is an extensive program designed for both beginners and intermediate learners, offering a blend of video lessons and article-based resources. The course covers essential concepts such as data manipulation using Python and R, statistical analysis, and data visualization techniques. Learners will explore popular libraries like Pandas and NumPy, as well as tools such as Tableau to derive insights from data.\r\n\r\nAdvanced topics include machine learning fundamentals, regressi', 'https://www.shutterstock.com/image-photo/close-businesswoman-holding-graphs-hand-600nw-229854826.jpg', 'Top VarSity', '45 Hours');
 
 -- --------------------------------------------------------
 
@@ -447,10 +447,23 @@ INSERT INTO `level` (`C_ID`, `levels`, `beginner`, `intermediate`, `advance`, `p
 CREATE TABLE `profiles` (
   `id` int(11) NOT NULL,
   `email_id` varchar(280) NOT NULL,
-  `course_title` varchar(240) NOT NULL,
+  `course_ID` int(11) NOT NULL,
   `level` varchar(240) NOT NULL,
   `points` int(11) NOT NULL,
-  `last_update_date` varchar(250) NOT NULL
+  `last_update_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `progress`
+--
+
+CREATE TABLE `progress` (
+  `id` int(11) NOT NULL,
+  `email_id` varchar(280) NOT NULL,
+  `watched_video_id` int(11) NOT NULL,
+  `last_updated` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -837,6 +850,12 @@ ALTER TABLE `profiles`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `progress`
+--
+ALTER TABLE `progress`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `python_course`
 --
 ALTER TABLE `python_course`
@@ -859,10 +878,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `progress`
+--
+ALTER TABLE `progress`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
