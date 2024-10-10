@@ -216,6 +216,7 @@ app.get('/course/:c_id', async (req, res) => {
     }
 
     try {
+
         const query = `SELECT id, level, topic_name, video_url, articles FROM ${course_title}`;
         const [data] = await db.query(query);
 
@@ -256,7 +257,6 @@ app.post('/watched_videos', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
   
 
 app.get('/watched_videos/:email', async (req, res) => {
@@ -265,7 +265,6 @@ app.get('/watched_videos/:email', async (req, res) => {
     if (!email) {
         return res.status(400).json({ error: 'Email is required' });
     }
-
     try {
         const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ?', [email]);
         const watchedVideoIds = rows.map(row => row.video_id);
@@ -274,9 +273,7 @@ app.get('/watched_videos/:email', async (req, res) => {
         console.error("Error fetching watched videos:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
-});
-
-  
+  });
 
 
     //everything above this is dynamic api

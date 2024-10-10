@@ -45,6 +45,7 @@ INSERT INTO `courses` (`c_id`, `title`, `description`, `imageUrl`, `professorNam
 (102, 'Excel', 'This Excel course is a comprehensive series designed for learners at all levels, from beginners to advanced users, offering a combination of video lessons and article-based resources. The course covers essential features such as formulas, functions, and data visualization techniques using charts and graphs, and progresses to advanced topics like pivot tables, VLOOKUP, and automation with macros and VBA.\r\n\r\nLearners will engage in real-world examples and projects, allowing them to apply their ski', 'https://omtsdigest.com/wp-content/uploads/2016/02/excel-1598646848.jpeg', 'Learnit Training', '28 Hours'),
 (103, 'Data Analysis', 'This Data Analysis course is an extensive program designed for both beginners and intermediate learners, offering a blend of video lessons and article-based resources. The course covers essential concepts such as data manipulation using Python and R, statistical analysis, and data visualization techniques. Learners will explore popular libraries like Pandas and NumPy, as well as tools such as Tableau to derive insights from data.\r\n\r\nAdvanced topics include machine learning fundamentals, regressi', 'https://www.shutterstock.com/image-photo/close-businesswoman-holding-graphs-hand-600nw-229854826.jpg', 'Top VarSity', '45 Hours');
 
+
 -- --------------------------------------------------------
 
 --

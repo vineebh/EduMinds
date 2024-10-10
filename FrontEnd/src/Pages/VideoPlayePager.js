@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { videoUrl, topic_name, videos, currentIndex} = location.state || {}; // Add userEmail
+  const { videoUrl, topic_name, videos, currentIndex} = location.state || {};
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
