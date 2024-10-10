@@ -13,7 +13,7 @@ const Article = ({ courses ,C_ID}) => {
 
   return (
     <div className="text-white p-6">
-      <h1 className="text-3xl font-bold mb-4">Articles</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">Articles</h1>
       <div className="space-y-6">
         {courses.map((course, index) => {
           let articleData;

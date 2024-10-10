@@ -7,79 +7,59 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
-
-//Home,Courses
+// Home, Courses
 app.get('/courses', async (req, res) => {
     try {
-        const [data] = await db.query('select c_id,title,description,imageUrl,professorName,duration from courses')
-        res.json(data)
+        const [data] = await db.query('SELECT c_id, title, description, imageUrl, professorName, duration FROM courses');
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Courses Not Found' });
     }
-    catch (error) {
-        res.status(500).json({ error: 'Courses Not Found' })
-    }
-})
+});
 
-//Courses
+// Check user courses
 app.get('/checkuser', async (req, res) => {
     try {
-        const { email } = req.query; // Extract email from the query string
+        const { email } = req.query;
 
-        // Check if the email is present
         if (!email) {
             return res.status(400).json({ msg: 'Email is required' });
         }
 
-        // Log the email being searched
-        console.log(`\nChecking courses for email: ${email}\n`);
+        console.log(`Checking courses for email: ${email}`);
 
-        // Query to fetch the course_title and level for the entered email
-        const [Data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
+        const [data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
 
-
-        // Check if email exists in the database
-        if (Data.length === 0) {
-            console.log(`\nCourses not found: ${email}\n`);
-            return res.status(200).json({ data: [course_title='',level=''] });
+        if (data.length === 0) {
+            console.log(`Email not found: ${email}`);
+            return res.status(404).json({ msg: 'Email not found' });
         }
 
-        // Map the courses for the user
-        const userCourses = Data.map(course => ({
+        const userCourses = data.map(course => ({
             course_title: course.course_title,
             level: course.level
         }));
 
-        if (userCourses.length > 0) {
-            return res.status(200).json({ data: userCourses });
-        }
-
-        // If no courses are found for the entered email
-        console.log('No courses associated with this email');
-        return res.status(404).json({ msg: 'No courses found for this email' });
+        return res.status(200).json({ data: userCourses });
     } catch (error) {
         console.error('Error occurred:', error);
         res.status(500).json({ error: 'Error during fetching data' });
     }
 });
 
-
-//Assessment
+// Assessment
 app.get('/skills/:C_ID', async (req, res) => {
     const C_ID = req.params.C_ID;
     try {
-        // Fetch the beginner, intermediate, and advanced skills for the given C_ID
-        const [data] = await db.query(
-            'SELECT beginner, intermediate, advance FROM level WHERE C_ID = ?',
-            [C_ID]
-        );
+        const [data] = await db.query('SELECT beginner, intermediate, advance FROM level WHERE C_ID = ?', [C_ID]);
 
-        // Check if any data was returned
         if (data.length > 0) {
             const skills = {
                 Beginner: data[0].beginner ? data[0].beginner.split(',') : [],
                 Intermediate: data[0].intermediate ? data[0].intermediate.split(',') : [],
                 Advanced: data[0].advance ? data[0].advance.split(',') : []
             };
-            res.json(skills); // Send the skills back to the client
+            res.json(skills);
         } else {
             res.status(404).json({ error: "No skills found for this course ID" });
         }
@@ -89,10 +69,10 @@ app.get('/skills/:C_ID', async (req, res) => {
     }
 });
 
-//MCQ,everyDayQ
+// MCQ, everyDayQ
 app.post('/assessment/questions', async (req, res) => {
-    const { level, c_id, limit } = req.body; // Extract from req.body since it's a POST request
-  
+    const { level, c_id, limit } = req.body;
+
     const courses = {
         101: 'python_qna',
         102: 'excel_qna',
@@ -119,7 +99,7 @@ app.post('/assessment/questions', async (req, res) => {
             return res.status(404).json({ error: 'No questions available for this level' });
         }
 
-        const questionsWithoutAnswers = rows    //.map(({ correct_option, ...rest }) => rest);
+        const questionsWithoutAnswers = rows;
         res.status(200).json(questionsWithoutAnswers);
     } catch (err) {
         console.error(err);
@@ -127,10 +107,10 @@ app.post('/assessment/questions', async (req, res) => {
     }
 });
 
-//chapterQ
+// Chapter Q
 app.post('/assessment/chapterQ', async (req, res) => {
-    const { topic, c_id, limit } = req.body; // Extract from req.body since it's a POST request
-  
+    const { topic, c_id, limit } = req.body;
+
     const courses = {
         101: 'python_qna',
         102: 'excel_qna',
@@ -157,15 +137,14 @@ app.post('/assessment/chapterQ', async (req, res) => {
             return res.status(404).json({ error: 'No questions available for this topic' });
         }
 
-        const questions = rows
-        res.status(200).json(questions);
+        res.status(200).json(rows);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
 
-//MCQ,chapterQ,everyDayQ
+// MCQ, chapterQ, everyDayQ submission
 app.post('/assessment/submit', async (req, res) => {
     const { c_id, answers } = req.body;
 
@@ -202,59 +181,49 @@ app.post('/assessment/submit', async (req, res) => {
     }
 });
 
-
-//Dashboard
+// User data
 app.post('/userdata', async (req, res) => {
-    
-    // Destructure request body
     const { email_id, course_title, Level } = req.body;
 
-    // Validate input data
     if (!email_id || !course_title || !Level) {
         return res.status(400).json({ error: 'All fields are required: email_id, course_title, level' });
     }
 
     try {
-        // Insert data into the database
         const query = 'INSERT INTO users (email_id, course_title, level, datentime) VALUES (?, ?, ?, NOW())';
-        const result = await db.query(query, [email_id, course_title, Level]);
-        console.log(result)
+        await db.query(query, [email_id, course_title, Level]);
+        res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
         console.error("Error in /userdata:", error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-//Dashboard
+// Dashboard Course Data
 app.get('/course/:c_id', async (req, res) => {
     const c_id = parseInt(req.params.c_id, 10);
 
-    // Define a mapping of course IDs to table names
     const courses = {
         101: 'python_course',
         102: 'excel_course',
         103: 'data_analytics_course',
     };
 
-    // Get the course title from the mapping
     const course_title = courses[c_id];
 
     if (!course_title) {
-        // Return an error if the course ID is not valid
         return res.status(400).json({ error: 'Invalid course ID' });
     }
 
     try {
-        // Since table names cannot be parameterized, we safely include it directly in the query string
+
         const query = `SELECT id, level, topic_name, video_url, articles FROM ${course_title}`;
         const [data] = await db.query(query);
 
-        // Check if data was returned
         if (data.length === 0) {
             return res.status(404).json({ error: 'No data found for this course' });
         }
 
-        // Send the fetched data as JSON
         res.json(data);
     } catch (err) {
         console.error("Error fetching course data:", err);
@@ -262,73 +231,32 @@ app.get('/course/:c_id', async (req, res) => {
     }
 });
 
+// Route to log watched videos
 
-app.get('/checkuser', async (req, res) => {
+app.post('/watched_videos', async (req, res) => {
+    const { email_id, video_id } = req.body;
     try {
-        const { email } = req.query; // Extract email from the query string
-
-        // Check if the email is present
-        if (!email) {
-            return res.status(400).json({ msg: 'Email is required' });
-        }
-
-        // Log the email being searched
-        console.log(`Checking courses for email: ${email}`);
-
-        // Query to fetch the course_title and level for the entered email
-        const [data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
-
-        // Log the result from the database query
-        console.log("Query Result:", data);
-
-        // Check if email exists in the database
-        if (data.length === 0) {
-            console.log(`Email not found: ${email}`);
-            return res.status(404).json({ msg: 'Email not found' });
-        }
-
-        // Map the courses for the user
-        const userCourses = data.map(course => ({
-            course_title: course.course_title,
-            level: course.level
-        }));
-
-        if (userCourses.length > 0) {
-            return res.status(200).json({ data: userCourses });
-        }
-
-        // If no courses are found for the entered email
-        console.log('No courses associated with this email');
-        return res.status(404).json({ msg: 'No courses found for this email' });
+      await db.query('INSERT INTO watched_videos (email_id, video_id) VALUES (?, ?)', [email_id, video_id]);
+      res.status(201).send('Video marked as watched');
     } catch (error) {
-        console.error('Error occurred:', error);
-        res.status(500).json({ error: 'Error during fetching data' });
+      console.error("Error marking video as watched:", error);
+      res.status(500).send('Server error');
     }
-});
+  });
+  
 
-
-
-
-app.post('/userdata', async (req, res) => {
-    
-    // Destructure request body
-    const { email_id, course_title, Level } = req.body;
-
-    // Validate input data
-    if (!email_id || !course_title || !Level) {
-        return res.status(400).json({ error: 'All fields are required: email_id, course_title, level' });
-    }
-
+app.get('/watched_videos/:email', async (req, res) => {
+    const email = req.params.email;
     try {
-        // Insert data into the database
-        const query = 'INSERT INTO users (email_id, course_title, level, datentime) VALUES (?, ?, ?, NOW())';
-        const result = await db.query(query, [email_id, course_title, Level]);
-        console.log(result)
+      const [rows] = await db.query('SELECT video_id FROM watched_videos WHERE email_id = ?', [email]);
+      const watchedVideoIds = rows.map(row => row.video_id);
+      res.json(watchedVideoIds);
     } catch (error) {
-        console.error("Error in /userdata:", error);
-        res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Error fetching watched videos:", error);
+      res.status(500).send('Server error');
     }
-});
+  });
+  
 
 
     //everything above this is dynamic api
@@ -399,6 +327,7 @@ app.post('/userdata', async (req, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     });
+
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");

@@ -1,31 +1,39 @@
-import PropTypes from 'prop-types'; // Import PropTypes
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import '.././index.css';
+import PropTypes from "prop-types"; // Import PropTypes
+import React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import ".././index.css";
 
-
-const Course = ({ courseData , Enroll }) => {
-  const {c_id, title, description, imageUrl, professorName, duration } = courseData;
+const Course = ({ courseData, Enroll }) => {
+  const { c_id, title, description, imageUrl, professorName, duration } =
+    courseData;
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const navigate = useNavigate();
 
+  const btnLabel = Enroll.some((course) => course.course_title === title)
+    ? "Continue"
+    : "Assess your level";
 
-  const btnLabel = Enroll.some(course => course.course_title === title) ? "Continue" : "Assess your level";
-
-  const enrolledCourse = Enroll.find(course => course.course_title === title);
-
+  const enrolledCourse = Enroll.find((course) => course.course_title === title);
 
   const enrollHandler = () => {
     if (loginStatus === true) {
       if (enrolledCourse) {
         const Level = enrolledCourse.level; // Get the level of the matched course
-        navigate("/dashboard", { state: { C_ID: c_id, level: Level, courseTitle: title ,State: "Continue",from: "/courses"} });
+        navigate("/dashboard", {
+          state: {
+            C_ID: c_id,
+            level: Level,
+            courseTitle: title,
+            State: "Continue",
+            from: "/courses",
+          },
+        });
       } else {
         navigate("/Assessment", { state: { courseTitle: title, C_ID: c_id } });
-      }        
+      }
     } else {
-      navigate('/auth');
+      navigate("/auth");
     }
   };
 
@@ -54,8 +62,11 @@ const Course = ({ courseData , Enroll }) => {
 
         {/* Description Section */}
         <div className="w-full sm:w-2/3 mt-4 sm:mt-0">
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed mb-4 sm:mb-6 lg:mb-8 pr-0 sm:pr-4 lg:pr-6 text-white">
-            <span className="font-bold text-sm sm:text-base md:text-lg lg:text-xl">Description:</span> {description}
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed pr-0 sm:pr-4 lg:pr-6 text-white line-clamp-3">
+            <span className="font-bold text-sm sm:text-base md:text-lg lg:text-xl">
+              Description:
+            </span>{" "}
+            {description}
           </p>
         </div>
       </div>
