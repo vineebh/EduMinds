@@ -216,6 +216,7 @@ app.get('/course/:c_id', async (req, res) => {
     }
 
     try {
+
         const query = `SELECT id, level, topic_name, video_url, articles FROM ${course_title}`;
         const [data] = await db.query(query);
 
@@ -233,31 +234,117 @@ app.get('/course/:c_id', async (req, res) => {
 // Route to log watched videos
 
 app.post('/watched_videos', async (req, res) => {
-    const { email_id, video_id } = req.body;
-    try {
-      await db.query('INSERT INTO watched_videos (email_id, video_id) VALUES (?, ?)', [email_id, video_id]);
-      res.status(201).send('Video marked as watched');
-    } catch (error) {
-      console.error("Error marking video as watched:", error);
-      res.status(500).send('Server error');
+    const { email_id, watched_video_id } = req.body;
+
+    if (!email_id || !watched_video_id) {
+        return res.status(400).json({ error: 'Invalid input: email_id and watched_video_id are required' });
     }
-  });
+
+    try {
+        const [existingRecord] = await db.query(
+            'SELECT COUNT(*) AS count FROM progress WHERE email_id = ? AND watched_video_id = ?',
+            [email_id, watched_video_id]
+        );
+        
+        if (existingRecord[0].count > 0) {
+            return res.status(200).json({ message: 'Video already marked as watched' });
+        }        
+
+        await db.query('INSERT INTO progress (email_id, watched_video_id,last_updated) VALUES (?, ?, NOW())', [email_id, watched_video_id]);
+        res.status(201).json({ message: 'Video marked as watched' });
+    } catch (error) {
+        console.error("Error marking video as watched:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
   
 
 app.get('/watched_videos/:email', async (req, res) => {
     const email = req.params.email;
+
+    if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+    }
     try {
-      const [rows] = await db.query('SELECT video_id FROM watched_videos WHERE email_id = ?', [email]);
-      const watchedVideoIds = rows.map(row => row.video_id);
-      res.json(watchedVideoIds);
+        const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ?', [email]);
+        const watchedVideoIds = rows.map(row => row.video_id);
+        res.status(200).json(watchedVideoIds);
     } catch (error) {
-      console.error("Error fetching watched videos:", error);
-      res.status(500).send('Server error');
+        console.error("Error fetching watched videos:", error);
+        res.status(500).json({ error: 'Internal server error' });
     }
   });
-  
 
-// Start the server
+
+    //everything above this is dynamic api
+    app.post('/profile', async (req, res) => {
+        try {
+            const { email_id, course_title, level } = req.body;
+    
+            if (!email_id || !course_title||!level||!test_passed) {
+                return res.status(400).json({error:'All field are required fields'});
+            }
+    
+            const selectQuery = `
+                SELECT chapters_completed FROM profiles 
+                WHERE email_id = ? AND course_title = ?`;
+            
+            const [selectResult] = await db.query(selectQuery, [email_id, course_title]);
+    
+            let chapters_completed = 0;
+    
+            if (selectResult.length > 0) {
+                chapters_completed = selectResult[0].chapters_completed;
+            }
+    
+            chapters_completed += 1;
+    
+            let updateFields = [];
+            let updateValues = [];
+    
+            if (level) {
+                updateFields.push('level = ?');
+                updateValues.push(level);
+            }
+    
+            updateFields.push('chapters_completed = ?');
+            updateValues.push(chapters_completed);
+    
+            updateFields.push('last_update_date = NOW()');
+    
+            updateValues.push(email_id, course_title);
+    
+            const updateQuery = `
+                UPDATE profiles 
+                SET ${updateFields.join(', ')} 
+                WHERE email_id = ? AND course_title = ?`;
+    
+            const [updateResult] = await db.query(updateQuery, updateValues);
+    
+            if (updateResult.affectedRows === 0) {
+                const insertQuery = `
+                    INSERT INTO profiles (email_id, course_title, level, chapters_completed, last_update_date) 
+                    VALUES (?, ?, ?, ?, NOW())`;
+    
+                const insertValues = [email_id, course_title, level || '', chapters_completed || 0];
+    
+                db.query(insertQuery, insertValues, (error, result) => {
+                    if (error) {
+                        console.error('Error inserting data:', error);
+                        return res.status(500).json({ message: 'Error enrolling user' });
+                    }
+                    console.log(result);
+                    res.status(201).json({ message: 'User enrolled successfully' });
+                });
+            } else {
+                res.status(200).json({ message: 'Profile updated successfully' });
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");
 });
