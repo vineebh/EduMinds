@@ -66,12 +66,13 @@ const DashBoard = () => {
 
       try {
         const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
+       console.log(response)
 
-        if(response.success){
+        if( response.status === 200){
           setCourses(response.data);
           console.log(response.data)
+        
         }
-
       } catch (error) {
         console.error(
           "Fetch error:",
@@ -103,7 +104,13 @@ const DashBoard = () => {
     }
   }, [level]);
 
-  const filteredData = courses.filter((data) => data.level === Level);
+  const filteredData = courses.filter((data) => data?.level === Level);
+  
+  useEffect(()=> {
+    console.log(courses)
+    console.log(Level)
+
+  },[filteredData])
 
   return (
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
