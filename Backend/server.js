@@ -328,7 +328,7 @@ app.get('/watched_videos/:email', async (req, res) => {
         }
     });
 
-// Start the server
+
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");
 });
