@@ -15,8 +15,8 @@ const DashBoard = () => {
   const [loading, setLoading] = useState(true);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const location = useLocation();
-  const navigate = useNavigate(); // useNavigate hook to programmatically navigate
-  const { C_ID, level, courseTitle, State ,courseData} = location.state || {};
+  const navigate = useNavigate();
+  const { C_ID, level, courseTitle, State ,from} = location.state || {};
   const [Level, setLevel] = useState(0);
 
   useEffect(() => {
@@ -65,14 +65,14 @@ const DashBoard = () => {
       if (!C_ID) return;
 
       try {
-        const response = await axios.get(
-          `http://localhost:1000/course/${C_ID}`
-        );
+        const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
+       console.log(response)
 
-       
+        if( response.status === 200){
           setCourses(response.data);
-       
-        console.log(response.data)
+          console.log(response.data)
+        
+        }
       } catch (error) {
         console.error(
           "Fetch error:",
@@ -103,6 +103,7 @@ const DashBoard = () => {
       setLevel(3);
     }
   }, [level]);
+
 
   const filteredData = courses.filter((data) => data.level === Level);
 
@@ -161,7 +162,7 @@ const DashBoard = () => {
 
         {/* Right section - Progress Bar */}
         <aside className="hidden lg:block lg:w-1/4 p-2 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-          <ProgressBar Level={level} pp="50" points="25" />
+          <ProgressBar Level={level} pp={50} points={25} />
         </aside>
       </section>
     </main>
