@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";  // Import useNavigate and useLocation
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Videos from "../components/Videos";
@@ -15,27 +15,28 @@ const DashBoard = () => {
   const [loading, setLoading] = useState(true);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const location = useLocation();
-  const navigate = useNavigate(); // useNavigate hook to programmatically navigate
-  const { C_ID, level, courseTitle, State } = location.state || {};
+  const navigate = useNavigate();
+  const { C_ID, level, courseTitle, State ,from} = location.state || {};
   const [Level, setLevel] = useState(0);
 
   useEffect(() => {
     // Check if the user is coming from "/assessment" or "/mcq"
     const previousPage = location.state?.from;
-    const isComingFromAssessmentOrMCQ = previousPage === "/assessment" || previousPage === "/mcq";
+    const isComingFromAssessmentOrMCQ =
+      previousPage === "/assessment" || previousPage === "/mcq";
 
     if (isComingFromAssessmentOrMCQ) {
       // Prevent back navigation
       const handlePopState = (event) => {
         event.preventDefault();
-        navigate("/courses");  // Redirect user to courses page when back button is pressed
+        navigate("/courses"); // Redirect user to courses page when back button is pressed
       };
 
-      window.history.pushState(null, null);  // Prevent user from going back
-      window.addEventListener("popstate", handlePopState);  // Listen to back navigation
+      window.history.pushState(null, null); // Prevent user from going back
+      window.addEventListener("popstate", handlePopState); // Listen to back navigation
 
       return () => {
-        window.removeEventListener("popstate", handlePopState);  // Cleanup event listener
+        window.removeEventListener("popstate", handlePopState); // Cleanup event listener
       };
     }
   }, [navigate, location.state?.from]);
@@ -64,10 +65,12 @@ const DashBoard = () => {
       if (!C_ID) return;
 
       try {
-        const response = await axios.get(
-          `http://localhost:1000/course/${C_ID}`
-        );
-        setCourses(response.data);
+        const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
+
+        if(response.status === 200){
+          setCourses(response.data);
+        }
+
       } catch (error) {
         console.error(
           "Fetch error:",
@@ -81,7 +84,9 @@ const DashBoard = () => {
 
     if (State === "New") {
       if (postUserData()) {
-        toast.success('You are Enrolled in '+courseTitle+' at level '+level)
+        toast.success(
+          "You are Enrolled in " + courseTitle + " at level " + level
+        );
       }
     }
     fetchCourses();
@@ -111,7 +116,7 @@ const DashBoard = () => {
 
           <div className="h-1 w-3/4 mx-auto bg-gradient-to-r from-gray-800 via-yellow-500 to-gray-800 my-4 rounded-full"></div>
           <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-            <ProgressBar Level={level} pp="50" points="250" />
+            <ProgressBar Level={level} course_title={courseTitle} total={filteredData.length} />
           </aside>
           {/* Toggle Switch */}
           <label className="flex items-center justify-center mt-8 mb-6 cursor-pointer relative">
@@ -146,16 +151,16 @@ const DashBoard = () => {
           {/* Conditional Rendering based on the selected view */}
           <div className="mt-8">
             {view === "video" ? (
-              <Videos courses={filteredData} C_ID={C_ID}/>
+              <Videos courses={filteredData} C_ID={C_ID} />
             ) : (
-              <Article courses={filteredData} C_ID={C_ID}/>
+              <Article courses={filteredData} C_ID={C_ID} />
             )}
           </div>
         </article>
 
         {/* Right section - Progress Bar */}
         <aside className="hidden lg:block lg:w-1/4 p-2 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-          <ProgressBar Level={level} pp="50" points="25" />
+          <ProgressBar Level={level} course_title={courseTitle} total={filteredData.length} />
         </aside>
       </section>
     </main>
