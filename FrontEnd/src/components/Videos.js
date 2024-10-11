@@ -9,7 +9,6 @@ const Videos = ({ courses }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo?.userID; // Check if userInfo exist
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
-  console.log(watchedVideos)
   const dispatch= useDispatch()
 
   useEffect(() => {

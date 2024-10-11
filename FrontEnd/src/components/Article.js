@@ -31,7 +31,6 @@ const Article = ({ courses, C_ID }) => {
             console.error("Invalid JSON structure in articles:", error);
             return null; // Skip rendering if there's a parsing error
           }
-
           // Determine if the article can be accessed
          
           const isFirstArticle = course.id === courses[0].id; // Check if it's the first article
