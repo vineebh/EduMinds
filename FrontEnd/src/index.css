@@ -7,8 +7,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
- 
 }
+
+
 /* styles.css or App.module.css */
 .shadow-all-sides {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Customize as needed */
