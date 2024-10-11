@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { useLocation, useNavigate } from "react-router-dom";
 import Chatbot from "../components/Chatbot";
@@ -169,6 +169,12 @@ const VideoPlayerPage = () => {
           className="bg-gray-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
         >
           Go Back
+        </button>
+        <button
+          onClick={() => navigate(-1)}
+          className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
+        >
+          Back to Videos
         </button>
         <button
           onClick={toggleChatbot}

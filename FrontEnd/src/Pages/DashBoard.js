@@ -104,13 +104,8 @@ const DashBoard = () => {
     }
   }, [level]);
 
-  const filteredData = courses.filter((data) => data?.level === Level);
-  
-  useEffect(()=> {
-    console.log(courses)
-    console.log(Level)
 
-  },[filteredData])
+  const filteredData = courses.filter((data) => data.level === Level);
 
   return (
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
