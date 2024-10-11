@@ -37,8 +37,16 @@ const Videos = ({ courses }) => {
 
   // Navigate to the VideoPlayerPage
   const handleWatchClick = async (videoUrl, topic_name, videoId, index) => {
+    navigate("/video", { 
+            state: { 
+              videoUrl, 
+              topic_name, 
+              videos: courses, 
+              currentIndex: index 
+            } 
+          });
     // Allow navigation only if the video is unlocked (i.e., the first video or the previous video is watched)
-    if (index === 0 || watchedVideos.includes(courses[index - 1].id)) {
+    /*if (index === 0 || watchedVideos.includes(courses[index - 1].id)) {
       // Update watched videos in the database
       try {
         const response = await axios.post("http://localhost:1000/watched_videos", { 
@@ -65,7 +73,7 @@ const Videos = ({ courses }) => {
       }      
     } else {
       toast.error("You must watch the previous video before accessing this one.");
-    }
+    }*/
   };
 
   return (

@@ -53,6 +53,7 @@ const VideoPlayerPage = () => {
     // Mark the current video as watched in the database
     if (!watchedVideos.includes(currentIndex)) {
       try {
+        console.log(email_id,currentIndex)
         const response = await axios.post('http://localhost:1000/watched_videos', {
           email_id,
           video_id: currentIndex, // Ensure currentIndex refers to the video ID
@@ -107,7 +108,7 @@ const VideoPlayerPage = () => {
       toast.error("You have reached the last video.");
     }
   };
-
+console.log(watchedVideos)
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16">
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
