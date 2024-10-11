@@ -7,6 +7,7 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
+
 // Home, Courses
 app.get('/courses', async (req, res) => {
     try {
@@ -66,6 +67,7 @@ app.get('/skills/:C_ID', async (req, res) => {
         res.status(500).json({ error: "Error fetching data" });
     }
 });
+
 
 // MCQ, everyDayQ
 app.post('/assessment/questions', async (req, res) => {
