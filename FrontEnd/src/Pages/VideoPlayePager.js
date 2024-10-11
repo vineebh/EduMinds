@@ -1,46 +1,32 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import ReactPlayer from "react-player";
 import { useLocation, useNavigate } from "react-router-dom";
 import Chatbot from "../components/Chatbot";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setWatchedVideos } from "../store/progressSlice";
 
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { videoUrl, topic_name, videos, currentIndex} = location.state || {};
+  const {
+    videoUrl,
+    topic_name,
+    videos,
+    currentIndex,
+    videoId,
+  } = location.state || {};
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
   const playerRef = useRef(null);
-  const [watchedVideos, setWatchedVideos] = useState([]);
-  const userInfo = useSelector((state) => state.auth.userInfo)
-  const email_id = userInfo.userId;
-
-  // Fetch watched videos on component mount
-  useEffect(() => {
-    const fetchWatchedVideos = async () => {
-        if (!email_id) return; // Safety check to avoid making requests with undefined email_id
-
-        try {
-            const response = await axios.get(`http://localhost:1000/watched_videos/${email_id}`);
-            
-            if (response.status === 200) {
-                setWatchedVideos(response.data); // Assuming response.data is an array of video IDs
-            } else {
-                throw new Error("Failed to fetch watched videos");
-            }
-        } catch (error) {
-            console.error("Error fetching watched videos:", error);
-        }
-    };
-
-    fetchWatchedVideos();
-  }, [email_id]);
-
-
-  // Toggle Chatbot Visibility
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const email_id = userInfo?.userID;
+  const watchedVideos = useSelector((state) => state.progress.watchedVideos);
+  const dispatch = useDispatch();
+  
+  // Toggle Chatbot visibility
   const toggleChatbot = () => {
     setIsChatbotVisible(!isChatbotVisible);
   };
@@ -51,23 +37,26 @@ const VideoPlayerPage = () => {
     toast.success("Video finished! Unlocking next video...");
 
     // Mark the current video as watched in the database
-    if (!watchedVideos.includes(currentIndex)) {
+    if (!watchedVideos.includes(videoId)) {
       try {
-        const response = await axios.post('http://localhost:1000/watched_videos', {
-          email_id,
-          video_id: currentIndex, // Ensure currentIndex refers to the video ID
-        });
-        if (response.status === 201) { // 201 for created response
-          setWatchedVideos(prev => [...prev, currentIndex]); // Update the watched videos list
-          console.log("Video marked as watched:", currentIndex);
+        const response = await axios.post(
+          "http://localhost:1000/watched_videos",
+          {
+            email_id,
+            watched_video_id: videoId, // Ensure this refers to the actual video ID
+          }
+        ); 
+        if (response.status === 200) {
+          dispatch(setWatchedVideos((prev) => ([...prev, videoId])));
+          console.log("Video marked as watched:", videoId);
         }
       } catch (error) {
         console.error("Error marking video as watched:", error);
-      }      
+      }
     }
   };
 
-  // Handle speed change
+  // Handle playback speed change
   const handleSpeedChange = (event) => {
     setPlaybackSpeed(parseFloat(event.target.value));
   };
@@ -80,14 +69,14 @@ const VideoPlayerPage = () => {
   // Navigate to the next video
   const handleNextVideo = () => {
     console.log("Current Index:", currentIndex);
-    
+
     // Check if there are more videos
     if (videos && Array.isArray(videos) && currentIndex < videos.length - 1) {
       const nextVideo = videos[currentIndex + 1]; // Get the next video
       console.log("Next Video:", nextVideo);
 
       // Check if the current video has been watched
-      if (watchedVideos.includes(currentIndex)) {
+      if (watchedVideos.includes(videoId)) {
         console.log("Current video watched. Navigating to next video...");
 
         // Navigate to the next video
@@ -97,11 +86,14 @@ const VideoPlayerPage = () => {
             topic_name: nextVideo.topic_name,
             videos,
             currentIndex: currentIndex + 1,
-            email_id, // Pass userEmail to the next video
+            watchedVideos,
+            videoId: nextVideo.id, // Pass the next video ID
           },
         });
       } else {
-        toast.error("You must watch the current video before accessing the next one.");
+        toast.error(
+          "You must watch the current video before accessing the next one."
+        );
       }
     } else {
       toast.error("You have reached the last video.");
@@ -121,10 +113,9 @@ const VideoPlayerPage = () => {
               ref={playerRef}
               url={videoUrl}
               controls={true}
-              onEnded={handleVideoEnd} // Trigger when video ends
+              onEnded={handleVideoEnd}
               width="100%"
               height="400px"
-              className="react-player"
               playbackRate={playbackSpeed}
               volume={volume}
             />
@@ -136,17 +127,17 @@ const VideoPlayerPage = () => {
         </div>
       </div>
 
-      {/* Controls for Playback Speed and Volume */}
-      <div className="flex flex-col md:flex-row items-center gap-x-6 mt-4">
+      {/* Playback Speed and Volume Controls */}
+      <div className="flex flex-col md:flex-row items-center gap-6 mt-4">
         <div className="flex items-center">
-          <label className="text-white" htmlFor="playback-speed">
+          <label className="text-white mr-2" htmlFor="playback-speed">
             Playback Speed:
           </label>
           <select
             id="playback-speed"
             value={playbackSpeed}
             onChange={handleSpeedChange}
-            className="ml-2 px-2 py-1 rounded bg-gray-800 text-white"
+            className="px-3 py-1 rounded-md bg-gray-800 text-white shadow focus:outline-none focus:ring focus:ring-blue-300"
           >
             <option value={0.5}>0.5x</option>
             <option value={1}>1x</option>
@@ -155,59 +146,46 @@ const VideoPlayerPage = () => {
           </select>
         </div>
         <div className="flex items-center mt-2 md:mt-0">
-          <label className="text-white" htmlFor="volume">
+          <label className="text-white mr-2" htmlFor="volume">
             Volume:
           </label>
           <input
-            type="range"
             id="volume"
-            min="0"
-            max="1"
-            step="0.1"
+            type="range"
+            min={0}
+            max={1}
+            step={0.1}
             value={volume}
             onChange={handleVolumeChange}
-            className="ml-2 w-24 md:w-32"
+            className="ml-2 h-1 w-32 bg-gray-600 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring focus:ring-blue-300"
           />
         </div>
       </div>
 
-      {/* Toggle Button for Chatbot */}
-      <div className="flex items-center gap-x-6 mt-10 justify-center flex-wrap">
+      {/* Chatbot and Buttons Section */}
+      <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
         <button
-          onClick={() => navigate(-1)}
-          className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
+          onClick={() => navigate(-1)} // Use navigate(-1) to go back
+          className="bg-gray-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
         >
-          Back to Videos
+          Go Back
         </button>
         <button
           onClick={toggleChatbot}
-          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-200"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
         >
           {isChatbotVisible ? "Hide Chatbot" : "Ask Doubt to AI"}
         </button>
-        
         <button
           onClick={handleNextVideo}
-          className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
+          className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
         >
-          Next
+          Next Video
         </button>
       </div>
 
-      {/* Chatbot Modal */}
-      {isChatbotVisible && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center w-full">
-          <div className="relative bg-white rounded-lg shadow-lg w-3/4 h-max z-10 overflow-hidden">
-            <div className="h-full w-full">
-              <Chatbot toggleChatbot={toggleChatbot} />
-            </div>
-          </div>
-          <div
-            className="fixed inset-0 bg-black opacity-50 z-0"
-            onClick={toggleChatbot}
-          ></div>
-        </div>
-      )}
+      {/* Chatbot Component */}
+      {isChatbotVisible && <Chatbot  setIsChatbotVisible={setIsChatbotVisible}/>}
     </div>
   );
 };

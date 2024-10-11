@@ -32,7 +32,7 @@ app.get('/checkuser', async (req, res) => {
 
         if (data.length === 0) {
             console.log(`Email not found: ${email}`);
-            return res.status(404).json({ msg: 'Email not found' });
+            return res.status(201).json({ msg: [] });
         }
 
         const userCourses = data.map(course => ({
@@ -267,8 +267,9 @@ app.get('/watched_videos/:email', async (req, res) => {
     }
     try {
         const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ?', [email]);
-        const watchedVideoIds = rows.map(row => row.video_id);
+        const watchedVideoIds = rows.map(row => row.watched_video_id);
         res.status(200).json(watchedVideoIds);
+        console.log(watchedVideoIds)
     } catch (error) {
         console.error("Error fetching watched videos:", error);
         res.status(500).json({ error: 'Internal server error' });
