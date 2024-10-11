@@ -38,7 +38,7 @@ const Courses = () => {
           setEnroll(
             res.data.data.map((course) => ({
               course_title: course.course_title,
-              level: course.level,
+              level: course.level
             }))
           );
         }

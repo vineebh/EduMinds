@@ -43,12 +43,14 @@ const VideoPlayerPage = () => {
           "http://localhost:1000/watched_videos",
           {
             email_id,
-            watched_video_id: videoId, // Ensure this refers to the actual video ID
+            watched_video_id: videoId,
           }
         ); 
-        if (response.status === 200) {
-          dispatch(setWatchedVideos((prev) => ([...prev, videoId])));
-          console.log("Video marked as watched:", videoId);
+        if (response.status === 201) {
+          dispatch(setWatchedVideos([...watchedVideos, videoId]));
+          toast.success("Video marked as watched:", videoId);
+          // call post(/update_points_and_level) api
+          // body={email, course_title, new_points:5}
         }
       } catch (error) {
         console.error("Error marking video as watched:", error);
@@ -76,7 +78,7 @@ const VideoPlayerPage = () => {
       console.log("Next Video:", nextVideo);
 
       // Check if the current video has been watched
-      if (watchedVideos.includes(videoId)) {
+      if (Array.isArray(watchedVideos) && watchedVideos.includes(videoId)) {
         console.log("Current video watched. Navigating to next video...");
 
         // Navigate to the next video
@@ -101,7 +103,7 @@ const VideoPlayerPage = () => {
   };
 console.log(watchedVideos)
   return (
-    <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16">
+    <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4">
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
         {topic_name ? topic_name : "Now Playing"}
       </h2>
@@ -169,18 +171,6 @@ console.log(watchedVideos)
           className="bg-gray-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
         >
           Go Back
-        </button>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
-        >
-          Back to Videos
-        </button>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
-        >
-          Back to Videos
         </button>
         <button
           onClick={toggleChatbot}

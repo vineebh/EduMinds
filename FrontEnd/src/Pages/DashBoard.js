@@ -115,7 +115,7 @@ const DashBoard = () => {
 
           <div className="h-1 w-3/4 mx-auto bg-gradient-to-r from-gray-800 via-yellow-500 to-gray-800 my-4 rounded-full"></div>
           <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-            <ProgressBar Level={level} pp="50" points="250" />
+            <ProgressBar Level={level} course_title={courseTitle} total={filteredData.length} />
           </aside>
           {/* Toggle Switch */}
           <label className="flex items-center justify-center mt-8 mb-6 cursor-pointer relative">
@@ -159,7 +159,7 @@ const DashBoard = () => {
 
         {/* Right section - Progress Bar */}
         <aside className="hidden lg:block lg:w-1/4 p-2 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-          <ProgressBar Level={level} pp={50} points={25} />
+          <ProgressBar Level={level} course_title={courseTitle} total={filteredData.length} />
         </aside>
       </section>
     </main>

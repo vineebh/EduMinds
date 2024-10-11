@@ -80,6 +80,8 @@ const Test = () => {
                 answers: answerArray,
             });
             toast.success(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
+            // call post(/update_points_and_level) api 
+            // body={email, course_title, new_points: 5*response.data.correct }
             window.history.back();
         } catch (error) {
             console.error('Error during submission:', error);

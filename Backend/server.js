@@ -17,7 +17,7 @@ app.get('/courses', async (req, res) => {
     }
 });
 
-// Check user courses
+// Check user courses   courses
 app.get('/checkuser', async (req, res) => {
     try {
         const { email } = req.query;
@@ -25,8 +25,6 @@ app.get('/checkuser', async (req, res) => {
         if (!email) {
             return res.status(400).json({ msg: 'Email is required' });
         }
-
-        console.log(`Checking courses for email: ${email}`);
 
         const [data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
 
@@ -181,7 +179,7 @@ app.post('/assessment/submit', async (req, res) => {
     }
 });
 
-// User data
+// Dashboard
 app.post('/userdata', async (req, res) => {
     const { email_id, course_title, Level } = req.body;
 
@@ -189,9 +187,17 @@ app.post('/userdata', async (req, res) => {
         return res.status(400).json({ error: 'All fields are required: email_id, course_title, level' });
     }
 
+    const calculatepoints = (Level) => {
+        if (Level === 'Advanced') return 200;
+        if (Level === 'Intermediate') return 100;
+        return 0;
+    };
+
+    const points = calculatepoints(Level);
+
     try {
-        const query = 'INSERT INTO users (email_id, course_title, level, datentime) VALUES (?, ?, ?, NOW())';
-        await db.query(query, [email_id, course_title, Level]);
+        const query = 'INSERT INTO users (email_id, course_title, level, points, datentime) VALUES (?, ?, ?, ?, NOW())';
+        await db.query(query, [email_id, course_title, Level, points]);
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
         console.error("Error in /userdata:", error);
@@ -230,8 +236,26 @@ app.get('/course/:c_id', async (req, res) => {
     }
 });
 
-// Route to log watched videos
 
+// videos   watched
+app.get('/watched_videos/:email', async (req, res) => {
+    const email = req.params.email;
+
+    if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+    }
+    try {
+        const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ?', [email]);
+        const watchedVideoIds = rows.map(row => row.watched_video_id);
+        res.status(200).json(watchedVideoIds);
+    } catch (error) {
+        console.error("Error fetching watched videos:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+
+//  videos   add video
 app.post('/watched_videos', async (req, res) => {
     const { email_id, watched_video_id } = req.body;
 
@@ -256,94 +280,88 @@ app.post('/watched_videos', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-  
 
-app.get('/watched_videos/:email', async (req, res) => {
-    const email = req.params.email;
 
-    if (!email) {
-        return res.status(400).json({ error: 'Email is required' });
-    }
+//  progress    get points
+app.post('/userpoints', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ?', [email]);
-        const watchedVideoIds = rows.map(row => row.watched_video_id);
-        res.status(200).json(watchedVideoIds);
-        console.log(watchedVideoIds)
-    } catch (error) {
-        console.error("Error fetching watched videos:", error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-  });
+        const { email, course_title } = req.body;
 
-
-    //everything above this is dynamic api
-    app.post('/profile', async (req, res) => {
-        try {
-            const { email_id, course_title, level } = req.body;
-    
-            if (!email_id || !course_title||!level||!test_passed) {
-                return res.status(400).json({error:'All field are required fields'});
-            }
-    
-            const selectQuery = `
-                SELECT chapters_completed FROM profiles 
-                WHERE email_id = ? AND course_title = ?`;
-            
-            const [selectResult] = await db.query(selectQuery, [email_id, course_title]);
-    
-            let chapters_completed = 0;
-    
-            if (selectResult.length > 0) {
-                chapters_completed = selectResult[0].chapters_completed;
-            }
-    
-            chapters_completed += 1;
-    
-            let updateFields = [];
-            let updateValues = [];
-    
-            if (level) {
-                updateFields.push('level = ?');
-                updateValues.push(level);
-            }
-    
-            updateFields.push('chapters_completed = ?');
-            updateValues.push(chapters_completed);
-    
-            updateFields.push('last_update_date = NOW()');
-    
-            updateValues.push(email_id, course_title);
-    
-            const updateQuery = `
-                UPDATE profiles 
-                SET ${updateFields.join(', ')} 
-                WHERE email_id = ? AND course_title = ?`;
-    
-            const [updateResult] = await db.query(updateQuery, updateValues);
-    
-            if (updateResult.affectedRows === 0) {
-                const insertQuery = `
-                    INSERT INTO profiles (email_id, course_title, level, chapters_completed, last_update_date) 
-                    VALUES (?, ?, ?, ?, NOW())`;
-    
-                const insertValues = [email_id, course_title, level || '', chapters_completed || 0];
-    
-                db.query(insertQuery, insertValues, (error, result) => {
-                    if (error) {
-                        console.error('Error inserting data:', error);
-                        return res.status(500).json({ message: 'Error enrolling user' });
-                    }
-                    console.log(result);
-                    res.status(201).json({ message: 'User enrolled successfully' });
-                });
-            } else {
-                res.status(200).json({ message: 'Profile updated successfully' });
-            }
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ error: 'Internal Server Error' });
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).json({ msg: 'Email is required' });
         }
-    });
+
+        // Query the database for points based on email and course_title
+        const [data] = await db.query(
+            'SELECT points FROM users WHERE email_id = ? and course_title = ?',
+            [email, course_title]
+        );
+
+        // If no records found, return a 404 error with 0 points
+        if (data.length === 0) {
+            return res.status(404).json({ msg: 'User not found or not enrolled in the course', data: { points: 0 } });
+        }
+
+        // Return the points if user found
+        const userPoints = data[0].points;
+        return res.status(200).json({ data: { points: userPoints } });
+    } catch (error) {
+        console.error('Error occurred during fetching data:', error);
+        res.status(500).json({ error: 'An error occurred while fetching user data' });
+    }
+});
+
+
+//  videos,test  update points
+app.post('/update_points_and_level', async (req, res) => {
+    try {
+        const { email, course_title, new_points } = req.body;
+
+        // Check if required fields are provided
+        if (!email || !course_title || typeof new_points !== 'number') {
+            return res.status(400).json({ msg: 'Email, course title, and new points are required' });
+        }
+
+        // Query the database for current points and level based on email and course_title
+        const [data] = await db.query(
+            'SELECT points, level FROM users WHERE email_id = ? and course_title = ?',
+            [email, course_title]
+        );
+
+        // If no records found, return a 404 error
+        if (data.length === 0) {
+            return res.status(404).json({ msg: 'User not found or not enrolled in the course' });
+        }
+
+        // Calculate the updated points
+        const currentPoints = data[0].points;
+        const updatedPoints = currentPoints + new_points;
+
+        // Define a function to calculate the level based on points
+        const calculateLevel = (points) => {
+            if (points >= 260) return 'Advanced';
+            if (points >= 100) return 'Intermediate';
+            return 'Beginner';
+        };
+
+        // Calculate the new level based on updated points
+        const newLevel = calculateLevel(updatedPoints);
+
+        // Update the user's points and level in the database
+        await db.query(
+            'UPDATE users SET points = ?, level = ? WHERE email_id = ? and course_title = ?',
+            [updatedPoints, newLevel, email, course_title]
+        );
+
+        // Return success response with the updated points and level
+        return res.status(200).json({ data: { points: updatedPoints, level: newLevel } });
+    } catch (error) {
+        console.error('Error occurred during updating points and level:', error);
+        return res.status(500).json({ error: 'An error occurred while updating user data' });
+    }
+});
+
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");

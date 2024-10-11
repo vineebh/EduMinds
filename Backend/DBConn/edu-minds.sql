@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 10, 2024 at 05:45 PM
+-- Generation Time: Oct 11, 2024 at 05:40 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -441,21 +441,6 @@ INSERT INTO `level` (`C_ID`, `levels`, `beginner`, `intermediate`, `advance`, `p
 -- --------------------------------------------------------
 
 --
--- Table structure for table `profiles`
---
-
-CREATE TABLE `profiles` (
-  `id` int(11) NOT NULL,
-  `email_id` varchar(280) NOT NULL,
-  `course_ID` int(11) NOT NULL,
-  `level` varchar(240) NOT NULL,
-  `points` int(11) NOT NULL,
-  `last_update_date` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `progress`
 --
 
@@ -465,6 +450,22 @@ CREATE TABLE `progress` (
   `watched_video_id` int(11) NOT NULL,
   `last_updated` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `progress`
+--
+
+INSERT INTO `progress` (`id`, `email_id`, `watched_video_id`, `last_updated`) VALUES
+(1, 'edumindsup20@gmail.com', 101122, '2024-10-11 00:08:22'),
+(2, 'edumindsup20@gmail.com', 101163, '2024-10-11 18:02:33'),
+(4, 'edumindsup20@gmail.com', 101165, '2024-10-11 18:48:10'),
+(5, 'edumindsup20@gmail.com', 101164, '2024-10-11 18:54:54'),
+(6, 'edumindsup20@gmail.com', 101166, '2024-10-11 18:56:53'),
+(7, 'edumindsup20@gmail.com', 101167, '2024-10-11 19:02:33'),
+(8, 'edumindsup20@gmail.com', 101168, '2024-10-11 19:09:16'),
+(9, 'edumindsup20@gmail.com', 101169, '2024-10-11 19:11:59'),
+(10, 'edumindsup20@gmail.com', 101170, '2024-10-11 20:34:59'),
+(11, 'edumindsup20@gmail.com', 101171, '2024-10-11 20:39:42');
 
 -- --------------------------------------------------------
 
@@ -790,6 +791,7 @@ CREATE TABLE `users` (
   `email_id` varchar(280) NOT NULL,
   `course_title` varchar(240) NOT NULL,
   `level` varchar(200) NOT NULL,
+  `points` int(11) DEFAULT NULL,
   `datentime` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -797,11 +799,8 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `email_id`, `course_title`, `level`, `datentime`) VALUES
-(4, 'akkii77580@gg.co', 'Excel', 'Beginner', '2024-10-02 23:19:32'),
-(24, 'edumindsup20@gmail.com', 'Data Analysis', 'Advanced', '2024-10-07 21:29:41'),
-(27, 'edumindsup20@gmail.com', 'Python', 'Advanced', '2024-10-07 22:39:26'),
-(28, 'edumindsup20@gmail.com', 'Excel', 'Intermediate', '2024-10-07 23:00:47');
+INSERT INTO `users` (`id`, `email_id`, `course_title`, `level`, `points`, `datentime`) VALUES
+(31, 'edumindsup20@gmail.com', 'Python', 'Advanced', 265, '2024-10-11 20:55:27');
 
 --
 -- Indexes for dumped tables
@@ -844,12 +843,6 @@ ALTER TABLE `level`
   ADD PRIMARY KEY (`C_ID`);
 
 --
--- Indexes for table `profiles`
---
-ALTER TABLE `profiles`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `progress`
 --
 ALTER TABLE `progress`
@@ -881,13 +874,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `progress`
 --
 ALTER TABLE `progress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
