@@ -104,7 +104,6 @@ const DashBoard = () => {
     }
   }, [level]);
 
-
   const filteredData = courses.filter((data) => data.level === Level);
 
   return (
