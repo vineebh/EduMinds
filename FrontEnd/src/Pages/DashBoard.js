@@ -66,12 +66,13 @@ const DashBoard = () => {
 
       try {
         const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
+       console.log(response)
 
-        if(response.success){
+        if( response.status === 200){
           setCourses(response.data);
           console.log(response.data)
+        
         }
-
       } catch (error) {
         console.error(
           "Fetch error:",
