@@ -61,14 +61,16 @@ const Course = ({ courseData, Enroll }) => {
         </div>
 
         {/* Description Section */}
-        <div className="w-full sm:w-2/3 mt-4 sm:mt-0">
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed pr-0 sm:pr-4 lg:pr-6 text-white line-clamp-3">
+        <div className="w-full sm:w-2/3 h-max mt-4 sm:mt-0">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed pr-0 sm:pr-4 lg:pr-6 text-white ">
             <span className="font-bold text-sm sm:text-base md:text-lg lg:text-xl">
               Description:
             </span>{" "}
             {description}
           </p>
         </div>
+
+        
       </div>
 
       {/* Assessment Button */}

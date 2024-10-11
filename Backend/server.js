@@ -256,7 +256,6 @@ app.post('/watched_videos', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
   
 
 app.get('/watched_videos/:email', async (req, res) => {
@@ -265,18 +264,16 @@ app.get('/watched_videos/:email', async (req, res) => {
     if (!email) {
         return res.status(400).json({ error: 'Email is required' });
     }
-
     try {
         const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ?', [email]);
         const watchedVideoIds = rows.map(row => row.watched_video_id);
         res.status(200).json(watchedVideoIds);
+        console.log(watchedVideoIds)
     } catch (error) {
         console.error("Error fetching watched videos:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
-});
-
-  
+  });
 
 
     //everything above this is dynamic api
