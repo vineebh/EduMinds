@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate and useLocation
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Videos from "../components/Videos";
@@ -101,6 +101,7 @@ const DashBoard = () => {
       setLevel(3);
     }
   }, [level]);
+
 
   const filteredData = courses.filter((data) => data.level === Level);
 
