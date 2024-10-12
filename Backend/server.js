@@ -363,6 +363,37 @@ app.post('/update_points_and_level', async (req, res) => {
 });
 
 
+//  questions    get completed
+app.post('/completed_questions', async (req, res) => {
+    try {
+        const { email, course_title } = req.body;
+
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).json({ msg: 'Email is required' });
+        }
+
+        // Query the database for question_id based on email and course_title
+        const [data] = await db.query(
+            'SELECT question_id FROM users_questions WHERE email_id = ? and course_title = ?',
+            [email, course_title]
+        );
+
+        // If no records found, return a 404 error with 0 question_id
+        if (data.length === 0) {
+            return res.status(200).json({ msg: 'User not found or no questions completed', data: { question_id: 0 } });
+        }
+
+        // Return the question_id if user found
+        const userQuestions = data[0].question_id;
+        return res.status(200).json({ data: { question_id: userQuestions } });
+    } catch (error) {
+        console.error('Error occurred during fetching data:', error);
+        res.status(500).json({ error: 'An error occurred while fetching user data' });
+    }
+});
+
+
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");
 });
