@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { signOutUser } from "../firebase/auth";
 import { setIdToken, setLoginStatus, setIsLogin } from "../store/authSlice";
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
 const Header = () => {
@@ -117,64 +118,109 @@ const Header = () => {
 
       {/* Sidebar for mobile view */}
       <div
-        className={`fixed text-center top-0 right-0 h-full w-64 bg-neutral-900 p-4 transform transition-transform duration-300 ${
+        className={`fixed text-center top-0 right-0 h-full w-64 bg-neutral-900 p-4 flex flex-col justify-between transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <button
-          className="text-white text-3xl float-right"
-          onClick={toggleSidebar}
-        >
-          <IoMdClose />
-        </button>
-        <div className="flex flex-col mt-4">
-          <Link
-            to="/"
-            onClick={handleLinkClick}
-            className="py-2 text-white hover:text-gray-300 transition duration-300"
+        <div>
+          <button
+            className="text-white text-3xl float-right"
+            onClick={toggleSidebar}
           >
-            Home
-          </Link>
-
-          <Link
-            to="/courses"
-            onClick={handleLinkClick}
-            className="py-2 text-white hover:text-gray-300 transition duration-300"
-          >
-            Courses
-          </Link>
-
-          <Link
-            to="/about"
-            onClick={handleLinkClick}
-            className="py-2 text-white hover:text-gray-300 transition duration-300"
-          >
-            About
-          </Link>
-          <Link
-            to="/contact"
-            onClick={handleLinkClick}
-            className="py-2 text-white hover:text-gray-300 transition duration-300"
-          >
-            Contact
-          </Link>
-
-          {loginStatus ? (
-            <button
-              onClick={logoutHandler}
-              className="py-1 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
-            >
-              Logout
-            </button>
-          ) : (
+            <IoMdClose />
+          </button>
+          <div className="flex flex-col mt-4">
             <Link
-              to="/auth"
+              to="/"
               onClick={handleLinkClick}
-              className="py-1 px-2 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
+              className="py-2 text-white hover:text-gray-300 transition duration-300"
             >
-              Login
+              Home
             </Link>
-          )}
+
+            <Link
+              to="/courses"
+              onClick={handleLinkClick}
+              className="py-2 text-white hover:text-gray-300 transition duration-300"
+            >
+              Courses
+            </Link>
+
+            <Link
+              to="/about"
+              onClick={handleLinkClick}
+              className="py-2 text-white hover:text-gray-300 transition duration-300"
+            >
+              About
+            </Link>
+            <Link
+              to="/contact"
+              onClick={handleLinkClick}
+              className="py-2 text-white hover:text-gray-300 transition duration-300"
+            >
+              Contact
+            </Link>
+
+            {loginStatus ? (
+              <button
+                onClick={logoutHandler}
+                className="py-1 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105 mt-4"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                onClick={handleLinkClick}
+                className="py-1 px-2 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105 mt-4"
+              >
+                Login
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Social Media Icons at the Bottom */}
+        <div className="flex flex-col items-center">
+          <div className="flex justify-center space-x-6">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-400 transition duration-300"
+            >
+              <FaFacebookF className="w-5 h-5 text-white" />
+            </a>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-400 transition duration-300"
+            >
+              <FaTwitter className="w-5 h-5 text-white" />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-400 transition duration-300"
+            >
+              <FaInstagram className="w-5 h-5 text-white" />
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-400 transition duration-300"
+            >
+              <FaLinkedin className="w-5 h-5 text-white" />
+            </a>
+          </div>
+
+          {/* Copyright */}
+          <div className="text-sm text-gray-200 hover:text-blue-600 mt-2 mb-3">
+            © {new Date().getFullYear()} EduMinds. All rights reserved.
+          </div>
         </div>
       </div>
     </header>

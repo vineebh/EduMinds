@@ -34,7 +34,7 @@ const VideoPlayerPage = () => {
   // Called when video ends
   const handleVideoEnd = async () => {
     console.log(`Video at index ${currentIndex} ended`);
-    toast.success("Video finished! Unlocking next video...");
+    toast.success("Video finished! ");
 
     // Mark the current video as watched in the database
     if (!watchedVideos.includes(videoId)) {
@@ -48,7 +48,7 @@ const VideoPlayerPage = () => {
         ); 
         if (response.status === 201) {
           dispatch(setWatchedVideos([...watchedVideos, videoId]));
-          toast.success("Video marked as watched:", videoId);
+          toast.success("Unlocking next video...");
           // call post(/update_points_and_level) api
           // body={email, course_title, new_points:5}
         }
