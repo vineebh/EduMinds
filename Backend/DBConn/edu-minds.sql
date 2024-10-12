@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 11, 2024 at 05:40 PM
+-- Generation Time: Oct 12, 2024 at 07:11 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `courses` (
   `c_id` int(11) NOT NULL,
   `title` varchar(250) NOT NULL,
-  `description` varchar(500) NOT NULL,
+  `description` text NOT NULL,
   `imageUrl` varchar(240) NOT NULL,
   `professorName` varchar(200) NOT NULL,
   `duration` varchar(200) NOT NULL
@@ -41,9 +41,9 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`c_id`, `title`, `description`, `imageUrl`, `professorName`, `duration`) VALUES
-(101, 'Python', 'This comprehensive Python course offers a series of in-depth videos and articles tailored for learners at all levels, from beginners to advanced. The curriculum begins with foundational topics such as data types, loops, and functions, and gradually advances to more complex subjects like object-oriented programming, file handling, and popular libraries such as NumPy, Pandas, and Matplotlib.\r\n\r\nLearners will engage in real-world projects and examples, gaining practical experience in Python applica', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8E6Xlh2VtOsV4vrygfHVm6xKybmctIDBYnA&s', 'Jenny\'s Lectures CS IT', '30 Hours'),
-(102, 'Excel', 'This Excel course is a comprehensive series designed for learners at all levels, from beginners to advanced users, offering a combination of video lessons and article-based resources. The course covers essential features such as formulas, functions, and data visualization techniques using charts and graphs, and progresses to advanced topics like pivot tables, VLOOKUP, and automation with macros and VBA.\r\n\r\nLearners will engage in real-world examples and projects, allowing them to apply their ski', 'https://omtsdigest.com/wp-content/uploads/2016/02/excel-1598646848.jpeg', 'Learnit Training', '28 Hours'),
-(103, 'Data Analysis', 'This Data Analysis course is an extensive program designed for both beginners and intermediate learners, offering a blend of video lessons and article-based resources. The course covers essential concepts such as data manipulation using Python and R, statistical analysis, and data visualization techniques. Learners will explore popular libraries like Pandas and NumPy, as well as tools such as Tableau to derive insights from data.\r\n\r\nAdvanced topics include machine learning fundamentals, regressi', 'https://www.shutterstock.com/image-photo/close-businesswoman-holding-graphs-hand-600nw-229854826.jpg', 'Top VarSity', '45 Hours');
+(101, 'Python', 'This comprehensive Python course offers a series of in-depth videos and articles tailored for learners at all levels, from beginners to advanced. The curriculum begins with foundational topics such as data types, loops, and functions, and gradually advances to more complex subjects like object-oriented programming, file handling, and popular libraries such as NumPy, Pandas, and Matplotlib.\r\n\r\nLearners will engage in real-world projects and examples, gaining practical experience in Python application development, data analysis, and automation. The course’s clear and concise teaching style makes Python easy to understand, with well-structured lessons and numerous opportunities for hands-on practice through quizzes and test exams.\r\n\r\nTo help you stay on track, we provide bite-sized content that enables you to effectively monitor your progress.Upon completion, learners are eligible to apply for a certificate.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8E6Xlh2VtOsV4vrygfHVm6xKybmctIDBYnA&s', 'Jenny\'s Lectures CS IT', '48 Hours'),
+(102, 'Excel', 'This Excel course is a comprehensive series designed for learners at all levels, from beginners to advanced users, offering a combination of video lessons and article-based resources. The course covers essential features such as formulas, functions, and data visualization techniques using charts and graphs, and progresses to advanced topics like pivot tables, VLOOKUP, and automation with macros and VBA.\r\n\r\nLearners will engage in real-world examples and projects, allowing them to apply their skills practically and enhance productivity in data management. The course’s clear and structured approach, complemented by quizzes, test exams, and hands-on practice, ensures learners achieve mastery of Excel’s tools. We also provide bite-sized content to help you effectively track your progress.Upon completion, learners are eligible to apply for a certificate.', 'https://omtsdigest.com/wp-content/uploads/2016/02/excel-1598646848.jpeg', 'Learnit Training', '28 Hours'),
+(103, 'Data Analysis', 'This Data Analysis course is an extensive program designed for both beginners and intermediate learners, offering a blend of video lessons and article-based resources. The course covers essential concepts such as data manipulation using Python and R, statistical analysis, and data visualization techniques. Learners will explore popular libraries like Pandas and NumPy, as well as tools such as Tableau to derive insights from data.\r\n\r\nAdvanced topics include machine learning fundamentals, regression analysis, and ethical considerations in data handling. The course incorporates real-world case studies and projects, providing learners with practical experience in analyzing and interpreting data.\r\n\r\nWith a clear and structured approach, supplemented by quizzes, test exams, and hands-on practice, learners will master key data analysis techniques. Bite-sized content helps learners stay on track and monitor progress effectively.\r\nUpon completion, learners are eligible to apply for a certificate.', 'https://www.shutterstock.com/image-photo/close-businesswoman-holding-graphs-hand-600nw-229854826.jpg', 'Top VarSity', '45 Hours');
 
 -- --------------------------------------------------------
 
@@ -465,7 +465,8 @@ INSERT INTO `progress` (`id`, `email_id`, `watched_video_id`, `last_updated`) VA
 (8, 'edumindsup20@gmail.com', 101168, '2024-10-11 19:09:16'),
 (9, 'edumindsup20@gmail.com', 101169, '2024-10-11 19:11:59'),
 (10, 'edumindsup20@gmail.com', 101170, '2024-10-11 20:34:59'),
-(11, 'edumindsup20@gmail.com', 101171, '2024-10-11 20:39:42');
+(11, 'edumindsup20@gmail.com', 101171, '2024-10-11 20:39:42'),
+(12, 'edumindsup20@gmail.com', 101172, '2024-10-12 22:31:44');
 
 -- --------------------------------------------------------
 
@@ -798,6 +799,19 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `email_id`, `course_title`, `level`, `points`, `datentime`) VALUES
 (31, 'edumindsup20@gmail.com', 'Python', 'Advanced', 265, '2024-10-11 20:55:27');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users_questions`
+--
+
+CREATE TABLE `users_questions` (
+  `id` int(11) NOT NULL,
+  `email_id` varchar(280) NOT NULL,
+  `course_title` varchar(250) NOT NULL,
+  `question_id` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Indexes for dumped tables
 --
@@ -863,6 +877,12 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `users_questions`
+--
+ALTER TABLE `users_questions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -870,13 +890,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `progress`
 --
 ALTER TABLE `progress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT for table `users_questions`
+--
+ALTER TABLE `users_questions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
