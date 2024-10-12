@@ -71,7 +71,7 @@ const Footer = () => {
         </div>
 
         {/* Social Media Icons */}
-        <div className="flex space-x-6 mt-4 md:mt-0">
+        <div className="hidden md:flex flex-col items-center mt-4 md:mt-0 md:ml-6 p-4 space-x bg-transparent">
           <a
             href="https://facebook.com"
             target="_blank"
