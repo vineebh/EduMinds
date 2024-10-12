@@ -365,6 +365,29 @@ app.post('/update_points_and_level', async (req, res) => {
 });
 
 
+//  questions    post completed
+app.post('/mark_questions', async (req, res) => {
+    try {
+        const { email, course_title, topic_name } = req.body;
+
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).json({ msg: 'Email is required' });
+        }
+
+        // Insert data into the database
+        const query = 'INSERT INTO users_questions (email_id, course_title, topic_name) VALUES (?, ?, ?)';
+        const values = [email, course_title, topic_name];
+        await db.query(query, values);
+
+        res.status(201).json({ message: 'Question marked as done' });
+    } catch (error) {
+        console.error('Error occurred during inserting data:', error);
+        res.status(500).json({ error: 'An error occurred while marking the question' });
+    }
+});
+
+
 //  questions    get completed
 app.post('/completed_questions', async (req, res) => {
     try {
@@ -375,23 +398,25 @@ app.post('/completed_questions', async (req, res) => {
             return res.status(400).json({ msg: 'Email is required' });
         }
 
-        // Query the database for question_id based on email and course_title
+        // Query the database for completed topics based on email and course_title
         const [data] = await db.query(
-            'SELECT question_id FROM users_questions WHERE email_id = ? and course_title = ?',
+            'SELECT topic_name FROM users_questions WHERE email_id = ? AND course_title = ?',
             [email, course_title]
         );
 
-        // If no records found, return a 404 error with 0 question_id
+        // If no records found, return a message
         if (data.length === 0) {
-            return res.status(200).json({ msg: 'User not found or no questions completed', data: { question_id: 0 } });
+            return res.status(200).json({ msg: 'User not found or no questions completed', data: { topic_name: [] } });
         }
 
-        // Return the question_id if user found
-        const userQuestions = data[0].question_id;
-        return res.status(200).json({ data: { question_id: userQuestions } });
+        // Extract topic names from the query result
+        const topicNames = data.map((row) => row.topic_name);
+
+        // Return the list of completed topic names
+        return res.status(200).json({ data: { topic_name: topicNames } });
     } catch (error) {
         console.error('Error occurred during fetching data:', error);
-        res.status(500).json({ error: 'An error occurred while fetching user data' });
+        res.status(500).json({ error: 'An error occurred while fetching completed questions' });
     }
 });
 
