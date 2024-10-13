@@ -10,8 +10,16 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { videoUrl, topic_name, videos, currentIndex, videoId,C_ID ,level,courseTitle} =
-    location.state || {};
+  const {
+    videoUrl,
+    topic_name,
+    videos,
+    currentIndex,
+    videoId,
+    C_ID,
+    level,
+    courseTitle,
+  } = location.state || {};
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
@@ -39,13 +47,12 @@ const VideoPlayerPage = () => {
           {
             email_id,
             watched_video_id: videoId,
+            courseTitle: courseTitle,
           }
         );
         if (response.status === 201) {
           dispatch(setWatchedVideos([...watchedVideos, videoId]));
           toast.success("Unlocking next video...");
-          // call post(/update_points_and_level) api
-          // body={email, course_title, new_points:5}
         }
       } catch (error) {
         console.error("Error marking video as watched:", error);
@@ -65,7 +72,6 @@ const VideoPlayerPage = () => {
 
   // Navigate to the next video
   const handleNextVideo = () => {
-
     // Check if there are more videos
     if (videos && Array.isArray(videos) && currentIndex < videos.length - 1) {
       const nextVideo = videos[currentIndex + 1]; // Get the next video
@@ -83,8 +89,7 @@ const VideoPlayerPage = () => {
             videos,
             currentIndex: currentIndex + 1,
             watchedVideos,
-            videoId: nextVideo.id, 
-
+            videoId: nextVideo.id,
           },
         });
       } else {
@@ -93,12 +98,18 @@ const VideoPlayerPage = () => {
         );
       }
     } else {
-      navigate("/dashboard", {state :{C_ID, level, courseTitle  ,State:'abc'}});
+      navigate("/dashboard", {
+        state: { C_ID, level, courseTitle, State: "abc" },
+      });
       toast.success("  Your level is  Completed. Time to Level up");
-      
     }
   };
-  console.log(watchedVideos);
+  const dashboardHandler = () => {
+    navigate("/dashboard", {
+      state: { C_ID, level, courseTitle, State: "abc" },
+    });
+  };
+
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4">
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
@@ -180,6 +191,12 @@ const VideoPlayerPage = () => {
           className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
         >
           Next Video
+        </button>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+          onClick={dashboardHandler}
+        >
+          Dashboard
         </button>
       </div>
 

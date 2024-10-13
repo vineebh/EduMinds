@@ -119,8 +119,11 @@ const DashBoard = () => {
           <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
             <ProgressBar
               Level={level}
+              courseLevel ={Level}
               course_title={courseTitle}
               total={filteredData.length}
+              C_ID={C_ID}
+
             />
           </aside>
           {/* Toggle Switch */}
@@ -142,7 +145,7 @@ const DashBoard = () => {
                 <span>Article</span>
               </div>
               <div
-                className={`absolute left-2 w-10 h-10 bg-gray-900 rounded-full shadow-lg flex items-center justify-center transition-transform duration-500 ease-in-out transform ${
+                className={`absolute left-1 w-10 h-10 bg-gray-900 rounded-full shadow-lg flex items-center justify-center transition-transform duration-500 ease-in-out transform ${
                   view === "article" ? "translate-x-40" : "translate-x-0"
                 }`}
               >
@@ -178,6 +181,8 @@ const DashBoard = () => {
             Level={level}
             course_title={courseTitle}
             total={filteredData.length}
+            courseLevel ={Level}
+            C_ID={C_ID}
           />
          
         </aside>
