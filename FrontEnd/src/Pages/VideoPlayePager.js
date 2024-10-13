@@ -10,6 +10,7 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const {
     videoUrl,
     topic_name,
@@ -20,6 +21,9 @@ const VideoPlayerPage = () => {
     level,
     courseTitle,
   } = location.state || {};
+  const { videoUrl, topic_name, videos, currentIndex, videoId,C_ID ,level,courseTitle} =
+    location.state || {};
+
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
@@ -72,6 +76,7 @@ const VideoPlayerPage = () => {
 
   // Navigate to the next video
   const handleNextVideo = () => {
+
     // Check if there are more videos
     if (videos && Array.isArray(videos) && currentIndex < videos.length - 1) {
       const nextVideo = videos[currentIndex + 1]; // Get the next video
@@ -89,7 +94,10 @@ const VideoPlayerPage = () => {
             videos,
             currentIndex: currentIndex + 1,
             watchedVideos,
-            videoId: nextVideo.id,
+           
+            videoId: nextVideo.id, 
+
+
           },
         });
       } else {
@@ -98,6 +106,7 @@ const VideoPlayerPage = () => {
         );
       }
     } else {
+
       navigate("/dashboard", {
         state: { C_ID, level, courseTitle, State: "abc" },
       });
@@ -110,6 +119,12 @@ const VideoPlayerPage = () => {
     });
   };
 
+      navigate("/dashboard", {state :{C_ID, level, courseTitle  ,State:'abc'}});
+      toast.success("  Your level is  Completed. Time to Level up");
+      
+    }
+  };
+  console.log(watchedVideos);
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4">
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">

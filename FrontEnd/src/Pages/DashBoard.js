@@ -119,10 +119,14 @@ const DashBoard = () => {
           <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
             <ProgressBar
               Level={level}
+
               courseLevel ={Level}
               course_title={courseTitle}
               total={filteredData.length}
               C_ID={C_ID}
+
+              course_title={courseTitle}
+              total={filteredData.length}
 
             />
           </aside>
@@ -183,6 +187,7 @@ const DashBoard = () => {
             total={filteredData.length}
             courseLevel ={Level}
             C_ID={C_ID}
+
           />
          
         </aside>

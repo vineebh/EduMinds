@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Import axios
+
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { combineSlices } from "@reduxjs/toolkit";
 import { setQuestions } from "../store/testSlice";
 import { Navigate, useNavigate } from "react-router";
+
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
 
 const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
@@ -42,6 +47,7 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
     }
   }, [email, course_title]);
 
+  console.log(watchedVideos.length)
   useEffect(() => {
     if (total > 0) {
       const progressPercentage = Math.min(
@@ -78,6 +84,7 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
       <p className="text-yellow-400 text-lg mt-4 text-center">
         {points} points
       </p>
+
       <div className="flex justify-center space-x-4 mt-4">
         <button
           className="bg-teal-500 px-4 py-2 rounded-full shadow-md hover:bg-teal-600 transition-all"
@@ -89,6 +96,7 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
           Level Up
         </button>
       </div>
+
     </div>
   );
 };
