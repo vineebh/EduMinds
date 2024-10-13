@@ -366,7 +366,6 @@ app.post('/update_points_and_level', async (req, res) => {
 
 
 //  questions    get completed
-//  questions    get completed
 app.post('/completed_questions', async (req, res) => {
     try {
         const { email_id, course_title } = req.body;
