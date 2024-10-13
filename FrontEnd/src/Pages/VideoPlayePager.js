@@ -10,13 +10,8 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    videoUrl,
-    topic_name,
-    videos,
-    currentIndex,
-    videoId,
-  } = location.state || {};
+  const { videoUrl, topic_name, videos, currentIndex, videoId,C_ID ,level,courseTitle} =
+    location.state || {};
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
@@ -25,7 +20,7 @@ const VideoPlayerPage = () => {
   const email_id = userInfo?.userID;
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
   const dispatch = useDispatch();
-  
+
   // Toggle Chatbot visibility
   const toggleChatbot = () => {
     setIsChatbotVisible(!isChatbotVisible);
@@ -34,7 +29,7 @@ const VideoPlayerPage = () => {
   // Called when video ends
   const handleVideoEnd = async () => {
     console.log(`Video at index ${currentIndex} ended`);
-    toast.success("Video finished! Unlocking next video...");
+    toast.success("Video finished! ");
 
     // Mark the current video as watched in the database
     if (!watchedVideos.includes(videoId)) {
@@ -45,16 +40,16 @@ const VideoPlayerPage = () => {
             email_id,
             watched_video_id: videoId,
           }
-        ); 
+        );
         if (response.status === 201) {
           dispatch(setWatchedVideos([...watchedVideos, videoId]));
-          toast.success("Video marked as watched:", videoId);
+          toast.success("Unlocking next video...");
           // call post(/update_points_and_level) api
           // body={email, course_title, new_points:5}
         }
       } catch (error) {
         console.error("Error marking video as watched:", error);
-      }      
+      }
     }
   };
 
@@ -70,7 +65,6 @@ const VideoPlayerPage = () => {
 
   // Navigate to the next video
   const handleNextVideo = () => {
-    console.log("Current Index:", currentIndex);
 
     // Check if there are more videos
     if (videos && Array.isArray(videos) && currentIndex < videos.length - 1) {
@@ -89,7 +83,8 @@ const VideoPlayerPage = () => {
             videos,
             currentIndex: currentIndex + 1,
             watchedVideos,
-            videoId: nextVideo.id, // Pass the next video ID
+            videoId: nextVideo.id, 
+
           },
         });
       } else {
@@ -98,10 +93,12 @@ const VideoPlayerPage = () => {
         );
       }
     } else {
-      toast.error("You have reached the last video.");
+      navigate("/dashboard", {state :{C_ID, level, courseTitle  ,State:'abc'}});
+      toast.success("  Your level is  Completed. Time to Level up");
+      
     }
   };
-console.log(watchedVideos)
+  console.log(watchedVideos);
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4">
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
@@ -187,8 +184,9 @@ console.log(watchedVideos)
       </div>
 
       {/* Chatbot Component */}
-      {isChatbotVisible && <Chatbot  setIsChatbotVisible={setIsChatbotVisible}/>}
-
+      {isChatbotVisible && (
+        <Chatbot setIsChatbotVisible={setIsChatbotVisible} />
+      )}
     </div>
   );
 };

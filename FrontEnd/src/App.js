@@ -3,6 +3,7 @@ import { Route, Routes, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Auth from "./components/Auth/Auth";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Home from "./Pages/Home";
 import VideoPlayerPage from "./Pages/VideoPlayePager";
 import About from "./Pages/About";
@@ -42,6 +43,7 @@ function App() {
 
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 }
