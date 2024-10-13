@@ -1,21 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Chatbot from "../components/Chatbot";
 import ReactMarkdown from "react-markdown";
+import { useDispatch, useSelector } from "react-redux";
+import { setQuestions } from "../store/testSlice";
+import axios, { Axios } from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { combineSlices } from "@reduxjs/toolkit";
 
 const ArticleView = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const { articleData, topic_name, C_ID } = location.state;
+  const [loading, setLoading] = useState(true);
+  const { articleData, topic_name, courseTitle, level ,C_ID} = location.state;
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const [isTestPassed, setIsTestPassed] = useState(false); // Track test completion status
+  const [isTestPassed, setIsTestPassed] = useState(false);
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const email_id = userInfo.userID;
+  const [completedTest, setCompletedTest] = useState([]);
 
-  const testHandler = () => {
-    // Logic for taking the test goes here
-    // For now, we will just set it to passed
-    setIsTestPassed(true);
-    // You can add additional logic to handle test results here
+  // Track test completion status
+  const isMounted = true;
+  const fetchQuestions = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:1000/assessment/chapterQ",
+        {
+          topic: topic_name,
+          c_id: C_ID,
+          limit: 5,
+        }
+      );
+      if (isMounted) {
+        // setQuestions(response.data);
+        dispatch(setQuestions(response.data)); // Update state only if the component is still mounted
+      }
+    } catch (error) {
+      if (isMounted) {
+        // Improved error message handling
+        const errorMsg =
+          error.response?.data?.error || "Failed to fetch questions";
+        toast.error(errorMsg);
+      }
+    } finally {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }
   };
+  const testHandler = () => {
+    fetchQuestions();
+    if (completedTest.includes(topic_name)) {
+      toast.success("Test is Already Submitted");
+
+      return;
+    }
+    navigate("/test", {
+      state: { C_ID, level, topic: topic_name, courseTitle },
+    });
+  };
+
+  useEffect(() => {
+    const fetchTestData = async () => {
+      const res = await axios.post(
+        "http://localhost:1000/completed_questions",
+        {
+          email_id: email_id,
+          course_title: courseTitle,
+        }
+      );
+      if (res.status === 200) {
+        const data = res?.data.data.topic_name;
+
+        setCompletedTest(data);
+      }
+    };
+    fetchTestData();
+  }, []);
 
   const toggleChatbot = () => {
     setIsChatbotOpen((prev) => !prev);
@@ -48,16 +112,20 @@ const ArticleView = () => {
               <p>{articleData.content.introduction}</p>
             </div>
           ) : (
-            <div className="text-gray-400 italic">No introduction available.</div>
+            <div className="text-gray-400 italic">
+              No introduction available.
+            </div>
           )}
 
           {/* Main Content rendered with Markdown */}
           {articleData.content.main_content ? (
-            <div className="prose prose-invert text-gray-300 leading-relaxed">
+            <div className="prose prose-invert text-gray-300 leading-relaxed  text-justify">
               <ReactMarkdown>{articleData.content.main_content}</ReactMarkdown>
             </div>
           ) : (
-            <div className="text-gray-400 italic">No main content available.</div>
+            <div className="text-gray-400 italic">
+              No main content available.
+            </div>
           )}
         </section>
 
@@ -90,7 +158,9 @@ const ArticleView = () => {
               onClick={testHandler}
               className="mt-4 px-6 py-2 bg-yellow-400 text-black rounded-lg shadow-md hover:bg-gray-700 hover:text-white transition duration-200"
             >
-              Complete Test
+              {completedTest.includes(topic_name)
+                ? " Test Completed"
+                : "Complete Test"}
             </button>
           </div>
         </section>
