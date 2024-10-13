@@ -259,23 +259,24 @@ app.get('/watched_videos/:email', async (req, res) => {
 
 //  videos   add video
 app.post('/watched_videos', async (req, res) => {
-    const { email_id, watched_video_id } = req.body;
+    const { email_id, courseTitle, watched_video_id } = req.body;
 
-    if (!email_id || !watched_video_id) {
-        return res.status(400).json({ error: 'Invalid input: email_id and watched_video_id are required' });
+    if (!email_id || !watched_video_id || !courseTitle) {
+        return res.status(400).json({ error: 'Invalid input: email_id or courseTitle or watched_video_id are required' });
     }
 
     try {
         const [existingRecord] = await db.query(
-            'SELECT COUNT(*) AS count FROM progress WHERE email_id = ? AND watched_video_id = ?',
-            [email_id, watched_video_id]
+            'SELECT COUNT(*) AS count FROM progress WHERE email_id = ? AND course_title = ? AND watched_video_id = ?',
+            [email_id, courseTitle, watched_video_id]
         );
         
         if (existingRecord[0].count > 0) {
             return res.status(200).json({ message: 'Video already marked as watched' });
         }        
 
-        await db.query('INSERT INTO progress (email_id, watched_video_id,last_updated) VALUES (?, ?, NOW())', [email_id, watched_video_id]);
+        await db.query('INSERT INTO progress (email_id, course_title, watched_video_id,last_updated) VALUES (?, ?, ?, NOW())', 
+            [email_id, courseTitle, watched_video_id]);
         res.status(201).json({ message: 'Video marked as watched' });
     } catch (error) {
         console.error("Error marking video as watched:", error);
