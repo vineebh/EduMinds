@@ -67,9 +67,7 @@ const Footer = () => {
             </Link>
             <Link
               to="/courses"
-
               className="hover:text-blue-500 transition-colors duration-300"
-
             >
               Courses
             </Link>
@@ -111,7 +109,6 @@ const Footer = () => {
 
           {/* Social Media Icons */}
           <div className="flex space-x-6 text-2xl mt-6">
-
 
             <a
               href="https://facebook.com"
