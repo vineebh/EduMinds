@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios"; // Import axios
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { combineSlices } from "@reduxjs/toolkit";
+import { setQuestions } from "../store/testSlice";
+import { Navigate, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const ProgressBar = ({ Level, course_title, total }) => {
+
+const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [progress, setProgress] = useState(0);
   const [points, setPoints] = useState(0);
   const email = userInfo?.userID;
+  console.log(C_ID);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserPoints = async () => {
@@ -20,6 +28,7 @@ const ProgressBar = ({ Level, course_title, total }) => {
 
         if (response.status === 200) {
           const userPoints = response.data.data.points;
+          console.log(userPoints);
           setPoints(userPoints);
         } else {
           console.warn(response.data.msg);
@@ -47,6 +56,12 @@ const ProgressBar = ({ Level, course_title, total }) => {
     }
   }, [watchedVideos, total]);
 
+  const everyDayQuestionHandler = async () => {
+    navigate("/everydayquestion", {
+      state: { C_ID, level: courseLevel, courseTitle:course_title , limit:1 },
+    });
+  };
+
   return (
     <div className="lg:fixed w-full max-w-[350px] bg-gray-800 border border-white shadow-xl rounded-lg flex flex-col p-6">
       <h3 className="text-2xl font-semibold text-white mb-2 text-center">
@@ -67,6 +82,19 @@ const ProgressBar = ({ Level, course_title, total }) => {
       <p className="text-yellow-400 text-lg mt-4 text-center">
         {points} points
       </p>
+
+      <div className="flex justify-center space-x-4 mt-4">
+        <button
+          className="bg-teal-500 px-4 py-2 rounded-full shadow-md hover:bg-teal-600 transition-all"
+          onClick={everyDayQuestionHandler}
+        >
+          Everyday Question
+        </button>
+        <button className="bg-yellow-500 px-4 py-2 rounded-full shadow-md hover:bg-yellow-600 transition-all">
+          Level Up
+        </button>
+      </div>
+
     </div>
   );
 };
