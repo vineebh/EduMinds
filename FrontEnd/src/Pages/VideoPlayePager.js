@@ -10,8 +10,20 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const {
+    videoUrl,
+    topic_name,
+    videos,
+    currentIndex,
+    videoId,
+    C_ID,
+    level,
+    courseTitle,
+  } = location.state || {};
   const { videoUrl, topic_name, videos, currentIndex, videoId,C_ID ,level,courseTitle} =
     location.state || {};
+
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
@@ -39,13 +51,12 @@ const VideoPlayerPage = () => {
           {
             email_id,
             watched_video_id: videoId,
+            courseTitle: courseTitle,
           }
         );
         if (response.status === 201) {
           dispatch(setWatchedVideos([...watchedVideos, videoId]));
           toast.success("Unlocking next video...");
-          // call post(/update_points_and_level) api
-          // body={email, course_title, new_points:5}
         }
       } catch (error) {
         console.error("Error marking video as watched:", error);
@@ -83,7 +94,9 @@ const VideoPlayerPage = () => {
             videos,
             currentIndex: currentIndex + 1,
             watchedVideos,
+           
             videoId: nextVideo.id, 
+
 
           },
         });
@@ -93,6 +106,19 @@ const VideoPlayerPage = () => {
         );
       }
     } else {
+
+      navigate("/dashboard", {
+        state: { C_ID, level, courseTitle, State: "abc" },
+      });
+      toast.success("  Your level is  Completed. Time to Level up");
+    }
+  };
+  const dashboardHandler = () => {
+    navigate("/dashboard", {
+      state: { C_ID, level, courseTitle, State: "abc" },
+    });
+  };
+
       navigate("/dashboard", {state :{C_ID, level, courseTitle  ,State:'abc'}});
       toast.success("  Your level is  Completed. Time to Level up");
       
@@ -180,6 +206,12 @@ const VideoPlayerPage = () => {
           className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
         >
           Next Video
+        </button>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+          onClick={dashboardHandler}
+        >
+          Dashboard
         </button>
       </div>
 

@@ -14,6 +14,7 @@ import Assessment from "./Pages/Assessment";
 import MCQ from "./Pages/MCQ";
 import ArticleView from "./Pages/ArticleView";
 import Test from "./Pages/Test";
+import EveryDayQuestion from "./Pages/EveryDayQuestion";
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           {loginStatus && <Route path="/video" element={<VideoPlayerPage />} />}
           {loginStatus && <Route path="/article" element={<ArticleView />} />}
           {loginStatus && <Route path="/test" element={<Test />} />}
+          {loginStatus && <Route path="/everydayquestion" element={<EveryDayQuestion />} />}
 
 
         </Routes>
