@@ -1,87 +1,97 @@
-import axios from "axios";
-import { useLocation } from "react-router";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router";
+import axios from "axios";
 
-const Test = () => {
-  const [answers, setAnswers] = useState({});
-  const [result, setResult] = useState(null);
+const EveryDayQuestion = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [result, setResult] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
-  const { C_ID, topic, courseTitle } = location.state;
-  const questions = useSelector((state) => state.test.questions);
-  const userInfo = useSelector((state) => state.auth.userInfo);
-  const email_id = userInfo.userID;
-  console.log(courseTitle)
+  const { C_ID, level } = location.state || {};
 
-  const handleChange = (questionId, selectedOption) => {
-    setAnswers({ ...answers, [questionId]: selectedOption });
-  };
+  useEffect(() => {
+    const everyDayQuestionHandler = async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const lastSubmitDate = localStorage.getItem("lastSubmitDate");
 
-  const handlePrev = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
-
-  const handleNext = () => {
-    const currentQuestionId = questions[currentQuestionIndex].id;
-
-    if (!answers[currentQuestionId]) {
-      toast.error(
-        "Please select an answer before proceeding to the next question."
-      );
-      return;
-    }
-
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }
-  };
-
-  const handleSubmit = async () => {
-    const answerArray = Object.entries(answers).map(
-      ([questionId, selectedOption]) => ({
-        questionId: parseInt(questionId, 10),
-        selectedOption,
-      })
-    );
-
-    try {
-      const response = await axios.post(
-        "http://localhost:1000/assessment/submit",
-        {
-          c_id: C_ID,
-          answers: answerArray,
-        }
-      );
-
-      toast.success(
-        `You answered ${response.data.correct} out of ${questions.length} questions correctly!`
-      );
-      const data = await axios.post("http://localhost:1000/mark_questions", {
-        email_id: email_id,
-        course_title: courseTitle,
-        topic_name: topic,
-      });
-      if (data.status === 200) {
-        toast.success("Your Test has Submitted");
+      // Check if the question for today is already submitted
+      if (lastSubmitDate === today) {
+        setIsSubmitted(true);
+        setLoading(false);
+        return;
       }
 
-      window.history.back();
-    } catch (error) {
-      console.error("Error during submission:", error);
-      toast.error("Error during submission");
-      setResult(
-        "An error occurred while submitting your answers. Please try again."
-      );
-    }
+      try {
+        const response = await axios.post(
+          "http://localhost:1000/assessment/questions",
+          {
+            level,
+            c_id: C_ID,
+            limit: 1,
+          }
+        );
+        if (response.status === 200 && response.data.length > 0) {
+          setQuestions(response.data);
+          setLoading(false);
+          setIsSubmitted(false);
+        } else {
+          setLoading(false);
+          setError("No questions available for today.");
+        }
+      } catch (error) {
+        setLoading(false);
+        setError("Error fetching questions. Please try again later.");
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    everyDayQuestionHandler();
+  }, [C_ID, level]);
+
+  const handleChange = (questionId, selectedOption) => {
+    setAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questionId]: selectedOption,
+    }));
   };
 
-  const isFirstQuestion = currentQuestionIndex > 0;
+  const handleSubmit = () => {
+    setResult("Your answers have been submitted!");
+    setIsSubmitted(true);
+    const today = new Date().toISOString().split("T")[0];
+    localStorage.setItem("lastSubmitDate", today);
+  };
+
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  if (loading) {
+    return (
+      <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+        <div className="text-white text-lg">Loading questions...</div>
+      </div>
+    );
+  }
+
+  // Display a message if the question has already been submitted for today
+  if (isSubmitted) {
+    return (
+      <div className="bg-gray-900 min-h-screen flex items-center justify-center">
+        <div className="bg-gray-800 p-10 rounded-lg shadow-lg max-w-2xl w-full text-center">
+          <h1 className="text-3xl text-white font-bold">
+            You have already submitted today's question!
+          </h1>
+          <p className="text-white mt-4">
+            Come back tomorrow for a new question.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-900 min-h-screen py-12 sm:py-16 flex items-center justify-center">
@@ -89,9 +99,15 @@ const Test = () => {
         <h1 className="text-4xl text-white font-extrabold text-center mb-8">
           Assessment
         </h1>
-        <span className="text-white text-lg font-bold bg-blue-600 py-1 px-3 rounded-lg shadow-md">
-          {currentQuestionIndex + 1}/{questions.length}
-        </span>
+        <h2 className="text-2xl text-white mb-4">
+          Question {currentQuestionIndex + 1} of {questions.length}
+        </h2>
+
+        {error && (
+          <div className="mb-4 p-4 bg-red-600 text-white font-semibold rounded-lg">
+            {error}
+          </div>
+        )}
 
         {questions.length > 0 && (
           <div className="mb-10">
@@ -140,15 +156,6 @@ const Test = () => {
         )}
 
         <div className="flex justify-between mt-10">
-          {isFirstQuestion && (
-            <button
-              onClick={handlePrev}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
-            >
-              Previous
-            </button>
-          )}
-
           {isLastQuestion ? (
             <button
               onClick={handleSubmit}
@@ -158,7 +165,7 @@ const Test = () => {
             </button>
           ) : (
             <button
-              onClick={handleNext}
+              onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
             >
               Next
@@ -176,4 +183,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default EveryDayQuestion;

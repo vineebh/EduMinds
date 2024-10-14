@@ -1,22 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
-const Article = ({ courses, C_ID }) => {
+const Article = ({ courses, C_ID ,courseTitle ,level}) => {
   const navigate = useNavigate();
-  
-  // State to track if the first article has been read
-  const [canAccessNextArticles, setCanAccessNextArticles] = useState(false);
-
   const readMoreHandler = (articleData, topic_name, article_id) => {
-    // Allow access to the next articles if the first article is read
-    if (!canAccessNextArticles) {
-      setCanAccessNextArticles(true);
-    }
-    console.log(topic_name);
     navigate("/article", {
-      state: { articleData: articleData, topic_name, C_ID, article_id },
+      state: { articleData: articleData, topic_name, C_ID, article_id ,courseTitle},
     });
   };
+  console.log(courseTitle)
 
   return (
     <div className="text-white p-6">
@@ -31,12 +23,6 @@ const Article = ({ courses, C_ID }) => {
             console.error("Invalid JSON structure in articles:", error);
             return null; // Skip rendering if there's a parsing error
           }
-          // Determine if the article can be accessed
-         
-          const isFirstArticle = course.id === courses[0].id; // Check if it's the first article
-          const isClickable = isFirstArticle || canAccessNextArticles;
-          
-          console.log(isFirstArticle) // Determine if clickable
 
           return (
             <div
@@ -52,16 +38,11 @@ const Article = ({ courses, C_ID }) => {
               <div className="mt-4 text-yellow-300 flex items-center justify-between">
                 <button
                   onClick={() => {
-                    if (isClickable) {
-                      readMoreHandler(articleData, course.topic_name, course.id);
-                    }
+                    readMoreHandler(articleData, course.topic_name, course.id );
                   }}
-                  disabled={!isClickable} // Disable button if not clickable
-                  className={`${
-                    !isClickable ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  // Disable button if not clickable
                 >
-                  {isClickable ? 'Read more' : 'Unlock to read'} 
+                  Read More
                 </button>
                 <span>5 Points</span>
               </div>

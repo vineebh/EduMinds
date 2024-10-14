@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Videos from "../components/Videos";
 import Article from "../components/Article";
@@ -16,7 +16,7 @@ const DashBoard = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const location = useLocation();
   const navigate = useNavigate();
-  const { C_ID, level, courseTitle, State ,from} = location.state || {};
+  const { C_ID, level, courseTitle, State, from } = location.state || {};
   const [Level, setLevel] = useState(0);
 
   useEffect(() => {
@@ -65,12 +65,13 @@ const DashBoard = () => {
       if (!C_ID) return;
 
       try {
-        const response = await axios.get(`http://localhost:1000/course/${C_ID}`);
+        const response = await axios.get(
+          `http://localhost:1000/course/${C_ID}`
+        );
 
-        if(response.status === 200){
+        if (response.status === 200) {
           setCourses(response.data);
         }
-
       } catch (error) {
         console.error(
           "Fetch error:",
@@ -101,22 +102,30 @@ const DashBoard = () => {
       setLevel(3);
     }
   }, [level]);
-
-
   const filteredData = courses.filter((data) => data.level === Level);
 
   return (
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
       <section className="container mx-auto flex flex-col lg:flex-row gap-8 items-start mt-10 px-4">
+
         {/* Left section - Video/Article */}
         <article className="relative shadow-2xl flex-1 border lg:border-none p-6 bg-gray-800 border-gray-600 rounded-lg transition-all duration-300 ease-in-out hover:shadow-2xl">
-          <h1 className="text-white font-bold text-3xl mb-6 text-center">
+          
+        <h1 className=" text-red-100 font-bold text-3xl mb-6 text-center z-100">
             {courseTitle}
           </h1>
-
           <div className="h-1 w-3/4 mx-auto bg-gradient-to-r from-gray-800 via-yellow-500 to-gray-800 my-4 rounded-full"></div>
+          
           <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-            <ProgressBar Level={level} course_title={courseTitle} total={filteredData.length} />
+            <ProgressBar
+              Level={level}
+
+              courseLevel ={Level}
+              course_title={courseTitle}
+              total={filteredData.length}
+              C_ID={C_ID}
+
+            />
           </aside>
           {/* Toggle Switch */}
           <label className="flex items-center justify-center mt-8 mb-6 cursor-pointer relative">
@@ -137,7 +146,7 @@ const DashBoard = () => {
                 <span>Article</span>
               </div>
               <div
-                className={`absolute left-2 w-10 h-10 bg-gray-900 rounded-full shadow-lg flex items-center justify-center transition-transform duration-500 ease-in-out transform ${
+                className={`absolute left-1 w-10 h-10 bg-gray-900 rounded-full shadow-lg flex items-center justify-center transition-transform duration-500 ease-in-out transform ${
                   view === "article" ? "translate-x-40" : "translate-x-0"
                 }`}
               >
@@ -151,16 +160,33 @@ const DashBoard = () => {
           {/* Conditional Rendering based on the selected view */}
           <div className="mt-8">
             {view === "video" ? (
-              <Videos courses={filteredData} C_ID={C_ID} />
+              <Videos
+                courses={filteredData}
+                C_ID={C_ID}
+                courseTitle={courseTitle}
+                level={level}
+              />
             ) : (
-              <Article courses={filteredData} C_ID={C_ID} />
+              <Article
+                courses={filteredData}
+                C_ID={C_ID}
+                courseTitle={courseTitle}
+              />
             )}
           </div>
         </article>
 
         {/* Right section - Progress Bar */}
         <aside className="hidden lg:block lg:w-1/4 p-2 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-          <ProgressBar Level={level} course_title={courseTitle} total={filteredData.length} />
+          <ProgressBar
+            Level={level}
+            course_title={courseTitle}
+            total={filteredData.length}
+            courseLevel ={Level}
+            C_ID={C_ID}
+
+          />
+         
         </aside>
       </section>
     </main>
