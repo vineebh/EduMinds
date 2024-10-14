@@ -122,6 +122,7 @@ const Chatbot = ({ setIsChatbotVisible }) => {
       
       </div>
 
+      </div>
     </div>
   );
 };
