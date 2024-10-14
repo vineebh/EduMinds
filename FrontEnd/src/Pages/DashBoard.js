@@ -125,9 +125,6 @@ const DashBoard = () => {
               total={filteredData.length}
               C_ID={C_ID}
 
-              course_title={courseTitle}
-              total={filteredData.length}
-
             />
           </aside>
           {/* Toggle Switch */}

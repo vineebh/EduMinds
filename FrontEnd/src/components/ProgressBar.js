@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios"; // Import axios
-
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { combineSlices } from "@reduxjs/toolkit";

@@ -62,7 +62,6 @@ const Footer = () => {
             <Link
               to="/"
               className="hover:text-blue-500 transition duration-300"
-
             >
               Home
             </Link>
@@ -76,17 +75,13 @@ const Footer = () => {
             </Link>
             <Link
               to="/about"
-
               className="hover:text-blue-500 transition-colors duration-300"
-
             >
               About
             </Link>
             <Link
               to="/contact"
-
               className="hover:text-blue-500 transition-colors duration-300"
-
             >
               Contact
             </Link>
@@ -122,9 +117,7 @@ const Footer = () => {
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
-
               className="text-gray-400 hover:text-blue-500 transition-colors duration-300"
-
             >
               <FaFacebookF />
             </a>
@@ -132,9 +125,7 @@ const Footer = () => {
               href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
-
               className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
-
             >
               <FaTwitter />
             </a>
@@ -142,9 +133,7 @@ const Footer = () => {
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
-
               className="text-gray-400 hover:text-pink-500 transition-colors duration-300"
-
             >
               <FaInstagram />
             </a>
@@ -152,9 +141,7 @@ const Footer = () => {
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-
               className="text-gray-400 hover:text-blue-600 transition-colors duration-300"
-
             >
               <FaLinkedin />
             </a>
@@ -163,9 +150,7 @@ const Footer = () => {
       </div>
 
       {/* Copyright */}
-
       <div className="text-center text-sm text-gray-400 mt-12 pt-6 border-t border-gray-700">
-
         © {new Date().getFullYear()} EduMinds. All rights reserved.
       </div>
     </footer>

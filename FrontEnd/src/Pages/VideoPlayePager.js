@@ -57,6 +57,8 @@ const VideoPlayerPage = () => {
         if (response.status === 201) {
           dispatch(setWatchedVideos([...watchedVideos, videoId]));
           toast.success("Unlocking next video...");
+          // call post(/update_points_and_level) api
+          // body={email, course_title, new_points:5}
         }
       } catch (error) {
         console.error("Error marking video as watched:", error);
@@ -96,7 +98,6 @@ const VideoPlayerPage = () => {
             watchedVideos,
            
             videoId: nextVideo.id, 
-
 
           },
         });
