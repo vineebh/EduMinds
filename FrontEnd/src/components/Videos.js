@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setWatchedVideos } from "../store/progressSlice";
 
-const Videos = ({ courses }) => {
+const Videos = ({ courses,C_ID, level,courseTitle }) => {
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo?.userID; // Check if userInfo exist
@@ -36,7 +36,7 @@ const Videos = ({ courses }) => {
   }, [email_id]);
 
   // Navigate to VideoPlayerPage
-  const handleWatchClick = (videoUrl, topic_name, videoId, index) => {
+  const handleWatchClick = (videoUrl, topic_name, videoId, index,courseTitle,) => {
     navigate("/video", {
       state: {
         videoUrl,
@@ -45,6 +45,10 @@ const Videos = ({ courses }) => {
         currentIndex: index,
         watchedVideos,
         videoId,
+        level,
+        C_ID,
+        courseTitle
+      
       },
     });
   };

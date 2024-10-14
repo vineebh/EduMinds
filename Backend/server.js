@@ -369,16 +369,16 @@ app.post('/update_points_and_level', async (req, res) => {
 //  questions    post completed
 app.post('/mark_questions', async (req, res) => {
     try {
-        const { email, course_title, topic_name } = req.body;
+        const { email_id, course_title, topic_name } = req.body;
 
         // Check if email is provided
-        if (!email) {
+        if (!email_id) {
             return res.status(400).json({ msg: 'Email is required' });
         }
 
         // Insert data into the database
         const query = 'INSERT INTO users_questions (email_id, course_title, topic_name) VALUES (?, ?, ?)';
-        const values = [email, course_title, topic_name];
+        const values = [email_id, course_title, topic_name];
         await db.query(query, values);
 
         res.status(201).json({ message: 'Question marked as done' });
@@ -392,17 +392,17 @@ app.post('/mark_questions', async (req, res) => {
 //  questions    get completed
 app.post('/completed_questions', async (req, res) => {
     try {
-        const { email, course_title } = req.body;
+        const { email_id, course_title } = req.body;
 
         // Check if email is provided
-        if (!email) {
+        if (!email_id) {
             return res.status(400).json({ msg: 'Email is required' });
         }
 
         // Query the database for completed topics based on email and course_title
         const [data] = await db.query(
             'SELECT topic_name FROM users_questions WHERE email_id = ? AND course_title = ?',
-            [email, course_title]
+            [email_id, course_title]
         );
 
         // If no records found, return a message

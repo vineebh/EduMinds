@@ -3,10 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 13, 2024 at 05:46 PM
+-- Generation Time: Oct 13, 2024 at 06:58 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
+SET sql_require_primary_key=Off;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
