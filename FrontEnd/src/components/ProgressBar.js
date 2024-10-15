@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { combineSlices } from "@reduxjs/toolkit";
-import { setQuestions } from "../store/testSlice";
-import { Navigate, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 
 const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
@@ -45,20 +40,19 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
     }
   }, [email, course_title]);
 
-  console.log(watchedVideos.length)
   useEffect(() => {
     if (total > 0) {
       const progressPercentage = Math.min(
         parseInt((watchedVideos.length / total) * 100),
         100
       );
-      setProgress(progressPercentage); // Ensure progress doesn't exceed 100%
+      setProgress(progressPercentage);
     }
   }, [watchedVideos, total]);
 
   const everyDayQuestionHandler = async () => {
     navigate("/everydayquestion", {
-      state: { C_ID, level: courseLevel, courseTitle:course_title , limit:1 },
+      state: { C_ID, level: courseLevel, courseTitle:course_title },
     });
   };
 
