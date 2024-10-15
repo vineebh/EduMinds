@@ -259,23 +259,24 @@ app.get('/watched_videos/:email', async (req, res) => {
 
 //  videos   add video
 app.post('/watched_videos', async (req, res) => {
-    const { email_id, watched_video_id } = req.body;
+    const { email_id, courseTitle, watched_video_id } = req.body;
 
-    if (!email_id || !watched_video_id) {
-        return res.status(400).json({ error: 'Invalid input: email_id and watched_video_id are required' });
+    if (!email_id || !watched_video_id || !courseTitle) {
+        return res.status(400).json({ error: 'Invalid input: email_id or courseTitle or watched_video_id are required' });
     }
 
     try {
         const [existingRecord] = await db.query(
-            'SELECT COUNT(*) AS count FROM progress WHERE email_id = ? AND watched_video_id = ?',
-            [email_id, watched_video_id]
+            'SELECT COUNT(*) AS count FROM progress WHERE email_id = ? AND course_title = ? AND watched_video_id = ?',
+            [email_id, courseTitle, watched_video_id]
         );
         
         if (existingRecord[0].count > 0) {
             return res.status(200).json({ message: 'Video already marked as watched' });
         }        
 
-        await db.query('INSERT INTO progress (email_id, watched_video_id,last_updated) VALUES (?, ?, NOW())', [email_id, watched_video_id]);
+        await db.query('INSERT INTO progress (email_id, course_title, watched_video_id,last_updated) VALUES (?, ?, ?, NOW())', 
+            [email_id, courseTitle, watched_video_id]);
         res.status(201).json({ message: 'Video marked as watched' });
     } catch (error) {
         console.error("Error marking video as watched:", error);
@@ -361,6 +362,62 @@ app.post('/update_points_and_level', async (req, res) => {
     } catch (error) {
         console.error('Error occurred during updating points and level:', error);
         return res.status(500).json({ error: 'An error occurred while updating user data' });
+    }
+});
+
+
+//  questions    post completed
+app.post('/mark_questions', async (req, res) => {
+    try {
+        const { email_id, course_title, topic_name } = req.body;
+
+        // Check if email is provided
+        if (!email_id) {
+            return res.status(400).json({ msg: 'Email is required' });
+        }
+
+        // Insert data into the database
+        const query = 'INSERT INTO users_questions (email_id, course_title, topic_name) VALUES (?, ?, ?)';
+        const values = [email_id, course_title, topic_name];
+        await db.query(query, values);
+
+        res.status(201).json({ message: 'Question marked as done' });
+    } catch (error) {
+        console.error('Error occurred during inserting data:', error);
+        res.status(500).json({ error: 'An error occurred while marking the question' });
+    }
+});
+
+
+//  questions    get completed
+app.post('/completed_questions', async (req, res) => {
+    try {
+        const { email_id, course_title } = req.body;
+
+        // Check if email is provided
+        if (!email_id) {
+            return res.status(400).json({ msg: 'Email is required' });
+        }
+
+        // Query the database for completed topics based on email and course_title
+        const [data] = await db.query(
+            'SELECT topic_name FROM users_questions WHERE email_id = ? AND course_title = ?',
+            [email_id, course_title]
+        );
+
+        // If no records found, return a message
+        if (data.length === 0) {
+            return res.status(200).json({ msg: 'User not found or no questions completed', data: { topic_name: [] } });
+        }
+
+        // Extract topic names from the query result
+        const topicNames = data.map((row) => row.topic_name);
+
+        // Return the list of completed topic names
+        return res.status(200).json({ data: { topic_name: topicNames } });
+    } catch (error) {
+        console.error('Error occurred during fetching data:', error);
+        res.status(500).json({ error: 'An error occurred while fetching completed questions' });
     }
 });
 
