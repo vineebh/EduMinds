@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useLocation } from "react-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
@@ -14,7 +14,6 @@ const Test = () => {
   const questions = useSelector((state) => state.test.questions);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo.userID;
-  console.log(courseTitle)
 
   const handleChange = (questionId, selectedOption) => {
     setAnswers({ ...answers, [questionId]: selectedOption });
@@ -57,20 +56,30 @@ const Test = () => {
           answers: answerArray,
         }
       );
-
-      toast.success(
-        `You answered ${response.data.correct} out of ${questions.length} questions correctly!`
-      );
-      const data = await axios.post("http://localhost:1000/mark_questions", {
-        email_id: email_id,
-        course_title: courseTitle,
-        topic_name: topic,
-      });
-      if (data.status === 200) {
-        toast.success("Your Test has Submitted");
-      }
-
-      window.history.back();
+      if (response.status === 200)
+      {
+        toast.success(
+          `You answered ${response.data.correct} out of ${questions.length} questions correctly!`
+        );
+        const resp = await axios.post("http://localhost:1000/mark_questions", {
+          email_id: email_id,
+          course_title: courseTitle,
+          topic_name: topic,
+        });
+        if (resp.status === 201) {
+          toast.success("Your Test has Submitted");
+          const res = await axios.post("/update_points_and_level", {
+            email: email_id,
+            course_title: courseTitle,
+            new_points: (5*response.data.correct),
+          });
+          if ( res.status === 200)
+          {
+            toast.success("5 Points added");
+            window.history.back();
+          }
+        }
+      }  
     } catch (error) {
       console.error("Error during submission:", error);
       toast.error("Error during submission");
