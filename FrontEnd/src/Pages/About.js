@@ -1,8 +1,12 @@
-import React from 'react';
+import React from "react";
 
 const About = () => {
+  
+  
   return (
-    <div className="bg-gray-900 min-h-screen lg:pt-16 flex items-center justify-center"> {/* Center content vertically and horizontally */}
+    <div className="bg-gray-900 min-h-screen lg:pt-16 flex items-center justify-center">
+      {" "}
+      {/* Center content vertically and horizontally */}
       <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
         {/* Main Heading */}
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6 text-center">
@@ -11,7 +15,11 @@ const About = () => {
 
         {/* About Us Description */}
         <p className="text-base sm:text-lg text-gray-300 mb-8 text-center sm:text-left">
-          EduTech is dedicated to providing high-quality educational resources and courses. Our mission is to make learning accessible and enjoyable for everyone. Our team consists of experienced educators and professionals who are passionate about education and committed to helping students achieve their goals.
+          EduTech is dedicated to providing high-quality educational resources
+          and courses. Our mission is to make learning accessible and enjoyable
+          for everyone. With a team of experienced educators and professionals,
+          we are passionate about helping students achieve their goals and
+          succeed in their educational journeys.
         </p>
 
         {/* Info Box Section */}
@@ -21,7 +29,10 @@ const About = () => {
             Our Vision
           </h2>
           <p className="text-sm sm:text-base text-gray-300 mb-6">
-            We envision a world where education is available to everyone, regardless of their location or background. Our goal is to bridge the gap between knowledge and learners by providing innovative and engaging educational solutions.
+            We envision a world where education is available to everyone,
+            regardless of their location or background. Our goal is to bridge
+            the gap between knowledge and learners by offering innovative and
+            engaging educational solutions that inspire lifelong learning.
           </p>
 
           {/* Team Section */}
@@ -29,7 +40,10 @@ const About = () => {
             Our Team
           </h2>
           <p className="text-sm sm:text-base text-gray-300">
-            Our team is composed of experienced educators, industry experts, and creative professionals who work together to create top-notch educational content. We are driven by our passion for education and our commitment to making a positive impact on learners around the world.
+            Our team is made up of experienced educators, industry experts, and
+            creative professionals who collaborate to create top-notch
+            educational content. Driven by our passion for education, we are
+            committed to making a positive impact on learners around the world.
           </p>
         </div>
       </div>

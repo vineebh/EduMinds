@@ -16,7 +16,11 @@ const VideoPlayerPage = () => {
     videos,
     currentIndex,
     videoId,
+    C_ID,
+    level,
+    courseTitle,
   } = location.state || {};
+
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
@@ -25,7 +29,7 @@ const VideoPlayerPage = () => {
   const email_id = userInfo?.userID;
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
   const dispatch = useDispatch();
-  
+
   // Toggle Chatbot visibility
   const toggleChatbot = () => {
     setIsChatbotVisible(!isChatbotVisible);
@@ -34,7 +38,7 @@ const VideoPlayerPage = () => {
   // Called when video ends
   const handleVideoEnd = async () => {
     console.log(`Video at index ${currentIndex} ended`);
-    toast.success("Video finished! Unlocking next video...");
+    toast.success("Video finished! ");
 
     // Mark the current video as watched in the database
     if (!watchedVideos.includes(videoId)) {
@@ -44,17 +48,27 @@ const VideoPlayerPage = () => {
           {
             email_id,
             watched_video_id: videoId,
+            courseTitle: courseTitle,
           }
-        ); 
+        );
         if (response.status === 201) {
           dispatch(setWatchedVideos([...watchedVideos, videoId]));
-          toast.success("Video marked as watched:", videoId);
+          toast.success("Unlocking next video...");
           // call post(/update_points_and_level) api
           // body={email, course_title, new_points:5}
+          const res = await axios.post("/update_points_and_level", {
+            email: email_id,
+            course_title: courseTitle,
+            new_points: 5,
+          });
+          if ( res.status === 200)
+          {
+            toast.success("5 Points added");
+          }
         }
       } catch (error) {
         console.error("Error marking video as watched:", error);
-      }      
+      }
     }
   };
 
@@ -70,10 +84,9 @@ const VideoPlayerPage = () => {
 
   // Navigate to the next video
   const handleNextVideo = () => {
-    console.log("Current Index:", currentIndex);
 
     // Check if there are more videos
-    if (videos && Array.isArray(videos) && currentIndex < videos.length - 1) {
+    if (videos && Array.isArray(videos) && currentIndex !== undefined && currentIndex < videos.length - 1) {
       const nextVideo = videos[currentIndex + 1]; // Get the next video
       console.log("Next Video:", nextVideo);
 
@@ -89,7 +102,7 @@ const VideoPlayerPage = () => {
             videos,
             currentIndex: currentIndex + 1,
             watchedVideos,
-            videoId: nextVideo.id, // Pass the next video ID
+            videoId: nextVideo.id, 
           },
         });
       } else {
@@ -98,10 +111,18 @@ const VideoPlayerPage = () => {
         );
       }
     } else {
-      toast.error("You have reached the last video.");
+
+      navigate("/dashboard", {
+        state: { C_ID, level, courseTitle, State: "abc" },
+      });
+      toast.success("  Your level is  Completed. Time to Level up");
     }
   };
-console.log(watchedVideos)
+  const dashboardHandler = () => {
+      navigate("/dashboard", {state :{C_ID, level, courseTitle  ,State:'abc'}});
+      toast.success("  Your level is  Completed. Time to Level up");
+      
+    };
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4">
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
@@ -179,16 +200,24 @@ console.log(watchedVideos)
           {isChatbotVisible ? "Hide Chatbot" : "Ask Doubt to AI"}
         </button>
         <button
-          onClick={handleNextVideo}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+        onClick={handleNextVideo}
+        className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+        disabled={!watchedVideos.includes(videoId)}
         >
           Next Video
+        </button>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+          onClick={dashboardHandler}
+        >
+          Dashboard
         </button>
       </div>
 
       {/* Chatbot Component */}
-      {isChatbotVisible && <Chatbot  setIsChatbotVisible={setIsChatbotVisible}/>}
-
+      {isChatbotVisible && (
+        <Chatbot setIsChatbotVisible={setIsChatbotVisible} />
+      )}
     </div>
   );
 };

@@ -87,7 +87,6 @@ const MCQ = () => {
                 } else {
                     navigate("/dashboard", { state: { C_ID, level: "Beginner", courseTitle, State: "New",from: '/mcq'  } });
                 }
-                console.log("Fail");
             }
         } catch (error) {
             console.error('Error during submission:', error);
@@ -106,6 +105,7 @@ const MCQ = () => {
         <div className='bg-gray-900 min-h-screen py-12 sm:py-16 flex items-center justify-center'>
             <div className="bg-gray-800 p-10 rounded-lg shadow-lg max-w-4xl w-full">
                 <h1 className="text-4xl text-white font-extrabold text-center mb-8">Assessment</h1>
+                <h1>{currentQuestionIndex+1}</h1>
 
                 {questions.length > 0 && (
                     <div className="mb-10">
