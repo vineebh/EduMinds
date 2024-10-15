@@ -183,6 +183,7 @@ const DashBoard = () => {
             total={filteredData.length}
             courseLevel ={Level}
             C_ID={C_ID}
+
           />
          
         </aside>
