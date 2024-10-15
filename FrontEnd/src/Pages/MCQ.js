@@ -116,8 +116,6 @@ const MCQ = () => {
                                     key={index}
                                     className="flex items-center p-4 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-all duration-200"
                                 >
-                                
-                                
                                     <input
                                         type="radio"
                                         name={`question-${questions[currentQuestionIndex].id}`}
