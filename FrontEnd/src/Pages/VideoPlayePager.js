@@ -103,6 +103,7 @@ const VideoPlayerPage = () => {
             videos,
             currentIndex: currentIndex + 1,
             watchedVideos,
+           
             videoId: nextVideo.id, 
 
           },
