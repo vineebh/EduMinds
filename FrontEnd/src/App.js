@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, useSearchParams } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Auth from "./components/Auth/Auth";
 import Header from "./components/Header";

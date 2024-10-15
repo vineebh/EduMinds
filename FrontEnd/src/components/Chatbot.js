@@ -119,9 +119,6 @@ const Chatbot = ({ setIsChatbotVisible }) => {
         >
           Clear Chat
         </button>
-      
-      </div>
-
       </div>
     </div>
   );
