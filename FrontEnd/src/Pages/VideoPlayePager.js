@@ -85,7 +85,7 @@ const VideoPlayerPage = () => {
 
   // Navigate to the next video
   const handleNextVideo = () => {
-    
+
     // Check if there are more videos
     if (videos && Array.isArray(videos) && currentIndex !== undefined && currentIndex < videos.length - 1) {
       const nextVideo = videos[currentIndex + 1]; // Get the next video
