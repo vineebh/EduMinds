@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import Videos from "../components/Videos";
 import Article from "../components/Article";
@@ -119,7 +119,6 @@ const DashBoard = () => {
           <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
             <ProgressBar
               Level={level}
-
               courseLevel ={Level}
               course_title={courseTitle}
               total={filteredData.length}
