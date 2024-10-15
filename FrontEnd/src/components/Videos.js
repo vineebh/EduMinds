@@ -48,7 +48,6 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
         level,
         C_ID,
         courseTitle
-      
       },
     });
   };

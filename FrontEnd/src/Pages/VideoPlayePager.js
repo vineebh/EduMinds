@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { useLocation, useNavigate } from "react-router-dom";
 import Chatbot from "../components/Chatbot";
@@ -10,7 +10,6 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const {
     videoUrl,
     topic_name,
@@ -104,7 +103,6 @@ const VideoPlayerPage = () => {
             currentIndex: currentIndex + 1,
             watchedVideos,
             videoId: nextVideo.id, 
-
           },
         });
       } else {
