@@ -47,7 +47,6 @@ const VideoPlayerPage = () => {
             email_id,
             courseTitle: courseTitle,
             watched_video_id: videoId,
-            courseTitle: courseTitle,
           }
         );
         if (response.status === 201) {
