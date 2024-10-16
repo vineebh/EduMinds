@@ -15,13 +15,16 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
     // Fetch watched videos from the database
     const fetchWatchedVideos = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:1000/watched_videos/${email_id}`
+        const response = await axios.post(
+          "http://localhost:1000/get_watched_videos",
+          {
+            email_id,
+            courseTitle,
+          }
         );
         if (response.status === 200) {
-          dispatch(setWatchedVideos(response.data))
-          console.log(response ,'response')
-         ; // Assuming response.data contains watched video IDs
+          console.log(response);
+          dispatch(setWatchedVideos(response.data)); // Assuming response.data contains watched video IDs
         } else {
           throw new Error("Failed to fetch watched videos");
         }
@@ -36,14 +39,14 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
   }, [email_id]);
 
   // Navigate to VideoPlayerPage
-  const handleWatchClick = (videoUrl, topic_name, videoId, index,courseTitle,) => {
+  const handleWatchClick = (videoUrl, topic_name, videoId, index, courseTitle) => {
+    console.log(courseTitle)
     navigate("/video", {
       state: {
         videoUrl,
         topic_name,
         videos: courses,
         currentIndex: index,
-        watchedVideos,
         videoId,
         level,
         C_ID,
@@ -79,7 +82,8 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
                   course.video_url,
                   course.topic_name,
                   course.id,
-                  index
+                  index,
+                  courseTitle
                 )
               }
               className={`w-full lg:w-20 lg:h-10 py-2 ${

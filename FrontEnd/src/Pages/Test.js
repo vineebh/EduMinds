@@ -68,14 +68,14 @@ const Test = () => {
         });
         if (resp.status === 201) {
           toast.success("Your Test has Submitted");
-          const res = await axios.post("/update_points_and_level", {
+          const res = await axios.post("http://localhost:1000/update_points_and_level", {
             email: email_id,
             course_title: courseTitle,
             new_points: (5*response.data.correct),
           });
           if ( res.status === 200)
           {
-            toast.success("5 Points added");
+            toast.success(5*response.data.correct," Points added");
             window.history.back();
           }
         }

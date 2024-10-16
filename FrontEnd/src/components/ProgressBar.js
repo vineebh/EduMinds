@@ -10,7 +10,6 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
   const [progress, setProgress] = useState(0);
   const [points, setPoints] = useState(0);
   const email = userInfo?.userID;
-  console.log(C_ID);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,7 +38,6 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
       fetchUserPoints();
     }
   }, [email, course_title]);
-
   console.log(watchedVideos.length)
   useEffect(() => {
     if (total > 0) {
