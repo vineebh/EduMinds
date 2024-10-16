@@ -46,7 +46,6 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
     index,
     courseTitle
   ) => {
-    console.log(courseTitle);
     navigate("/video", {
       state: {
         videoUrl,
