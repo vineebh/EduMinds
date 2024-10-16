@@ -36,7 +36,7 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
     if (email_id) {
       fetchWatchedVideos();
     }
-  }, [email_id]);
+  }, [email_id,courseTitle,dispatch]);
 
   // Navigate to VideoPlayerPage
   const handleWatchClick = (

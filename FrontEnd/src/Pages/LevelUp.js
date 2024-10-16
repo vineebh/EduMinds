@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Assuming you're using Axios for API requests
+import axios from "axios";
 import { useLocation } from "react-router";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 const LevelUp = () => {
   const [questions, setQuestions] = useState([]);
@@ -10,39 +13,42 @@ const LevelUp = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const location = useLocation() ;
-  const { C_ID, level, courseTitle} = location.state || {};// New state to track submission
+  const location = useLocation();
+  const { C_ID, level, courseTitle } = location.state || {};// New state to track submission
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const email_id = userInfo.userID;
 
   // Fetch questions from API on component mount
   useEffect(() => {
-    
+
     const fetchQuestions = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:1000/assessment/questions", // Replace with your actual endpoint
-          {
-            level,
-            c_id: C_ID, // Assuming C_ID is passed as a prop
-            limit: 3,   // You can adjust the limit according to your requirement
-          }
-        );
+        const response = await axios.post("/assessment/questions", { level, c_id: C_ID, limit: 4 });
         if (response.status === 200 && response.data.length > 0) {
           setQuestions(response.data);
           setLoading(false);
-          setIsSubmitted(false); // Reset submission state
+          setIsSubmitted(false);
         } else {
           setLoading(false);
           setError("No questions available for today.");
         }
       } catch (error) {
         setLoading(false);
-        setError("Error fetching questions. Please try again later.");
+        if (error.response) {
+          // Server responded with a status other than 200
+          setError("Failed to load questions. Server error.");
+        } else if (error.request) {
+          // Request made but no response received
+          setError("Network error. Please check your connection.");
+        } else {
+          setError("An unexpected error occurred.");
+        }
         console.error("Error fetching questions:", error);
       }
-    };
+    };    
 
     fetchQuestions();
-  }, [level, C_ID]); // Ensure the API is called whenever `level` or `C_ID` changes
+  }, [level, C_ID]);
 
   const handleChange = (questionId, selectedOption) => {
     setAnswers((prev) => ({
@@ -63,15 +69,57 @@ const LevelUp = () => {
     }
   };
 
-  const handleSubmit = () => {
-    let correctAnswersCount = 0;
-    questions.forEach((question) => {
-      if (answers[question.id] === question.correctAnswer) {
-        correctAnswersCount++;
+  const handleSubmit = async () => {
+    if (!window.confirm("Are you sure you want to submit your answers?")) {
+      return;
+    }
+    
+    if (Object.keys(answers).length < questions.length) {
+      toast.error("Please answer all questions before submitting.");
+      return;
+    }
+
+    const answerArray = Object.entries(answers).map(
+      ([questionId, selectedOption]) => ({
+        questionId: parseInt(questionId, 10),
+        selectedOption,
+      })
+    );
+
+    try {
+      const response = await axios.post(
+        "http://localhost:1000/assessment/submit",
+        {
+          c_id: C_ID,
+          answers: answerArray,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success(
+          `You answered ${response.data.correct} out of ${questions.length} questions correctly!`
+        );
+        setResult("Your answers have been submitted!");
+        if (response.data.correct !== 0) {
+          const res = await axios.post("http://localhost:1000/update_points_and_level", {
+            email: email_id,
+            course_title: courseTitle,
+            new_points: 5 * response.data.correct,
+          });
+          if (res.status === 200) {
+            toast.success(`${5 * response.data.correct} Points added`);
+            window.history.replaceState(null, "", "/dashboard"); // Redirect to a specific route
+          }
+        }
+        setIsSubmitted(true);
       }
-    });
-    setResult(`You got ${correctAnswersCount} out of ${questions.length} correct!`);
-    setIsSubmitted(true); // Mark quiz as submitted
+    } catch (error) {
+      console.error("Error during submission:", error);
+      toast.error("Error during submission, try again");
+      setResult(
+        "An error occurred while submitting your answers. Please try again."
+      );
+    }
   };
 
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
@@ -125,8 +173,8 @@ const LevelUp = () => {
                     >
                       {answers[questions[currentQuestionIndex].id] ===
                         questions[currentQuestionIndex][optionKey] && (
-                        <span className="rounded-full h-3 w-3 bg-white"></span>
-                      )}
+                          <span className="rounded-full h-3 w-3 bg-white"></span>
+                        )}
                     </span>
                     <span className="text-xl text-white">
                       {questions[currentQuestionIndex][optionKey]}
@@ -142,6 +190,7 @@ const LevelUp = () => {
           <button
             onClick={handlePrev}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
+            disabled={currentQuestionIndex === 0}
           >
             Previous
           </button>
@@ -150,8 +199,9 @@ const LevelUp = () => {
             <button
               onClick={handleSubmit}
               className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
+              disabled={loading || isSubmitted}
             >
-              Submit
+              {loading ? "Submitting..." : "Submit"}
             </button>
           ) : (
             <button
