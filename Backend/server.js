@@ -370,7 +370,6 @@ app.post('/update_points_and_level', async (req, res) => {
     }
 });
 
-
 //  questions    post completed
 app.post('/mark_questions', async (req, res) => {
     try {

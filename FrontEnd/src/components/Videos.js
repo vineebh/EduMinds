@@ -40,7 +40,6 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
 
   // Navigate to VideoPlayerPage
   const handleWatchClick = (videoUrl, topic_name, videoId, index, courseTitle) => {
-    console.log(courseTitle)
     navigate("/video", {
       state: {
         videoUrl,
@@ -51,7 +50,6 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
         level,
         C_ID,
         courseTitle
-      
       },
     });
   };

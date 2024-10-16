@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { useLocation, useNavigate } from "react-router-dom";
 import Chatbot from "../components/Chatbot";
@@ -10,7 +10,6 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const {
     videoUrl,
     topic_name,
@@ -19,7 +18,7 @@ const VideoPlayerPage = () => {
     videoId,
     level,
     C_ID,
-    courseTitle,
+    courseTitle
   } = location.state || {};
 
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
@@ -31,6 +30,7 @@ const VideoPlayerPage = () => {
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
   const dispatch = useDispatch();
 
+  // Toggle Chatbot visibility
   const toggleChatbot = () => {
     setIsChatbotVisible(!isChatbotVisible);
   };
@@ -70,10 +70,12 @@ const VideoPlayerPage = () => {
     }
   };
 
+  // Handle playback speed change
   const handleSpeedChange = (event) => {
     setPlaybackSpeed(parseFloat(event.target.value));
   };
 
+  // Handle volume change
   const handleVolumeChange = (event) => {
     setVolume(parseFloat(event.target.value));
   };
@@ -115,6 +117,47 @@ const VideoPlayerPage = () => {
     toast.success("Your level is Completed. Time to Level up");
   };
 
+  // Navigate to the next video
+  const handleNextVideo = () => {
+
+    // Check if there are more videos
+    if (videos && Array.isArray(videos) && currentIndex !== undefined && currentIndex < videos.length - 1) {
+      const nextVideo = videos[currentIndex + 1]; // Get the next video
+      console.log("Next Video:", nextVideo);
+
+      // Check if the current video has been watched
+      if (Array.isArray(watchedVideos) && watchedVideos.includes(videoId)) {
+        console.log("Current video watched. Navigating to next video...");
+
+        // Navigate to the next video
+        navigate("/video", {
+          state: {
+            videoUrl: nextVideo.video_url,
+            topic_name: nextVideo.topic_name,
+            videos,
+            currentIndex: currentIndex + 1,
+            watchedVideos,
+            videoId: nextVideo.id, 
+          },
+        });
+      } else {
+        toast.error(
+          "You must watch the current video before accessing the next one."
+        );
+      }
+    } else {
+
+      navigate("/dashboard", {
+        state: { C_ID, level, courseTitle, State: "abc" },
+      });
+      toast.success("  Your level is  Completed. Time to Level up");
+    }
+  };
+  const dashboardHandler = () => {
+      navigate("/dashboard", {state :{C_ID, level, courseTitle  ,State:'abc'}});
+      toast.success("  Your level is  Completed. Time to Level up");
+      
+    };
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4 relative">
       {/* Dashboard Button in Top-Left */}
@@ -152,6 +195,7 @@ const VideoPlayerPage = () => {
         </div>
       </div>
 
+      {/* Playback Speed and Volume Controls */}
       <div className="flex flex-col md:flex-row items-center gap-6 mt-4">
         <div className="flex items-center">
           <label className="text-white mr-2" htmlFor="playback-speed">

@@ -107,16 +107,75 @@ const Header = () => {
               onClick={logoutHandler}
               className="py-3 px-3 text-sm rounded bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
             >
-              Logout
-            </button>
-          ) : (
+              About
+            </Link>
             <Link
               to="/auth"
               className="py-3 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
             >
-              Login
+              Contact
             </Link>
-          )}
+
+            {loginStatus ? (
+              <button
+                onClick={logoutHandler}
+                className="py-1 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105 mt-4"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                onClick={handleLinkClick}
+                className="py-1 px-2 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105 mt-4"
+              >
+                Login
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Social Media Icons at the Bottom */}
+        <div className="flex flex-col items-center">
+          <div className="flex justify-center space-x-6">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-400 transition duration-300"
+            >
+              <FaFacebookF className="w-5 h-5 text-white" />
+            </a>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-400 transition duration-300"
+            >
+              <FaTwitter className="w-5 h-5 text-white" />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-400 transition duration-300"
+            >
+              <FaInstagram className="w-5 h-5 text-white" />
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-400 transition duration-300"
+            >
+              <FaLinkedin className="w-5 h-5 text-white" />
+            </a>
+          </div>
+
+          {/* Copyright */}
+          <div className="text-sm text-gray-200 hover:text-blue-600 mt-2 mb-3">
+            © {new Date().getFullYear()} EduMinds. All rights reserved.
+          </div>
         </div>
       </div>
 
