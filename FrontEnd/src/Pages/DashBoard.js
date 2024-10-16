@@ -5,8 +5,6 @@ import axios from "axios";
 import Videos from "../components/Videos";
 import Article from "../components/Article";
 import ProgressBar from "../components/ProgressBar";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import EnrollmentPopup from "../components/EnrollmentPopup"; // Import the popup
 
 const DashBoard = () => {

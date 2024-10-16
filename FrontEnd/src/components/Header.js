@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { signOutUser } from "../firebase/auth";
 import { setIdToken, setLoginStatus, setIsLogin } from "../store/authSlice";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { BsTwitterX } from "react-icons/bs";
+import { FaFacebookF, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import LOGO from '../assests/img/logo.jpeg'
 
@@ -199,7 +200,7 @@ const Header = () => {
               rel="noopener noreferrer"
               className="hover:text-gray-400 transition duration-300"
             >
-              <FaTwitter className="w-5 h-5 text-white" />
+              <BsTwitterX className="w-5 h-5 text-white" />
             </a>
             <a
               href="https://instagram.com"

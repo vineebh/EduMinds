@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
@@ -23,7 +21,6 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
 
         if (response.status === 200) {
           const userPoints = response.data.data.points;
-          console.log(userPoints);
           setPoints(userPoints);
         } else {
           console.warn(response.data.msg);

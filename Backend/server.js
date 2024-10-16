@@ -30,7 +30,6 @@ app.get('/checkuser', async (req, res) => {
         const [data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
 
         if (data.length === 0) {
-            console.log(`Email not found: ${email}`);
             return res.status(201).json({ msg: 'Email not found',data: {course_title:'',level:''} });
         }
 
