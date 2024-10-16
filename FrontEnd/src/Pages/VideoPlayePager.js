@@ -46,6 +46,7 @@ const VideoPlayerPage = () => {
             email_id,
             courseTitle: courseTitle,
             watched_video_id: videoId,
+            courseTitle: courseTitle,
           }
         );
         if (response.status === 201) {
@@ -204,6 +205,12 @@ const VideoPlayerPage = () => {
           disabled={!watchedVideos.includes(videoId)}
         >
           Next Video
+        </button>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+          onClick={dashboardHandler}
+        >
+          Dashboard
         </button>
       </div>
 
