@@ -38,11 +38,12 @@ const Header = () => {
 
   return (
     <header className="bg-gradient-to-r from-neutral-900 to-zinc-600 shadow-lg fixed w-full top-0 left-0 z-50">
-      <div className="container mx-auto px-4 py-2 flex justify-between items-center lg:flex lg:justify-center lg:items-center">
-        {/* Logo */}
-        <div className="text-2xl md:text-3xl font-bold text-white">
-          {/* <span className="pt-4">EduMinds</span> */}
-          <img src={LOGO} alt="logo image" className=" h-12 scale-120 bg-cover rounded-full"/>
+      <div className="container px-4 py-2 flex justify-between items-center">
+        
+        {/* Logo and Title aligned side by side */}
+        <div className="flex items-center">
+          <img src={LOGO} alt="logo image" className="h-12 w-12 rounded-full" />
+          <span className="ml-4 text-2xl md:text-3xl font-bold text-white">EduMinds</span>
         </div>
 
         {/* Desktop Navigation */}
@@ -75,24 +76,6 @@ const Header = () => {
           </Link>
         </nav>
 
-        {/* Move login/logout button to the right in desktop view */}
-        <div className="hidden md:flex ml-auto">
-          {loginStatus ? (
-            <button
-              onClick={logoutHandler}
-              className="py-3 px-3 text-sm rounded bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
-            >
-              Logout
-            </button>
-          ) : (
-            <Link
-              to="/auth"
-              className="py-3 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
-            >
-              Login
-            </Link>
-          )}
-        </div>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
@@ -116,13 +99,30 @@ const Header = () => {
             </svg>
           </button>
         </div>
+        
+        {/* Login/Logout Button */}
+        <div className="hidden md:flex ml-auto absolute right-4">
+          {loginStatus ? (
+            <button
+              onClick={logoutHandler}
+              className="py-3 px-3 text-sm rounded bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              className="py-3 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
+            >
+              Login
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Sidebar for mobile view */}
       <div
-        className={`fixed text-center top-0 right-0 h-full w-64 bg-neutral-900 p-4 flex flex-col justify-between transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed text-center top-0 right-0 h-full w-64 bg-neutral-900 p-4 flex flex-col justify-between transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         <div>
           <button
@@ -182,7 +182,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Social Media Icons at the Bottom */}
+        {/* Social Media Icons */}
         <div className="flex flex-col items-center">
           <div className="flex justify-center space-x-6">
             <a

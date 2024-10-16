@@ -86,15 +86,21 @@ const EveryDayQuestion = () => {
         setIsSubmitted(true);
         const today = new Date().toISOString().split("T")[0];
         localStorage.setItem("lastSubmitDate", today);
-        const res = await axios.post("/update_points_and_level", {
-          email: email_id,
-          course_title: courseTitle,
-          new_points: 5,
-        });
-        if ( res.status === 200)
-        {
-          toast.success("5 Points added");
-          window.history.back();
+        if(response.data.correct !== 0 ){
+          const res = await axios.post("http://localhost:1000/update_points_and_level", {
+            email: email_id,
+            course_title: courseTitle,
+            new_points: 5,
+          });
+          if ( res.status === 200)
+          {
+            toast.success("Correct answer")
+            toast.success("5 Points added");
+            window.history.back();
+          }
+        }
+        else{
+          toast.success("Incorrect answer")
         }
       }
     }catch (error) {
