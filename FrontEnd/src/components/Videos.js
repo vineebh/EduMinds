@@ -36,7 +36,7 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
     if (email_id) {
       fetchWatchedVideos();
     }
-  }, [email_id]);
+  }, [email_id,courseTitle,dispatch]);
 
   // Navigate to VideoPlayerPage
   const handleWatchClick = (
@@ -46,7 +46,6 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
     index,
     courseTitle
   ) => {
-    console.log(courseTitle);
     navigate("/video", {
       state: {
         videoUrl,
@@ -55,7 +54,7 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
         videoId,
         level,
         C_ID,
-        courseTitle,
+        courseTitle
       },
     });
   };
