@@ -1,4 +1,4 @@
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -62,7 +62,7 @@ const Course = ({ courseData, Enroll }) => {
 
         {/* Description Section */}
         <div className="w-full sm:w-2/3 h-max mt-4 sm:mt-0">
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed pr-0 sm:pr-4 lg:pr-6 text-white ">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed pr-0 sm:pr-4 lg:pr-6 text-white text-justify ">
             <span className="font-bold text-sm sm:text-base md:text-lg lg:text-xl">
               Description:
             </span>{" "}

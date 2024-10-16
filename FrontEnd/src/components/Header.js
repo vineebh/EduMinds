@@ -5,6 +5,7 @@ import { signOutUser } from "../firebase/auth";
 import { setIdToken, setLoginStatus, setIsLogin } from "../store/authSlice";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import LOGO from '../assests/img/logo.jpeg'
 
 const Header = () => {
   const loginStatus = useSelector((state) => state.auth.loginStatus);
@@ -37,10 +38,11 @@ const Header = () => {
 
   return (
     <header className="bg-gradient-to-r from-neutral-900 to-zinc-600 shadow-lg fixed w-full top-0 left-0 z-50">
-      <div className="container mx-auto px-4 py-2 flex justify-between items-center lg:flex lg:justify-between lg:items-center">
+      <div className="container mx-auto px-4 py-2 flex justify-between items-center lg:flex lg:justify-center lg:items-center">
         {/* Logo */}
         <div className="text-2xl md:text-3xl font-bold text-white">
-          <span className="pt-4">EduMinds</span>
+          {/* <span className="pt-4">EduMinds</span> */}
+          <img src={LOGO} alt="logo image" className=" h-12 scale-120 bg-cover rounded-full"/>
         </div>
 
         {/* Desktop Navigation */}
