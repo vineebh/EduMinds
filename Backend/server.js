@@ -29,7 +29,6 @@ app.get('/checkuser', async (req, res) => {
         }
         const [data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
         if (data.length === 0) {
-            console.log(`Email not found: ${email}`);
             return res.status(201).json({ msg: 'Email not found', data: { course_title: '', level: '' } });
         }
         const userCourses = data.map(course => ({
@@ -260,9 +259,9 @@ app.post('/watched_videos', async (req, res) => {
 
         if (existingRecord[0].count > 0) {
             return res.status(200).json({ message: 'Video already marked as watched' });
-        }        
+        }
 
-        await db.query('INSERT INTO progress (email_id, course_title, watched_video_id,last_updated) VALUES (?, ?, ?, NOW())', 
+        await db.query('INSERT INTO progress (email_id, course_title, watched_video_id,last_updated) VALUES (?, ?, ?, NOW())',
             [email_id, courseTitle, watched_video_id]);
         res.status(201).json({ message: 'Video marked as watched' });
     } catch (error) {
@@ -376,34 +375,25 @@ app.post('/mark_questions', async (req, res) => {
 //  questions    get completed
 app.post('/completed_questions', async (req, res) => {
     try {
-        
+
         const { email_id, course_title } = req.body;
 
-        // Check if email is provided
-       
         if (!email_id) {
             return res.status(400).json({ msg: 'Email is required' });
         }
-
-        // Query the database for completed topics based on email and course_title
-        // Query the database for completed topics based on email and course_title
         const [data] = await db.query(
-            
+
             'SELECT topic_name FROM users_questions WHERE email_id = ? AND course_title = ?',
             [email_id, course_title]
         );
 
-        // If no records found, return a message
-        // If no records found, return a message
         if (data.length === 0) {
             return res.status(200).json({ msg: 'User not found or no questions completed', data: { topic_name: [] } });
-            
+
         }
 
-        // Extract topic names from the query result
         const topicNames = data.map((row) => row.topic_name);
 
-        // Return the list of completed topic names
         return res.status(200).json({ data: { topic_name: topicNames } });
     } catch (error) {
         console.error('Error occurred during fetching data:', error);
@@ -433,10 +423,10 @@ app.post('/newsletter', async (req, res) => {
         const [existingsubscriber] = await db.query(searchuserquery, [email]);
 
         if (existingsubscriber.length > 0) {
-            return res.status(200).json({ error: 'This email is already subscribed' });
+            return res.status(200).json({ msg: 'This email is already subscribed' });
         }
 
-        const insertquery = 'INSERT INTO newsletter (email) VALUES (?)';
+        const insertquery = 'insert into newsletter (email,datentime) values (?,now())';
         await db.query(insertquery, [email]);
 
         const mailOptions = {
@@ -464,6 +454,7 @@ Edu-Minds Team.`
             }
         });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Internal Server Error' });
     }
 
@@ -472,6 +463,29 @@ Edu-Minds Team.`
         return regex.test(email);
     }
 });
+
+app.post('/contactus', async (req, res) => {
+
+    try {
+        const { email_id, name, message } = req.body;
+
+        if (!email_id || !name || !message) {
+            res.status(404).json({ msg: 'All fields are required' })
+        }
+
+        const query = 'insert into contactUs (email_id,name,message,datentime) values (?,?,?,now())'
+        const response = await db.query(query, [email_id, name, message])
+        if (response.length > 0) {
+            res.status(201).json({ msg: 'Successfull' })
+        }
+        else {
+            res.status(401).json({ msg: 'Error occured while submiting your response' })
+        }
+    }
+    catch (error) {
+        res.status(500).json({ msg: 'Internal Server error' })
+    }
+})
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");

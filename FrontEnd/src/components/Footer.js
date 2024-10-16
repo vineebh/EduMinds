@@ -14,7 +14,6 @@ const Footer = () => {
       toast.error("Please enter a valid email address.");
       return;
     }
-
     try {
       await axios.post("http://localhost:1000/newsletter", { email });
       toast.success("You have successfully subscribed to our newsletter");

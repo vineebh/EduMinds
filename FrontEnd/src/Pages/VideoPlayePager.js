@@ -117,15 +117,6 @@ const VideoPlayerPage = () => {
 
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4 relative">
-      {/* Dashboard Button in Top-Left */}
-      <div className="absolute top-19 left-4">
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
-          onClick={dashboardHandler}
-        >
-          Dashboard
-        </button>
-      </div>
 
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
         {topic_name ? topic_name : "Now Playing"}
