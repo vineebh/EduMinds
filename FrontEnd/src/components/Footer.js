@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import {
   FaFacebookF,
-  FaTwitter,
   FaInstagram,
   FaLinkedin,
 } from "react-icons/fa";
+import { BsTwitterX } from "react-icons/bs";
 import LOGO from "../assests/img/logo.jpeg";
 import { toast } from "react-toastify";
 
@@ -37,7 +37,6 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div className="flex flex-col items-center md:items-start space-y-4">
-          <h2 className="text-xl font-bold text-white">Quick Links</h2>
           <div className="flex flex-col space-y-2 text-lg font-semibold">
             <Link
               to="/"
@@ -69,7 +68,7 @@ const Footer = () => {
         {/* Newsletter and Social Media */}
         <div className="flex flex-col items-center md:items-start">
           <h2 className="text-xl font-bold text-white">Stay Updated</h2>
-          <p className="text-gray-400 mt-2 text-sm">
+          <p className="text-gray-400 mt-2 md:ml-4 text-sm">
             Subscribe to our newsletter to stay updated on our latest courses and offers.
           </p>
           <form onSubmit={() =>submitHandler()} className="mt-4 flex">
@@ -79,7 +78,7 @@ const Footer = () => {
               placeholder="Enter your email"
               className="w-full px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
             />
-            <button
+            <button onClick={submitHandler()}
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-300"
             >
@@ -103,7 +102,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
             >
-              <FaTwitter />
+              <BsTwitterX />
             </a>
             <a
               href="https://instagram.com"

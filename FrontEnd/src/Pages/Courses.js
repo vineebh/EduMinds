@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import axios
+import axios from "axios";
 import Course from "../components/Course";
+import Loader from "../components/Loader"; // Import Loader component
 import { useSelector } from "react-redux";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [enroll, setEnroll] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const [error, setError] = useState(null);
   const userInfo = useSelector((state) => state.auth.userInfo);
 
-
-  // Fetch enroll data, with userInfo dependency
+  // Fetch courses data from backend
   useEffect(() => {
-    // Fetch course data from backend
     const fetchCourses = async () => {
       try {
         const response = await axios.get("http://localhost:1000/courses");
@@ -20,53 +20,53 @@ const Courses = () => {
       } catch (error) {
         console.error("Fetch error:", error);
         setError("Failed to fetch courses. Please try again later.");
+      } finally {
+        setLoading(false); // Stop loading once data is fetched
       }
     };
     fetchCourses();
-
   }, []);
 
+  // Fetch enrollment data based on user info
   useEffect(() => {
     const checkEnroll = async () => {
       try {
         const res = await axios.get(
           `http://localhost:1000/checkuser?email=${userInfo.userID}`
         );
-  
-        // Handle 200 OK response and data exists
+
         if (res.status === 200 && res.data.data) {
           setEnroll(
             res.data.data.map((course) => ({
               course_title: course.course_title,
-              level: course.level
+              level: course.level,
             }))
           );
         }
       } catch (error) {
-        // Handle Axios error for 404
         if (error.response && error.response.status === 404) {
           const msg = error.response.data.msg;
-          if (msg === 'Email not found') {
-            setError('Email not found. Please check your email and try again.');
-          } else if (msg === 'No courses found for this email') {
-            setError('No courses found for this email.');
+          if (msg === "Email not found") {
+            setError("Email not found. Please check your email and try again.");
+          } else if (msg === "No courses found for this email") {
+            setError("No courses found for this email.");
           }
         } else {
-          // Handle other types of errors (500, network issues, etc.)
           console.error("Fetch error:", error);
           setError("Failed to fetch enrollment data. Please try again later.");
         }
       }
     };
-  
+
     if (userInfo.userID) {
       checkEnroll();
     }
   }, [userInfo?.userID]);
 
-  
+  if (loading) {
+    return <Loader size="20" color="from-yellow-300 to-blue-600" />; // Show loader while loading
+  }
 
-  
   if (error) {
     return <div className="text-red-500 text-center">{error}</div>;
   }

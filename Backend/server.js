@@ -30,7 +30,6 @@ app.get('/checkuser', async (req, res) => {
         const [data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
 
         if (data.length === 0) {
-            console.log(`Email not found: ${email}`);
             return res.status(201).json({ msg: 'Email not found',data: {course_title:'',level:''} });
         }
 
@@ -425,10 +424,6 @@ app.post('/completed_questions', async (req, res) => {
 
         // Return the list of completed topic names
         return res.status(200).json({ data: { topic_name: topicNames } });
-        // Extract topic names from the query result
-       
-
-       
     } catch (error) {
         console.error('Error occurred during fetching data:', error);
         res.status(500).json({ error: 'An error occurred while fetching completed questions' });

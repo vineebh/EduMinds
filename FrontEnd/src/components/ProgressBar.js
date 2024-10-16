@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
