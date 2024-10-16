@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 const Article = ({ courses, C_ID }) => {
   const navigate = useNavigate();
-  
+
   // State to track if the first article has been read
   const [canAccessNextArticles, setCanAccessNextArticles] = useState(false);
 
@@ -12,7 +12,6 @@ const Article = ({ courses, C_ID }) => {
     if (!canAccessNextArticles) {
       setCanAccessNextArticles(true);
     }
-    console.log(topic_name);
     navigate("/article", {
       state: { articleData: articleData, topic_name, C_ID, article_id },
     });
@@ -28,15 +27,12 @@ const Article = ({ courses, C_ID }) => {
             // Parse the articles string to an object
             articleData = JSON.parse(course.articles);
           } catch (error) {
-            console.error("Invalid JSON structure in articles:", error);
             return null; // Skip rendering if there's a parsing error
           }
           // Determine if the article can be accessed
-         
+
           const isFirstArticle = course.id === courses[0].id; // Check if it's the first article
           const isClickable = isFirstArticle || canAccessNextArticles;
-          
-          console.log(isFirstArticle) // Determine if clickable
 
           return (
             <div
@@ -57,11 +53,10 @@ const Article = ({ courses, C_ID }) => {
                     }
                   }}
                   disabled={!isClickable} // Disable button if not clickable
-                  className={`${
-                    !isClickable ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`${!isClickable ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                 >
-                  {isClickable ? 'Read more' : 'Unlock to read'} 
+                  {isClickable ? 'Read more' : 'Unlock to read'}
                 </button>
                 <span>5 Points</span>
               </div>

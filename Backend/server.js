@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('./DBConn/sqlconn');
 const cors = require('cors');
 const app = express();
+const nodemailer = require('nodemailer')
 require('dotenv').config();
 
 app.use(cors());
@@ -31,7 +32,7 @@ app.get('/checkuser', async (req, res) => {
 
         if (data.length === 0) {
             console.log(`Email not found: ${email}`);
-            return res.status(201).json({ msg: 'Email not found',data: {course_title:'',level:''} });
+            return res.status(201).json({ msg: 'Email not found', data: { course_title: '', level: '' } });
         }
 
         const userCourses = data.map(course => ({
@@ -254,7 +255,7 @@ app.get('/watched_videos/:email', async (req, res) => {
         console.error("Error fetching watched videos:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
 
 
 //  videos   add video
@@ -270,10 +271,10 @@ app.post('/watched_videos', async (req, res) => {
             'SELECT COUNT(*) AS count FROM progress WHERE email_id = ? AND watched_video_id = ?',
             [email_id, watched_video_id]
         );
-        
+
         if (existingRecord[0].count > 0) {
             return res.status(200).json({ message: 'Video already marked as watched' });
-        }        
+        }
 
         await db.query('INSERT INTO progress (email_id, watched_video_id,last_updated) VALUES (?, ?, NOW())', [email_id, watched_video_id]);
         res.status(201).json({ message: 'Video marked as watched' });
@@ -395,6 +396,69 @@ app.post('/completed_questions', async (req, res) => {
     }
 });
 
+
+// API for subscription
+app.post('/subscribe', async (req, res) => {
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'edumindsup20@gmail.com',
+            pass: 'xzmu dlvt pplb qhsk'
+        }
+    });
+
+    try {
+        const { email } = req.body;
+
+        if (!email || !validateEmail(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        const searchuserquery = 'SELECT * FROM subscription WHERE email = ?';
+        const [existingsubscriber] = await db.query(searchuserquery, [email]);
+
+        if (existingsubscriber.length > 0) {
+            return res.status(400).json({ error: 'This email is already subscribed' });
+        }
+
+        const insertquery = 'INSERT INTO subscription (email) VALUES (?)';
+        await db.query(insertquery, [email]);
+
+        const mailOptions = {
+            from: 'edumindsup20@gmail.com',
+            to: email,
+            subject: 'Welcome to the Edu-Minds Newsletter!',
+            text: `Hello,
+        
+Thank you for subscribing to the Edu-Minds newsletter! We're excited to have you on board. You’ll now receive regular updates on the latest courses, learning tips, and exciting features to help you on your educational journey.
+        
+Stay tuned for insightful content and exclusive offers designed to elevate your learning experience.
+        
+If you have any questions, feel free to reach out to us at any time.
+        
+Best regards,
+Edu-Minds Team.`
+        };
+        
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return res.status(500).json({ error: 'Error sending subscription email' });
+            } else {
+                return res.status(200).json({ msg: 'Subscription successful! Email sent.' });
+            }
+        });
+    } catch (error) {
+        console.error('Error subscribing user:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    function validateEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+});
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");
