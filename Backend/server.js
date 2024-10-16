@@ -433,7 +433,7 @@ app.post('/newsletter', async (req, res) => {
         const [existingsubscriber] = await db.query(searchuserquery, [email]);
 
         if (existingsubscriber.length > 0) {
-            return res.status(400).json({ error: 'This email is already subscribed' });
+            return res.status(200).json({ error: 'This email is already subscribed' });
         }
 
         const insertquery = 'INSERT INTO newsletter (email) VALUES (?)';
