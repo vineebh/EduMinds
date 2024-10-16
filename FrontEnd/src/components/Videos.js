@@ -1,27 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setWatchedVideos } from "../store/progressSlice";
 
-const Videos = ({ courses,C_ID, level,courseTitle }) => {
+const Videos = ({ courses, C_ID, level, courseTitle }) => {
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo?.userID; // Check if userInfo exist
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
-  const dispatch= useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Fetch watched videos from the database
     const fetchWatchedVideos = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:1000/watched_videos/${email_id}`
+        const response = await axios.post(
+          "http://localhost:1000/get_watched_videos",
+          {
+            email_id,
+            courseTitle,
+          }
         );
         if (response.status === 200) {
-          dispatch(setWatchedVideos(response.data))
-          console.log(response ,'response')
-         ; // Assuming response.data contains watched video IDs
+          console.log(response);
+          dispatch(setWatchedVideos(response.data)); // Assuming response.data contains watched video IDs
         } else {
           throw new Error("Failed to fetch watched videos");
         }
@@ -36,19 +39,23 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
   }, [email_id]);
 
   // Navigate to VideoPlayerPage
-  const handleWatchClick = (videoUrl, topic_name, videoId, index,courseTitle,) => {
+  const handleWatchClick = (
+    videoUrl,
+    topic_name,
+    videoId,
+    index,
+    courseTitle
+  ) => {
+    console.log(courseTitle);
     navigate("/video", {
       state: {
         videoUrl,
         topic_name,
-        videos: courses,
         currentIndex: index,
-        watchedVideos,
         videoId,
         level,
         C_ID,
-        courseTitle
-      
+        courseTitle,
       },
     });
   };
@@ -79,7 +86,8 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
                   course.video_url,
                   course.topic_name,
                   course.id,
-                  index
+                  index,
+                  courseTitle
                 )
               }
               className={`w-full lg:w-20 lg:h-10 py-2 ${

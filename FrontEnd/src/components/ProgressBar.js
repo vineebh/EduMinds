@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { combineSlices } from "@reduxjs/toolkit";
-import { setQuestions } from "../store/testSlice";
-import { Navigate, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-
+import "react-toastify/dist/ReactToastify.css";
 
 const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
@@ -15,7 +11,6 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
   const [progress, setProgress] = useState(0);
   const [points, setPoints] = useState(0);
   const email = userInfo?.userID;
-  console.log(C_ID);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +23,6 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
 
         if (response.status === 200) {
           const userPoints = response.data.data.points;
-          console.log(userPoints);
           setPoints(userPoints);
         } else {
           console.warn(response.data.msg);
@@ -44,22 +38,24 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
       fetchUserPoints();
     }
   }, [email, course_title]);
-
-  console.log(watchedVideos.length)
   useEffect(() => {
     if (total > 0) {
       const progressPercentage = Math.min(
         parseInt((watchedVideos.length / total) * 100),
         100
       );
-      setProgress(progressPercentage); // Ensure progress doesn't exceed 100%
+      setProgress(progressPercentage);
     }
   }, [watchedVideos, total]);
 
   const everyDayQuestionHandler = async () => {
     navigate("/everydayquestion", {
-      state: { C_ID, level: courseLevel, courseTitle:course_title , limit:1 },
+      state: { C_ID, level: courseLevel, courseTitle: course_title }
     });
+  };
+  
+  const levelUpHandler = () => {
+    navigate('/levelUp' ,{state :{C_ID, level:courseLevel, courseTitle:course_title}})
   };
 
   return (
@@ -90,11 +86,15 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
         >
           Everyday Question
         </button>
-        <button className="bg-yellow-500 px-4 py-2 rounded-full shadow-md hover:bg-yellow-600 transition-all">
-          Level Up
-        </button>
+        {progress === 100 && (
+          <button
+            className="bg-yellow-500 px-4 py-2 rounded-full shadow-md hover:bg-yellow-600 transition-all"
+            onClick={levelUpHandler}
+          >
+            Level Up
+          </button>
+        )}
       </div>
-
     </div>
   );
 };

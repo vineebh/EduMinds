@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const EveryDayQuestion = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -9,10 +12,11 @@ const EveryDayQuestion = () => {
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
+  const userInfo = useSelector((state) => state.auth.userInfo);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
-  const { C_ID, level } = location.state || {};
+  const { C_ID, level, courseTitle} = location.state || {};
+  const email_id = userInfo.userID;
 
   useEffect(() => {
     const everyDayQuestionHandler = async () => {
@@ -60,11 +64,52 @@ const EveryDayQuestion = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    setResult("Your answers have been submitted!");
-    setIsSubmitted(true);
-    const today = new Date().toISOString().split("T")[0];
-    localStorage.setItem("lastSubmitDate", today);
+  const handleSubmit = async () => {
+    const answerArray = Object.entries(answers).map(
+      ([questionId, selectedOption]) => ({
+        questionId: parseInt(questionId, 10),
+        selectedOption,
+      })
+    );
+
+    try {
+      const response = await axios.post(
+        "http://localhost:1000/assessment/submit",
+        {
+          c_id: C_ID,
+          answers: answerArray,
+        }
+      );
+      if (response.status === 200)
+      {
+        setResult("Your answers have been submitted!");
+        setIsSubmitted(true);
+        const today = new Date().toISOString().split("T")[0];
+        localStorage.setItem("lastSubmitDate", today);
+        if(response.data.correct !== 0 ){
+          const res = await axios.post("http://localhost:1000/update_points_and_level", {
+            email: email_id,
+            course_title: courseTitle,
+            new_points: 5,
+          });
+          if ( res.status === 200)
+          {
+            toast.success("Correct answer")
+            toast.success("5 Points added");
+            window.history.back();
+          }
+        }
+        else{
+          toast.success("Incorrect answer")
+        }
+      }
+    }catch (error) {
+      console.error("Error during submission:", error);
+      toast.error("Error during submission");
+      setResult(
+        "An error occurred while submitting your answers. Please try again."
+      );
+    }
   };
 
   const isLastQuestion = currentQuestionIndex === questions.length - 1;

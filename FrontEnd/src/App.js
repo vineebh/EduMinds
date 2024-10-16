@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, useSearchParams } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Auth from "./components/Auth/Auth";
 import Header from "./components/Header";
@@ -15,6 +15,7 @@ import MCQ from "./Pages/MCQ";
 import ArticleView from "./Pages/ArticleView";
 import Test from "./Pages/Test";
 import EveryDayQuestion from "./Pages/EveryDayQuestion";
+import LevelUp from "./Pages/LevelUp";
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
           {loginStatus && <Route path="/article" element={<ArticleView />} />}
           {loginStatus && <Route path="/test" element={<Test />} />}
           {loginStatus && <Route path="/everydayquestion" element={<EveryDayQuestion />} />}
+          {loginStatus && <Route path='/levelUp'element={<LevelUp/>}/>}
 
 
         </Routes>
