@@ -21,7 +21,6 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
 
         if (response.status === 200) {
           const userPoints = response.data.data.points;
-          console.log(userPoints);
           setPoints(userPoints);
         } else {
           console.warn(response.data.msg);

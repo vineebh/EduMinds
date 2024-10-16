@@ -10,7 +10,7 @@ const Loader = ({ size = "16", color = "from-blue-300 to-blue-600" }) => {
           className={`absolute inset-0 w-full h-full rounded-full bg-gradient-to-r ${color}`}
         ></div>
         <div
-          className="absolute inset-0 w-full h-full rounded-full blur-md bg-gradient-to-r from-yellow-300 to-yellow-500 opacity-50"
+          className="absolute inset-0 w-full h-full rounded-full blur-md bg-gradient-to-r from-blue-300 to-blue-500 opacity-50"
         ></div>
       </div>
     </div>

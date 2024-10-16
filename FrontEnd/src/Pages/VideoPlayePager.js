@@ -10,7 +10,6 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const {
     videoUrl,
     topic_name,
@@ -36,7 +35,7 @@ const VideoPlayerPage = () => {
   };
 
   const handleVideoEnd = async () => {
-    toast.success("Video finished!");
+    toast.success("Video finished! ");
 
     if (!watchedVideos.includes(videoId)) {
       try {
@@ -205,6 +204,12 @@ const VideoPlayerPage = () => {
           disabled={!watchedVideos.includes(videoId)}
         >
           Next
+        </button>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+          onClick={dashboardHandler}
+        >
+          Dashboard
         </button>
       </div>
 
