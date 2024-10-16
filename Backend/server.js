@@ -27,22 +27,17 @@ app.get('/checkuser', async (req, res) => {
         if (!email) {
             return res.status(400).json({ msg: 'Email is required' });
         }
-
         const [data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
-
         if (data.length === 0) {
             console.log(`Email not found: ${email}`);
             return res.status(201).json({ msg: 'Email not found', data: { course_title: '', level: '' } });
         }
-
         const userCourses = data.map(course => ({
             course_title: course.course_title,
             level: course.level
         }));
-
         return res.status(200).json({ data: userCourses });
     } catch (error) {
-        console.error('Error occurred:', error);
         res.status(500).json({ error: 'Error during fetching data' });
     }
 });
@@ -64,7 +59,6 @@ app.get('/skills/:C_ID', async (req, res) => {
             res.status(404).json({ error: "No skills found for this course ID" });
         }
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: "Error fetching data" });
     }
 });
@@ -85,7 +79,6 @@ app.post('/assessment/questions', async (req, res) => {
     if (!course_title) {
         return res.status(400).json({ error: 'Invalid course ID' });
     }
-
     try {
         const [rows] = await db.query(
             `SELECT id, questions, option_1, option_2, option_3, option_4
@@ -95,15 +88,12 @@ app.post('/assessment/questions', async (req, res) => {
              LIMIT ?`,
             [level, limit]
         );
-
         if (rows.length === 0) {
             return res.status(404).json({ error: 'No questions available for this level' });
         }
-
         const questionsWithoutAnswers = rows;
         res.status(200).json(questionsWithoutAnswers);
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -133,14 +123,11 @@ app.post('/assessment/chapterQ', async (req, res) => {
              LIMIT ?`,
             [topic, limit]
         );
-
         if (rows.length === 0) {
             return res.status(404).json({ error: 'No questions available for this topic' });
         }
-
         res.status(200).json(rows);
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -174,10 +161,8 @@ app.post('/assessment/submit', async (req, res) => {
                 }
             }
         }
-
         res.status(200).json({ correct: correctCount, total: answers.length });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -203,7 +188,6 @@ app.post('/userdata', async (req, res) => {
         await db.query(query, [email_id, course_title, Level, points]);
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
-        console.error("Error in /userdata:", error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -234,7 +218,6 @@ app.get('/course/:c_id', async (req, res) => {
 
         res.json(data);
     } catch (err) {
-        console.error("Error fetching course data:", err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -252,7 +235,6 @@ app.get('/watched_videos/:email', async (req, res) => {
         const watchedVideoIds = rows.map(row => row.watched_video_id);
         res.status(200).json(watchedVideoIds);
     } catch (error) {
-        console.error("Error fetching watched videos:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -275,11 +257,9 @@ app.post('/watched_videos', async (req, res) => {
         if (existingRecord[0].count > 0) {
             return res.status(200).json({ message: 'Video already marked as watched' });
         }
-
         await db.query('INSERT INTO progress (email_id, watched_video_id,last_updated) VALUES (?, ?, NOW())', [email_id, watched_video_id]);
         res.status(201).json({ message: 'Video marked as watched' });
     } catch (error) {
-        console.error("Error marking video as watched:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -305,12 +285,10 @@ app.post('/userpoints', async (req, res) => {
         if (data.length === 0) {
             return res.status(404).json({ msg: 'User not found or not enrolled in the course', data: { points: 0 } });
         }
-
         // Return the points if user found
         const userPoints = data[0].points;
         return res.status(200).json({ data: { points: userPoints } });
     } catch (error) {
-        console.error('Error occurred during fetching data:', error);
         res.status(500).json({ error: 'An error occurred while fetching user data' });
     }
 });
@@ -391,7 +369,6 @@ app.post('/completed_questions', async (req, res) => {
         const userQuestions = data[0].question_id;
         return res.status(200).json({ data: { question_id: userQuestions } });
     } catch (error) {
-        console.error('Error occurred during fetching data:', error);
         res.status(500).json({ error: 'An error occurred while fetching user data' });
     }
 });
@@ -440,7 +417,7 @@ If you have any questions, feel free to reach out to us at any time.
 Best regards,
 Edu-Minds Team.`
         };
-        
+
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
@@ -450,7 +427,6 @@ Edu-Minds Team.`
             }
         });
     } catch (error) {
-        console.error('Error subscribing user:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 
