@@ -256,8 +256,8 @@ app.post('/get_watched_videos', async (req, res) => {
         res.status(200).json(watchedVideoIds);
     } catch (error) {
         console.error("Error fetching watched videos:", error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
@@ -393,30 +393,6 @@ app.post('/mark_questions', async (req, res) => {
 });
 
 
-//  questions    post completed
-app.post('/mark_questions', async (req, res) => {
-    try {
-        const { email_id, course_title, topic_name } = req.body;
-
-        // Check if email is provided
-        if (!email_id) {
-            return res.status(400).json({ msg: 'Email is required' });
-        }
-
-        // Insert data into the database
-        const query = 'INSERT INTO users_questions (email_id, course_title, topic_name) VALUES (?, ?, ?)';
-        const values = [email_id, course_title, topic_name];
-        await db.query(query, values);
-
-        res.status(201).json({ message: 'Question marked as done' });
-    } catch (error) {
-        console.error('Error occurred during inserting data:', error);
-        res.status(500).json({ error: 'An error occurred while marking the question' });
-    }
-});
-
-
-//  questions    get completed
 //  questions    get completed
 app.post('/completed_questions', async (req, res) => {
     try {
@@ -457,28 +433,6 @@ app.post('/completed_questions', async (req, res) => {
         console.error('Error occurred during fetching data:', error);
         res.status(500).json({ error: 'An error occurred while fetching completed questions' });
     }
-       
-});
-//  questions    post completed
-app.post('/mark_questions', async (req, res) => {
-    try {
-        const { email_id, course_title, topic_name } = req.body;
-
-        // Check if email is provided
-        if (!email_id) {
-            return res.status(400).json({ msg: 'Email is required' });
-        }
-
-        // Insert data into the database
-        const query = 'INSERT INTO users_questions (email_id, course_title, topic_name) VALUES (?, ?, ?)';
-        const values = [email_id, course_title, topic_name];
-        await db.query(query, values);
-
-        res.status(201).json({ message: 'Question marked as done' });
-    } catch (error) {
-        console.error('Error occurred during inserting data:', error);
-        res.status(500).json({ error: 'An error occurred while marking the question' });
-    }
 });
 
 

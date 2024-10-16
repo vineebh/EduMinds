@@ -17,8 +17,8 @@ const VideoPlayerPage = () => {
     videos,
     currentIndex,
     videoId,
-    C_ID,
     level,
+    C_ID,
     courseTitle,
   } = location.state || {};
 
@@ -31,16 +31,13 @@ const VideoPlayerPage = () => {
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
   const dispatch = useDispatch();
 
-  // Toggle Chatbot visibility
   const toggleChatbot = () => {
     setIsChatbotVisible(!isChatbotVisible);
   };
 
-  // Called when video ends
   const handleVideoEnd = async () => {
     toast.success("Video finished! ");
 
-    // Mark the current video as watched in the database
     if (!watchedVideos.includes(videoId)) {
       try {
         console.log(email_id ,courseTitle,videoId)
@@ -55,18 +52,17 @@ const VideoPlayerPage = () => {
         if (response.status === 201) {
           dispatch(setWatchedVideos([...watchedVideos, videoId]));
           toast.success("Unlocking next video...");
-          // call post(/update_points_and_level) api
-          // body={email, course_title, new_points:5}
-          const res = await axios.post("/update_points_and_level", {
-            email: email_id,
-            course_title: courseTitle,
-            new_points: 5,
-          });
+          const res = await axios.post(
+            "http://localhost:1000/update_points_and_level",
+            {
+              email: email_id,
+              course_title: courseTitle,
+              new_points: 5,
+            }
+          );
           if (res.status === 200) {
             toast.success("5 Points added");
           }
-        } else {
-          toast.error(response.data.messsage);
         }
       } catch (error) {
         toast.error(error.messsage);
@@ -74,30 +70,23 @@ const VideoPlayerPage = () => {
     }
   };
 
-  // Handle playback speed change
   const handleSpeedChange = (event) => {
     setPlaybackSpeed(parseFloat(event.target.value));
   };
 
-  // Handle volume change
   const handleVolumeChange = (event) => {
     setVolume(parseFloat(event.target.value));
   };
 
-  // Navigate to the next video
   const handleNextVideo = () => {
-    // Check if there are more videos
     if (
       videos &&
       Array.isArray(videos) &&
       currentIndex !== undefined &&
       currentIndex < videos.length - 1
     ) {
-      const nextVideo = videos[currentIndex + 1]; // Get the next video
-
-      // Check if the current video has been watched
+      const nextVideo = videos[currentIndex + 1];
       if (Array.isArray(watchedVideos) && watchedVideos.includes(videoId)) {
-        // Navigate to the next video
         navigate("/video", {
           state: {
             videoUrl: nextVideo.video_url,
@@ -105,7 +94,6 @@ const VideoPlayerPage = () => {
             videos,
             currentIndex: currentIndex + 1,
             watchedVideos,
-
             videoId: nextVideo.id,
           },
         });
@@ -118,17 +106,27 @@ const VideoPlayerPage = () => {
       navigate("/dashboard", {
         state: { C_ID, level, courseTitle, State: "abc" },
       });
-      toast.success("  Your level is  Completed. Time to Level up");
+      toast.success("Your level is Completed. Time to Level up");
     }
   };
+
   const dashboardHandler = () => {
-    navigate("/dashboard", {
-      state: { C_ID, level, courseTitle, State: "abc" },
-    });
-    toast.success("  Your level is  Completed. Time to Level up");
+    navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "abc" } });
+    toast.success("Your level is Completed. Time to Level up");
   };
+
   return (
-    <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4">
+    <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4 relative">
+      {/* Dashboard Button in Top-Left */}
+      <div className="absolute top-19 left-4">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+          onClick={dashboardHandler}
+        >
+          Dashboard
+        </button>
+      </div>
+
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
         {topic_name ? topic_name : "Now Playing"}
       </h2>
@@ -154,7 +152,6 @@ const VideoPlayerPage = () => {
         </div>
       </div>
 
-      {/* Playback Speed and Volume Controls */}
       <div className="flex flex-col md:flex-row items-center gap-6 mt-4">
         <div className="flex items-center">
           <label className="text-white mr-2" htmlFor="playback-speed">
@@ -189,13 +186,12 @@ const VideoPlayerPage = () => {
         </div>
       </div>
 
-      {/* Chatbot and Buttons Section */}
       <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
         <button
-          onClick={() => navigate(-1)} // Use navigate(-1) to go back
+          onClick={() => navigate(-1)}
           className="bg-gray-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
         >
-          Go Back
+          Back
         </button>
         <button
           onClick={toggleChatbot}
@@ -218,10 +214,7 @@ const VideoPlayerPage = () => {
         </button>
       </div>
 
-      {/* Chatbot Component */}
-      {isChatbotVisible && (
-        <Chatbot setIsChatbotVisible={setIsChatbotVisible} />
-      )}
+      {isChatbotVisible && <Chatbot setIsChatbotVisible={setIsChatbotVisible} />}
     </div>
   );
 };
