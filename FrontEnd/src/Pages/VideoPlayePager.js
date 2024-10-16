@@ -10,7 +10,6 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const {
     videoUrl,
     topic_name,
