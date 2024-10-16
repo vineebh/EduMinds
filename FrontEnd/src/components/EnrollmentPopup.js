@@ -18,7 +18,7 @@ const EnrollmentPopup = ({ courseName, onClose }) => {
   }, [onClose]);
 
   useEffect(() => {
-    const confettiTimer = setTimeout(() => setShowConfetti(false), 3000); // Stop confetti after 3 seconds
+    const confettiTimer = setTimeout(() => setShowConfetti(false), 4000); // Stop confetti after 4 seconds
     return () => clearTimeout(confettiTimer);
   }, []);
 

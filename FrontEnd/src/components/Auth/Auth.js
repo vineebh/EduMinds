@@ -104,7 +104,7 @@ const Auth = () => {
         ...prevErrors,
         firebase: error.message,
       }));
-      toast.error(error.message); // Toast notification for error
+      console.error(error.message); //notification for error
     }
   };
 
@@ -133,7 +133,7 @@ const Auth = () => {
 
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);
-      toast.error("Google Sign-In Failed: " + error.message); // Toast notification for Google login error
+      console.error("Google Sign-In Failed: " + error.message); // Toast notification for Google login error
     }
   };
 
