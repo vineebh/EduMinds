@@ -38,18 +38,18 @@ const VideoPlayerPage = () => {
 
   // Called when video ends
   const handleVideoEnd = async () => {
-    console.log(`Video at index ${currentIndex} ended`);
     toast.success("Video finished! ");
 
     // Mark the current video as watched in the database
     if (!watchedVideos.includes(videoId)) {
       try {
+        console.log(email_id ,courseTitle,videoId)
         const response = await axios.post(
           "http://localhost:1000/watched_videos",
           {
             email_id,
-            watched_video_id: videoId,
             courseTitle: courseTitle,
+            watched_video_id: videoId,
           }
         );
         if (response.status === 201) {
@@ -62,13 +62,14 @@ const VideoPlayerPage = () => {
             course_title: courseTitle,
             new_points: 5,
           });
-          if ( res.status === 200)
-          {
+          if (res.status === 200) {
             toast.success("5 Points added");
           }
+        } else {
+          toast.error(response.data.messsage);
         }
       } catch (error) {
-        console.error("Error marking video as watched:", error);
+        toast.error(error.messsage);
       }
     }
   };
@@ -85,16 +86,17 @@ const VideoPlayerPage = () => {
 
   // Navigate to the next video
   const handleNextVideo = () => {
-
     // Check if there are more videos
-    if (videos && Array.isArray(videos) && currentIndex !== undefined && currentIndex < videos.length - 1) {
+    if (
+      videos &&
+      Array.isArray(videos) &&
+      currentIndex !== undefined &&
+      currentIndex < videos.length - 1
+    ) {
       const nextVideo = videos[currentIndex + 1]; // Get the next video
-      console.log("Next Video:", nextVideo);
 
       // Check if the current video has been watched
       if (Array.isArray(watchedVideos) && watchedVideos.includes(videoId)) {
-        console.log("Current video watched. Navigating to next video...");
-
         // Navigate to the next video
         navigate("/video", {
           state: {
@@ -103,9 +105,8 @@ const VideoPlayerPage = () => {
             videos,
             currentIndex: currentIndex + 1,
             watchedVideos,
-           
-            videoId: nextVideo.id, 
 
+            videoId: nextVideo.id,
           },
         });
       } else {
@@ -114,7 +115,6 @@ const VideoPlayerPage = () => {
         );
       }
     } else {
-
       navigate("/dashboard", {
         state: { C_ID, level, courseTitle, State: "abc" },
       });
@@ -122,10 +122,11 @@ const VideoPlayerPage = () => {
     }
   };
   const dashboardHandler = () => {
-      navigate("/dashboard", {state :{C_ID, level, courseTitle  ,State:'abc'}});
-      toast.success("  Your level is  Completed. Time to Level up");
-      
-    };
+    navigate("/dashboard", {
+      state: { C_ID, level, courseTitle, State: "abc" },
+    });
+    toast.success("  Your level is  Completed. Time to Level up");
+  };
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4">
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
@@ -203,9 +204,9 @@ const VideoPlayerPage = () => {
           {isChatbotVisible ? "Hide Chatbot" : "Ask Doubt to AI"}
         </button>
         <button
-        onClick={handleNextVideo}
-        className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
-        disabled={!watchedVideos.includes(videoId)}
+          onClick={handleNextVideo}
+          className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+          disabled={!watchedVideos.includes(videoId)}
         >
           Next Video
         </button>
