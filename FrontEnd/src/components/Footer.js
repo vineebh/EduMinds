@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaFacebookF,
@@ -8,19 +8,29 @@ import {
 import { BsTwitterX } from "react-icons/bs";
 import LOGO from "../assests/img/logo.jpeg";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Footer = () => {
-  const submitHandler = (email) => {
-    if (!email)
-    {
-      toast.success("you have successfully subscribed to our newsletter")
+  const [email, setEmail] = useState("");
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    if (!email) {
+      toast.error("Please enter a valid email address.");
+      return;
     }
-  }
+    try {
+      await axios.post("http://localhost:1000/newsletter", { email });
+      toast.success("You have successfully subscribed to our newsletter");
+      setEmail("");
+    } catch (error) {
+      toast.error("Subscription failed. Please try again.");
+    }
+  };
 
   return (
-    <footer className="bg-[rgb(28,28,29)] text-gray-300 py-10">
-      <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
-        
+    <footer className="bg-[#1F1F1F] text-gray-300 py-8">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
         {/* Logo and Description */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
           <img
@@ -71,14 +81,16 @@ const Footer = () => {
           <p className="text-gray-400 mt-2 md:ml-4 text-sm">
             Subscribe to our newsletter to stay updated on our latest courses and offers.
           </p>
-          <form onSubmit={() =>submitHandler()} className="mt-4 flex">
+          <form className="mt-4 flex" onSubmit={submitHandler}>
             <input
               type="email"
               id="email"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
             />
-            <button onClick={submitHandler()}
+            <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-300"
             >
