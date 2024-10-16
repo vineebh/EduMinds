@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import {
   FaFacebookF,
-  FaTwitter,
   FaInstagram,
   FaLinkedin,
 } from "react-icons/fa";
+import { BsTwitterX } from "react-icons/bs";
 import LOGO from "../assests/img/logo.jpeg";
 import { toast } from "react-toastify";
 
@@ -18,7 +18,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-[#111111] text-gray-300 py-10">
+    <footer className="bg-[rgb(28,28,29)] text-gray-300 py-10">
       <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
         
         {/* Logo and Description */}
@@ -37,7 +37,6 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div className="flex flex-col items-center md:items-start space-y-4">
-          <h2 className="text-xl font-bold text-white">Quick Links</h2>
           <div className="flex flex-col space-y-2 text-lg font-semibold">
             <Link
               to="/"
@@ -103,7 +102,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
             >
-              <FaTwitter />
+              <BsTwitterX />
             </a>
             <a
               href="https://instagram.com"

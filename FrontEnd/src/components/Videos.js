@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setWatchedVideos } from "../store/progressSlice";
 
-const Videos = ({ courses,C_ID, level,courseTitle }) => {
+const Videos = ({ courses, C_ID, level, courseTitle }) => {
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo?.userID; // Check if userInfo exist
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
-  const dispatch= useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Fetch watched videos from the database
@@ -36,22 +36,25 @@ const Videos = ({ courses,C_ID, level,courseTitle }) => {
     if (email_id) {
       fetchWatchedVideos();
     }
-  }, [email_id]);
+  }, [email_id,courseTitle,dispatch]);
 
   // Navigate to VideoPlayerPage
-  const handleWatchClick = (videoUrl, topic_name, videoId, index, courseTitle) => {
-    console.log(courseTitle)
+  const handleWatchClick = (
+    videoUrl,
+    topic_name,
+    videoId,
+    index,
+    courseTitle
+  ) => {
     navigate("/video", {
       state: {
         videoUrl,
         topic_name,
-        videos: courses,
         currentIndex: index,
         videoId,
         level,
         C_ID,
-        courseTitle
-      
+        courseTitle,
       },
     });
   };

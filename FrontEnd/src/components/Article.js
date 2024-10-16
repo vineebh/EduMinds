@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router";
 
 const Article = ({ courses, C_ID ,courseTitle ,level}) => {

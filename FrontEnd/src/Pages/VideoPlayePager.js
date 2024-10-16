@@ -40,6 +40,7 @@ const VideoPlayerPage = () => {
 
     if (!watchedVideos.includes(videoId)) {
       try {
+        console.log(email_id ,courseTitle,videoId)
         const response = await axios.post(
           "http://localhost:1000/watched_videos",
           {
@@ -64,7 +65,7 @@ const VideoPlayerPage = () => {
           }
         }
       } catch (error) {
-        console.error("Error marking video as watched:", error);
+        toast.error(error.messsage);
       }
     }
   };
@@ -82,7 +83,7 @@ const VideoPlayerPage = () => {
       videos &&
       Array.isArray(videos) &&
       currentIndex !== undefined &&
-      currentIndex < videos.length - 1
+      currentIndex < videos.length -1
     ) {
       const nextVideo = videos[currentIndex + 1];
       if (Array.isArray(watchedVideos) && watchedVideos.includes(videoId)) {
@@ -105,9 +106,9 @@ const VideoPlayerPage = () => {
       navigate("/dashboard", {
         state: { C_ID, level, courseTitle, State: "abc" },
       });
-      toast.success("Your level is Completed. Time to Level up");
     }
   };
+  
 
   const dashboardHandler = () => {
     navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "abc" } });
@@ -203,7 +204,7 @@ const VideoPlayerPage = () => {
           className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
           disabled={!watchedVideos.includes(videoId)}
         >
-          Next Video
+          Next
         </button>
       </div>
 

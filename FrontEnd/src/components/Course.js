@@ -10,9 +10,12 @@ const Course = ({ courseData, Enroll }) => {
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const navigate = useNavigate();
 
-  const btnLabel = Enroll.some((course) => course.course_title === title)
+  
+   const btnLabel = Enroll.some((course) => course.course_title === title)
     ? "Continue"
     : "Assess your level";
+
+  
 
   const enrolledCourse = Enroll.find((course) => course.course_title === title);
 

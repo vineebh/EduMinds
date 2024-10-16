@@ -5,14 +5,14 @@ import axios from "axios";
 import Videos from "../components/Videos";
 import Article from "../components/Article";
 import ProgressBar from "../components/ProgressBar";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import EnrollmentPopup from "../components/EnrollmentPopup"; // Import the popup
 
 const DashBoard = () => {
   const [view, setView] = useState("video");
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Loading state
+  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
   const userInfo = useSelector((state) => state.auth.userInfo);
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,17 +26,16 @@ const DashBoard = () => {
       previousPage === "/assessment" || previousPage === "/mcq";
 
     if (isComingFromAssessmentOrMCQ) {
-      // Prevent back navigation
       const handlePopState = (event) => {
         event.preventDefault();
-        navigate("/courses"); // Redirect user to courses page when back button is pressed
+        navigate("/courses");
       };
 
-      window.history.pushState(null, null); // Prevent user from going back
-      window.addEventListener("popstate", handlePopState); // Listen to back navigation
+      window.history.pushState(null, null);
+      window.addEventListener("popstate", handlePopState);
 
       return () => {
-        window.removeEventListener("popstate", handlePopState); // Cleanup event listener
+        window.removeEventListener("popstate", handlePopState);
       };
     }
   }, [navigate, location.state?.from]);
@@ -49,13 +48,11 @@ const DashBoard = () => {
           course_title: courseTitle,
           Level: level,
         });
-        console.log("Response:", response.data);
+        console.log(response);
+
+        setShowPopup(true);
         return true;
       } catch (error) {
-        console.error(
-          "Post error:",
-          error.response ? error.response.data : error.message
-        );
         setError("Failed to enroll course. Please try again later.");
         return false;
       }
@@ -73,22 +70,14 @@ const DashBoard = () => {
           setCourses(response.data);
         }
       } catch (error) {
-        console.error(
-          "Fetch error:",
-          error.response ? error.response.data : error.message
-        );
         setError("Failed to fetch courses. Please try again later.");
       } finally {
-        setLoading(false);
+        setLoading(false); // End loading once data is fetched
       }
     };
 
     if (State === "New") {
-      if (postUserData()) {
-        toast.success(
-          "You are Enrolled in " + courseTitle + " at level " + level
-        );
-      }
+      postUserData();
     }
     fetchCourses();
   }, [C_ID, courseTitle, level, userInfo?.userID, State]);
@@ -102,92 +91,108 @@ const DashBoard = () => {
       setLevel(3);
     }
   }, [level]);
+
   const filteredData = courses.filter((data) => data.level === Level);
 
   return (
     <main className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen py-8">
-      <section className="container mx-auto flex flex-col lg:flex-row gap-8 items-start mt-10 px-4">
+      {/* Show the loader when loading */}
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <div className="loader border-t-4 border-yellow-400 rounded-full w-16 h-16 animate-spin"></div>
+        </div>
+      ) : (
+        <>
+          <section className="container mx-auto flex flex-col lg:flex-row gap-8 items-start mt-10 px-4">
+            {/* Left section - Video/Article */}
+            <article className="relative shadow-2xl flex-1 border lg:border-none p-6 bg-gray-800 border-gray-600 rounded-lg transition-all duration-300 ease-in-out hover:shadow-2xl">
+              <h1 className=" text-red-100 font-bold text-3xl mb-6 text-center z-100">
+                {courseTitle}
+              </h1>
+              <div className="h-1 w-3/4 mx-auto bg-gradient-to-r from-gray-800 via-yellow-500 to-gray-800 my-4 rounded-full"></div>
 
-        {/* Left section - Video/Article */}
-        <article className="relative shadow-2xl flex-1 border lg:border-none p-6 bg-gray-800 border-gray-600 rounded-lg transition-all duration-300 ease-in-out hover:shadow-2xl">
-          
-        <h1 className=" text-red-100 font-bold text-3xl mb-6 text-center z-100">
-            {courseTitle}
-          </h1>
-          <div className="h-1 w-3/4 mx-auto bg-gradient-to-r from-gray-800 via-yellow-500 to-gray-800 my-4 rounded-full"></div>
-          
-          <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-            <ProgressBar
-              Level={level}
-              courseLevel ={Level}
-              course_title={courseTitle}
-              total={filteredData.length}
-              C_ID={C_ID}
+              <aside className="lg:hidden w-full  flex justify-center lg:w-1/4 p-4 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
+                <ProgressBar
+                  Level={level}
+                  courseLevel={Level}
+                  course_title={courseTitle}
+                  total={filteredData.length}
+                  C_ID={C_ID}
+                />
+              </aside>
 
-            />
-          </aside>
-          {/* Toggle Switch */}
-          <label className="flex items-center justify-center mt-8 mb-6 cursor-pointer relative">
-            <input
-              type="checkbox"
-              className="sr-only peer"
-              checked={view === "article"}
-              onChange={() => setView(view === "video" ? "article" : "video")}
-            />
-            <div className="w-52 h-12 bg-gray-700 rounded-full shadow-inner relative transition-all duration-500 ease-in-out flex items-center">
-              <div
-                className={`absolute w-1/2 h-full bg-gradient-to-r from-yellow-400 to-teal-500 rounded-full transition-all duration-500 ease-in-out ${
-                  view === "article" ? "translate-x-full" : "translate-x-0"
-                }`}
-              />
-              <div className="w-full flex justify-between text-white text-sm font-semibold px-6">
-                <span>Video</span>
-                <span>Article</span>
+              {/* Toggle Switch */}
+              <label className="flex items-center justify-center mt-8 mb-6 cursor-pointer relative">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={view === "article"}
+                  onChange={() =>
+                    setView(view === "video" ? "article" : "video")
+                  }
+                />
+                <div className="w-52 h-12 bg-gray-700 rounded-full shadow-inner relative transition-all duration-500 ease-in-out flex items-center">
+                  <div
+                    className={`absolute w-1/2 h-full bg-gradient-to-r from-yellow-400 to-teal-500 rounded-full transition-all duration-500 ease-in-out ${
+                      view === "article" ? "translate-x-full" : "translate-x-0"
+                    }`}
+                  />
+                  <div className="w-full flex justify-between text-white text-sm font-semibold px-6">
+                    <span>Video</span>
+                    <span>Article</span>
+                  </div>
+                  <div
+                    className={`absolute left-1 w-10 h-10 bg-gray-900 rounded-full shadow-lg flex items-center justify-center transition-transform duration-500 ease-in-out transform ${
+                      view === "article" ? "translate-x-40" : "translate-x-0"
+                    }`}
+                  >
+                    <span className="text-white text-xl">
+                      {view === "video" ? "▶️" : "📰"}
+                    </span>
+                  </div>
+                </div>
+              </label>
+
+              {/* Conditional Rendering based on the selected view */}
+              <div className="mt-8">
+                {view === "video" ? (
+                  <Videos
+                    courses={filteredData}
+                    C_ID={C_ID}
+                    courseTitle={courseTitle}
+                    level={level}
+                  />
+                ) : (
+                  <Article
+                    courses={filteredData}
+                    C_ID={C_ID}
+                    courseTitle={courseTitle}
+                  />
+                )}
               </div>
-              <div
-                className={`absolute left-1 w-10 h-10 bg-gray-900 rounded-full shadow-lg flex items-center justify-center transition-transform duration-500 ease-in-out transform ${
-                  view === "article" ? "translate-x-40" : "translate-x-0"
-                }`}
-              >
-                <span className="text-white text-xl">
-                  {view === "video" ? "▶️" : "📰"}
-                </span>
-              </div>
-            </div>
-          </label>
+            </article>
 
-          {/* Conditional Rendering based on the selected view */}
-          <div className="mt-8">
-            {view === "video" ? (
-              <Videos
-                courses={filteredData}
+            {/* Right section - Progress Bar */}
+            <aside className="hidden lg:block lg:w-1/4 p-2 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
+              <ProgressBar
+                Level={level}
+                course_title={courseTitle}
+                total={filteredData.length}
+                courseLevel={Level}
                 C_ID={C_ID}
-                courseTitle={courseTitle}
-                level={level}
               />
-            ) : (
-              <Article
-                courses={filteredData}
-                C_ID={C_ID}
-                courseTitle={courseTitle}
-              />
-            )}
-          </div>
-        </article>
+            </aside>
+          </section>
 
-        {/* Right section - Progress Bar */}
-        <aside className="hidden lg:block lg:w-1/4 p-2 rounded-lg shadow-xl transition-all duration-300 ease-in-out hover:shadow-2xl">
-          <ProgressBar
-            Level={level}
-            course_title={courseTitle}
-            total={filteredData.length}
-            courseLevel ={Level}
-            C_ID={C_ID}
-
-          />
-         
-        </aside>
-      </section>
+          {/* Popup for successful enrollment */}
+          {showPopup && (
+            <EnrollmentPopup
+              courseName={courseTitle}
+              onClose={() => setShowPopup(false)} // Close popup after 5 seconds or on manual close
+            />
+          )}
+        </>
+      )}
     </main>
   );
 };
