@@ -10,38 +10,38 @@ import LOGO from "../assests/img/logo.jpeg";
 import { toast } from "react-toastify";
 
 const Footer = () => {
-  const submitHandler = () => {
-    toast.success("you have successfully subscribed to our newsletter")
+  const submitHandler = (email) => {
+    if (!email)
+    {
+      toast.success("you have successfully subscribed to our newsletter")
+    }
   }
 
   return (
-
-    <footer className="bg-[#1F1F1F] text-gray-300 py-8">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+    <footer className="bg-[rgb(28,28,29)] text-gray-300 py-10">
+      <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
+        
         {/* Logo and Description */}
-        <div className="flex items-center">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left">
           <img
             src={LOGO}
             alt="EduMinds Logo"
-            className="h-12 scale-120 mr-4 bg-cover rounded-full"
+            className="h-20 w-20 rounded-full shadow-md object-cover mb-4"
           />
-          <div className="text-lg font-bold text-white">
-            EduMinds
-            <div className="font-normal w-3/4 md:w-1/2 text-gray-400 hidden md:block mt-1 text-lg">
-              EduTech is committed to accessible and enjoyable learning for all.
-              Our vision is to provide education regardless of location or
-              background.
-            </div>
-          </div>
+          <h1 className="text-2xl font-extrabold text-white">EduMinds</h1>
+          <p className="text-gray-400 mt-2 text-sm max-w-xs">
+            EduTech is committed to accessible and enjoyable learning for all.
+            Our vision is to provide education regardless of location or background.
+          </p>
         </div>
 
-        {/* Quick Links & Social Media in Horizontal Layout */}
-        <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8">
-          {/* Quick Links */}
-          <div className="flex space-x-6 text-sm font-semibold">
+        {/* Quick Links */}
+        <div className="flex flex-col items-center md:items-start space-y-4">
+          <h2 className="text-xl font-bold text-white">Quick Links</h2>
+          <div className="flex flex-col space-y-2 text-lg font-semibold">
             <Link
               to="/"
-              className="hover:text-blue-500 transition duration-300"
+              className="hover:text-blue-500 transition-colors duration-300"
             >
               Home
             </Link>
@@ -64,7 +64,6 @@ const Footer = () => {
               Contact
             </Link>
           </div>
-
         </div>
 
         {/* Newsletter and Social Media */}
@@ -73,9 +72,10 @@ const Footer = () => {
           <p className="text-gray-400 mt-2 md:ml-4 text-sm">
             Subscribe to our newsletter to stay updated on our latest courses and offers.
           </p>
-          <form className="mt-4 flex">
+          <form onSubmit={() =>submitHandler()} className="mt-4 flex">
             <input
               type="email"
+              id="email"
               placeholder="Enter your email"
               className="w-full px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
             />
@@ -89,7 +89,6 @@ const Footer = () => {
 
           {/* Social Media Icons */}
           <div className="flex space-x-6 text-2xl mt-6">
-
             <a
               href="https://facebook.com"
               target="_blank"

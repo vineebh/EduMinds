@@ -1,96 +1,88 @@
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Assuming you're using Axios for API requests
 import { useLocation } from "react-router";
-import React, { useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useSelector } from "react-redux";
 
-const Test = () => {
+const LevelUp = () => {
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const location = useLocation();
-  const { C_ID, topic, courseTitle } = location.state;
-  const questions = useSelector((state) => state.test.questions);
-  const userInfo = useSelector((state) => state.auth.userInfo);
-  const email_id = userInfo.userID;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const location = useLocation() ;
+  const { C_ID, level, courseTitle} = location.state || {};// New state to track submission
+
+  // Fetch questions from API on component mount
+  useEffect(() => {
+    
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:1000/assessment/questions", // Replace with your actual endpoint
+          {
+            level,
+            c_id: C_ID, // Assuming C_ID is passed as a prop
+            limit: 3,   // You can adjust the limit according to your requirement
+          }
+        );
+        if (response.status === 200 && response.data.length > 0) {
+          setQuestions(response.data);
+          setLoading(false);
+          setIsSubmitted(false); // Reset submission state
+        } else {
+          setLoading(false);
+          setError("No questions available for today.");
+        }
+      } catch (error) {
+        setLoading(false);
+        setError("Error fetching questions. Please try again later.");
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    fetchQuestions();
+  }, [level, C_ID]); // Ensure the API is called whenever `level` or `C_ID` changes
 
   const handleChange = (questionId, selectedOption) => {
-    setAnswers({ ...answers, [questionId]: selectedOption });
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: selectedOption,
+    }));
   };
 
   const handlePrev = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      setCurrentQuestionIndex((prev) => prev - 1);
     }
   };
 
   const handleNext = () => {
-    const currentQuestionId = questions[currentQuestionIndex].id;
-
-    if (!answers[currentQuestionId]) {
-      toast.error(
-        "Please select an answer before proceeding to the next question."
-      );
-      return;
-    }
-
     if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setCurrentQuestionIndex((prev) => prev + 1);
     }
   };
 
-  const handleSubmit = async () => {
-    const answerArray = Object.entries(answers).map(
-      ([questionId, selectedOption]) => ({
-        questionId: parseInt(questionId, 10),
-        selectedOption,
-      })
-    );
-
-    try {
-      const response = await axios.post(
-        "http://localhost:1000/assessment/submit",
-        {
-          c_id: C_ID,
-          answers: answerArray,
-        }
-      );
-      if (response.status === 200)
-      {
-        toast.success(
-          `You answered ${response.data.correct} out of ${questions.length} questions correctly!`
-        );
-        const resp = await axios.post("http://localhost:1000/mark_questions", {
-          email_id: email_id,
-          course_title: courseTitle,
-          topic_name: topic,
-        });
-        if (resp.status === 201) {
-          toast.success("Your Test has Submitted");
-          const res = await axios.post("http://localhost:1000/update_points_and_level", {
-            email: email_id,
-            course_title: courseTitle,
-            new_points: (5*response.data.correct),
-          });
-          if ( res.status === 200)
-          {
-            toast.success(5*response.data.correct," Points added");
-            window.history.back();
-          }
-        }
-      }  
-    } catch (error) {
-      console.error("Error during submission:", error);
-      toast.error("Error during submission");
-      setResult(
-        "An error occurred while submitting your answers. Please try again."
-      );
-    }
+  const handleSubmit = () => {
+    let correctAnswersCount = 0;
+    questions.forEach((question) => {
+      if (answers[question.id] === question.correctAnswer) {
+        correctAnswersCount++;
+      }
+    });
+    setResult(`You got ${correctAnswersCount} out of ${questions.length} correct!`);
+    setIsSubmitted(true); // Mark quiz as submitted
   };
 
-  const isFirstQuestion = currentQuestionIndex > 0;
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  if (loading) {
+    return <div className="text-white text-center">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-600 text-center">{error}</div>;
+  }
 
   return (
     <div className="bg-gray-900 min-h-screen py-12 sm:py-16 flex items-center justify-center">
@@ -98,9 +90,7 @@ const Test = () => {
         <h1 className="text-4xl text-white font-extrabold text-center mb-8">
           Assessment
         </h1>
-        <span className="text-white text-lg font-bold bg-blue-600 py-1 px-3 rounded-lg shadow-md">
-          {currentQuestionIndex + 1}/{questions.length}
-        </span>
+        <h1>{currentQuestionIndex + 1}</h1>
 
         {questions.length > 0 && (
           <div className="mb-10">
@@ -149,14 +139,12 @@ const Test = () => {
         )}
 
         <div className="flex justify-between mt-10">
-          {isFirstQuestion && (
-            <button
-              onClick={handlePrev}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
-            >
-              Previous
-            </button>
-          )}
+          <button
+            onClick={handlePrev}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300"
+          >
+            Previous
+          </button>
 
           {isLastQuestion ? (
             <button
@@ -185,4 +173,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default LevelUp;

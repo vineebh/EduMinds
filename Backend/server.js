@@ -240,21 +240,25 @@ app.get('/course/:c_id', async (req, res) => {
 
 
 // videos   watched
-app.get('/watched_videos/:email', async (req, res) => {
-    const email = req.params.email;
+app.post('/get_watched_videos', async (req, res) => {
+    const { email_id, courseTitle } = req.body;
 
-    if (!email) {
-        return res.status(400).json({ error: 'Email is required' });
+    // Validate input
+    if (!email_id || !courseTitle) {
+        return res.status(400).json({ error: 'Email and course title are required' });
     }
+
     try {
-        const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ?', [email]);
+        const [rows] = await db.query('SELECT watched_video_id FROM progress WHERE email_id = ? AND course_title = ?', [email_id, courseTitle]);
+
         const watchedVideoIds = rows.map(row => row.watched_video_id);
+
         res.status(200).json(watchedVideoIds);
     } catch (error) {
         console.error("Error fetching watched videos:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
 
 
 //  videos   add video
@@ -392,22 +396,28 @@ app.post('/mark_questions', async (req, res) => {
 //  questions    get completed
 app.post('/completed_questions', async (req, res) => {
     try {
+        
         const { email_id, course_title } = req.body;
 
         // Check if email is provided
+       
         if (!email_id) {
             return res.status(400).json({ msg: 'Email is required' });
         }
 
         // Query the database for completed topics based on email and course_title
+        // Query the database for completed topics based on email and course_title
         const [data] = await db.query(
+            
             'SELECT topic_name FROM users_questions WHERE email_id = ? AND course_title = ?',
             [email_id, course_title]
         );
 
         // If no records found, return a message
+        // If no records found, return a message
         if (data.length === 0) {
             return res.status(200).json({ msg: 'User not found or no questions completed', data: { topic_name: [] } });
+            
         }
 
         // Extract topic names from the query result
