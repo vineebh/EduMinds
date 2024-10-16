@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons from react-icons
 import {
   createUserEmailAndPass,
   signInUserEmailAndPass,
@@ -9,7 +10,6 @@ import {
 import { setIdToken, setIsLogin, setLoginStatus } from "../../store/authSlice";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
-
 
 const Auth = () => {
   const [isLogin, setLogin] = useState(false);
@@ -26,6 +26,7 @@ const Auth = () => {
     password: "",
     firebase: "",
   });
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -137,6 +138,10 @@ const Auth = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <div className="bg-gray-900 min-h-screen flex items-center justify-center fixed inset-0 px-6">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md h-auto">
@@ -182,7 +187,7 @@ const Auth = () => {
             />
             {errors.email && <p className="text-red-500">{errors.email}</p>}
           </div>
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label
               htmlFor="password"
               className="block text-gray-300 font-semibold mb-2"
@@ -190,7 +195,7 @@ const Auth = () => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"} // Toggle between text and password
               id="password"
               name="password"
               placeholder="Your Password"
@@ -198,6 +203,12 @@ const Auth = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-700 rounded-md bg-gray-900 text-white"
             />
+            <span
+              className="absolute right-3 top-11 text-gray-400 cursor-pointer"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
             {errors.password && (
               <p className="text-red-500">{errors.password}</p>
             )}
@@ -210,7 +221,7 @@ const Auth = () => {
           </button>
           <button
             type="button"
-            className="bg-gray-700 text-white px-6 py-3 rounded-md font-semibold hover:bg-gray-600 transition duration-300 w-full mt-3"
+            className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition duration-300 w-full mt-3"
             onClick={loginWithGoogleHandler}
           >
             Login With Google
