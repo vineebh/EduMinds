@@ -6,7 +6,6 @@ const progressSlice =createSlice({
     reducers:{
         setWatchedVideos(state ,action){
             state.watchedVideos = action.payload
-            
         }
     }
 })

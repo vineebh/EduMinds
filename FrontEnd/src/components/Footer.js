@@ -18,7 +18,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-[#111111] text-gray-300 py-10">
+    <footer className="bg-[rgb(28,28,29)] text-gray-300 py-10">
       <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
         
         {/* Logo and Description */}
@@ -69,7 +69,7 @@ const Footer = () => {
         {/* Newsletter and Social Media */}
         <div className="flex flex-col items-center md:items-start">
           <h2 className="text-xl font-bold text-white">Stay Updated</h2>
-          <p className="text-gray-400 mt-2 text-sm">
+          <p className="text-gray-400 mt-2 md:ml-4 text-sm">
             Subscribe to our newsletter to stay updated on our latest courses and offers.
           </p>
           <form onSubmit={() =>submitHandler()} className="mt-4 flex">
@@ -79,7 +79,7 @@ const Footer = () => {
               placeholder="Enter your email"
               className="w-full px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
             />
-            <button
+            <button onClick={submitHandler()}
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-300"
             >
