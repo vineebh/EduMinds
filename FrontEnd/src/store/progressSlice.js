@@ -7,7 +7,7 @@ const progressSlice =createSlice({
         setWatchedVideos(state ,action){
             state.watchedVideos = action.payload
             
-        }
+        },
     }
 })
 export const {setWatchedVideos} = progressSlice.actions;

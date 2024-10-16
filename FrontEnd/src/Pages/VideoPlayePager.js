@@ -36,17 +36,17 @@ const VideoPlayerPage = () => {
   };
 
   const handleVideoEnd = async () => {
-    toast.success("Video finished!");
+    toast.success("Video finished! ");
 
     if (!watchedVideos.includes(videoId)) {
       try {
+        console.log(email_id ,courseTitle,videoId)
         const response = await axios.post(
           "http://localhost:1000/watched_videos",
           {
             email_id,
             courseTitle: courseTitle,
             watched_video_id: videoId,
-            courseTitle: courseTitle,
           }
         );
         if (response.status === 201) {
@@ -65,7 +65,7 @@ const VideoPlayerPage = () => {
           }
         }
       } catch (error) {
-        console.error("Error marking video as watched:", error);
+        toast.error(error.messsage);
       }
     }
   };
