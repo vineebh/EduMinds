@@ -375,28 +375,26 @@ app.post('/mark_questions', async (req, res) => {
 //  questions    get completed
 app.post('/completed_questions', async (req, res) => {
     try {
-        
+
         const { email_id, course_title } = req.body;
 
         // Check if email is provided
-       
+
         if (!email_id) {
             return res.status(400).json({ msg: 'Email is required' });
         }
 
         // Query the database for completed topics based on email and course_title
-        // Query the database for completed topics based on email and course_title
         const [data] = await db.query(
-            
+
             'SELECT topic_name FROM users_questions WHERE email_id = ? AND course_title = ?',
             [email_id, course_title]
         );
 
         // If no records found, return a message
-        // If no records found, return a message
         if (data.length === 0) {
             return res.status(200).json({ msg: 'User not found or no questions completed', data: { topic_name: [] } });
-            
+
         }
 
         const topicNames = data.map((row) => row.topic_name);
@@ -408,7 +406,7 @@ app.post('/completed_questions', async (req, res) => {
     }
 });
 
-
+// called at footer for newsletter
 app.post('/newsletter', async (req, res) => {
 
     const transporter = nodemailer.createTransport({
@@ -471,6 +469,7 @@ Edu-Minds Team.`
     }
 });
 
+//called at contact us
 app.post('/contactus', async (req, res) => {
 
     try {
@@ -480,7 +479,7 @@ app.post('/contactus', async (req, res) => {
             res.status(404).json({ msg: 'All fields are required' })
         }
 
-        const query = 'insert into contactUs (email_id,name,message,datentime) values (?,?,?,now())'
+        const query = 'insert into contactUs (email_id,name,datentime,message) values (?,?,now(),?)'
         const response = await db.query(query, [email_id, name, message])
         if (response.length > 0) {
             res.status(201).json({ msg: 'Successfull' })
@@ -490,9 +489,72 @@ app.post('/contactus', async (req, res) => {
         }
     }
     catch (error) {
+        console.log(error)
         res.status(500).json({ msg: 'Internal Server error' })
     }
 })
+
+
+const getSubmitDate = async (email_id, c_id) => {
+    const [Data] = await db.query(
+        'SELECT date FROM everydayQ WHERE email_id = ? AND c_id = ?',
+        [email_id, c_id]
+    );
+    return Data.length > 0 ? Data[0].date : null;
+};
+
+// Get everyday submit date
+app.post('/getEverdaySubmitDate', async (req, res) => {
+    const { email_id, c_id } = req.body;
+    try {
+
+        if (!email_id || !c_id) {
+            return res.status(400).json({ msg: 'Invalid email_id or c_id' });
+        }
+
+        const date = await getSubmitDate(email_id, c_id);
+
+        if (!date) {
+            return res.status(200).json({ msg: 'No last submit date', data: { date: "" } });
+        }
+        return res.status(200).json({ data: { date } });
+    } catch (e) {
+        res.status(500).json({ msg: 'Internal Server Error' });
+        console.error(`Error fetching submit date for email_id: ${email_id}, c_id: ${c_id}`, e);
+    }
+});
+
+// Post everyday submit date
+app.post('/everdaySubmitDate', async (req, res) => {
+    const { email_id, c_id, date } = req.body;
+    try {
+
+        if (!email_id || !c_id || !date) {
+            return res.status(400).json({ msg: 'Invalid email_id, c_id, or date' });
+        }
+
+        const existingDate = await getSubmitDate(email_id, c_id);
+
+        if (!existingDate) {
+            await db.query(
+                'INSERT INTO everydayQ (email_id, c_id, date) VALUES (?, ?, ?)', 
+                [email_id, c_id, date]
+            );
+            return res.status(201).json({ msg: 'Date submitted successfully' });
+        } else {
+            await db.query(
+                'UPDATE everydayQ SET date = ? WHERE email_id = ? AND c_id = ?', 
+                [date, email_id, c_id]
+            );
+            return res.status(200).json({ msg: 'Date updated successfully' });
+        }
+    } catch (e) {
+        res.status(500).json({ msg: 'Internal Server error' });
+        console.error(`Error processing date submission for email_id: ${email_id}, c_id: ${c_id}`, e);
+    }
+});
+
+
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");

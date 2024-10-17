@@ -159,8 +159,8 @@ const DashBoard = () => {
                   <Videos
                     courses={filteredData}
                     C_ID={C_ID}
-                    courseTitle={courseTitle}
                     level={level}
+                    courseTitle={courseTitle}
                   />
                 ) : (
                   <Article

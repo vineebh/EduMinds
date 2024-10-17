@@ -22,12 +22,7 @@ const Article = ({ courses, C_ID ,courseTitle ,level}) => {
           } catch (error) {
             return null; // Skip rendering if there's a parsing error
           }
-          // Determine if the article can be accessed
-         
-          const isFirstArticle = course.id === courses[0].id; // Check if it's the first article
-          const isClickable = isFirstArticle || canAccessNextArticles;
           
-          console.log(isFirstArticle) // Determine if clickable
 
           return (
             <div

@@ -16,9 +16,9 @@ const VideoPlayerPage = () => {
     videos,
     currentIndex,
     videoId,
-    level,
-    C_ID,
     courseTitle,
+    level,
+    C_ID
   } = location.state || {};
 
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
@@ -35,7 +35,7 @@ const VideoPlayerPage = () => {
   };
 
   const handleVideoEnd = async () => {
-    toast.success("Video finished! ");
+    toast.success("Video finished!");
 
     if (!watchedVideos.includes(videoId)) {
       try {
@@ -82,7 +82,7 @@ const VideoPlayerPage = () => {
       videos &&
       Array.isArray(videos) &&
       currentIndex !== undefined &&
-      currentIndex < videos.length -1
+      currentIndex < videos.length - 1
     ) {
       const nextVideo = videos[currentIndex + 1];
       if (Array.isArray(watchedVideos) && watchedVideos.includes(videoId)) {
@@ -92,11 +92,14 @@ const VideoPlayerPage = () => {
             topic_name: nextVideo.topic_name,
             videos,
             currentIndex: currentIndex + 1,
-            watchedVideos,
             videoId: nextVideo.id,
+            courseTitle,
+            level,
+            C_ID
           },
         });
-      } else {
+      }else {
+        console.log("else")
         toast.error(
           "You must watch the current video before accessing the next one."
         );
@@ -111,7 +114,6 @@ const VideoPlayerPage = () => {
 
   const dashboardHandler = () => {
     navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "abc" } });
-    toast.success("Your level is Completed. Time to Level up");
   };
 
   return (

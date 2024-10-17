@@ -20,17 +20,17 @@ const LevelUp = () => {
 
   // Fetch questions from API on component mount
   useEffect(() => {
-
+    
     const fetchQuestions = async () => {
       try {
-        const response = await axios.post("/assessment/questions", { level, c_id: C_ID, limit: 4 });
+        const response = await axios.post("http://localhost:1000/assessment/questions", { level, c_id: C_ID, limit: 40 });
         if (response.status === 200 && response.data.length > 0) {
           setQuestions(response.data);
           setLoading(false);
           setIsSubmitted(false);
         } else {
           setLoading(false);
-          setError("No questions available for today.");
+          setError("No questions available.");
         }
       } catch (error) {
         setLoading(false);
@@ -70,9 +70,6 @@ const LevelUp = () => {
   };
 
   const handleSubmit = async () => {
-    if (!window.confirm("Are you sure you want to submit your answers?")) {
-      return;
-    }
     
     if (Object.keys(answers).length < questions.length) {
       toast.error("Please answer all questions before submitting.");
@@ -109,6 +106,7 @@ const LevelUp = () => {
           if (res.status === 200) {
             toast.success(`${5 * response.data.correct} Points added`);
             window.history.replaceState(null, "", "/dashboard"); // Redirect to a specific route
+            window.history.back()
           }
         }
         setIsSubmitted(true);
@@ -136,9 +134,11 @@ const LevelUp = () => {
     <div className="bg-gray-900 min-h-screen py-12 sm:py-16 flex items-center justify-center">
       <div className="bg-gray-800 p-10 rounded-lg shadow-lg max-w-4xl w-full">
         <h1 className="text-4xl text-white font-extrabold text-center mb-8">
-          Assessment
-        </h1>
-        <h1>{currentQuestionIndex + 1}</h1>
+          Level Up !
+          </h1>
+        <span className="text-white text-lg font-bold bg-blue-600 py-1 px-3 rounded-lg shadow-md">
+          {currentQuestionIndex + 1}/{questions.length}
+        </span>
 
         {questions.length > 0 && (
           <div className="mb-10">
@@ -212,12 +212,6 @@ const LevelUp = () => {
             </button>
           )}
         </div>
-
-        {result && (
-          <div className="mt-8 p-6 bg-green-600 text-white font-semibold text-lg rounded-lg shadow-md">
-            {result}
-          </div>
-        )}
       </div>
     </div>
   );

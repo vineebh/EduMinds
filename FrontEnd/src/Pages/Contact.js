@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setContactData } from '../store/contectSlice';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from 'axios';
 
 const Contact = () => {
   const dispatch = useDispatch();
@@ -35,12 +36,18 @@ const Contact = () => {
     return formErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length === 0) {
-      localStorage.setItem('contactData', JSON.stringify(contactData));
-      toast.success('Message sent!');
+      const response = await axios.post("http://localhost:1000/contactus", {
+        email_id: contactData.email,
+        name: contactData.name, 
+        message: contactData.message
+      })
+      if (response.status === 201){
+        toast.success('Message sent!');
+      }
       
       // Reset form fields by dispatching an action
       dispatch(setContactData({ name: "", email: loginStatus ? userInfo.userID : "", message: "" }));

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"; // Import PropTypes
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ".././index.css";
