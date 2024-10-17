@@ -6,7 +6,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const EveryDayQuestion = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-fp6e21lv0-edu-minds-projects.vercel.app";
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState([]);

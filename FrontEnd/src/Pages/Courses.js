@@ -5,7 +5,7 @@ import Loader from "../components/Loader";
 import { useSelector } from "react-redux";
 
 const Courses = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-fp6e21lv0-edu-minds-projects.vercel.app";
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
   const [courses, setCourses] = useState([]);
   const [enroll, setEnroll] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ const Courses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`${API_URL}/courses`);
+        const response = await axios.get(`https://edu-minds-ebon.vercel.app/courses`);
         setCourses(response.data);
       } catch (error) {
         setError("Failed to fetch courses. Please try again later.");
