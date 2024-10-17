@@ -107,6 +107,7 @@ const VideoPlayerPage = () => {
       });
     }
   };
+  
 
   const dashboardHandler = () => {
     navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "abc" } });

@@ -91,7 +91,7 @@ const Footer = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
             />
-            <button
+            <button onClick={submitHandler()}
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-300"
             >
