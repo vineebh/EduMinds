@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
+  const API_URL = "https://edu-minds-ebon.vercel.app";
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [progress, setProgress] = useState(0);

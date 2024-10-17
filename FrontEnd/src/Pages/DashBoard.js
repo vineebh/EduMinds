@@ -8,7 +8,7 @@ import ProgressBar from "../components/ProgressBar";
 import EnrollmentPopup from "../components/EnrollmentPopup";
 
 const DashBoard = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
+  const API_URL = "https://edu-minds-ebon.vercel.app";
   const [view, setView] = useState("video");
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState(null);
