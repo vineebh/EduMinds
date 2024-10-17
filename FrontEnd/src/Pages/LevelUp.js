@@ -6,15 +6,15 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const LevelUp = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const location = useLocation();
-  const { C_ID, level, courseTitle } = location.state || {};// New state to track submission
+  const { C_ID, level, courseTitle } = location.state || {};
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo.userID;
 
@@ -23,7 +23,7 @@ const LevelUp = () => {
     
     const fetchQuestions = async () => {
       try {
-        const response = await axios.post("http://localhost:1000/assessment/questions", { level, c_id: C_ID, limit: 40 });
+        const response = await axios.post(`${API_URL}/assessment/questions`, { level, c_id: C_ID, limit: 40 });
         if (response.status === 200 && response.data.length > 0) {
           setQuestions(response.data);
           setLoading(false);
@@ -43,7 +43,6 @@ const LevelUp = () => {
         } else {
           setError("An unexpected error occurred.");
         }
-        console.error("Error fetching questions:", error);
       }
     };    
 
@@ -85,7 +84,7 @@ const LevelUp = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:1000/assessment/submit",
+        `${API_URL}/assessment/submit`,
         {
           c_id: C_ID,
           answers: answerArray,
@@ -96,9 +95,8 @@ const LevelUp = () => {
         toast.success(
           `You answered ${response.data.correct} out of ${questions.length} questions correctly!`
         );
-        setResult("Your answers have been submitted!");
         if (response.data.correct !== 0) {
-          const res = await axios.post("http://localhost:1000/update_points_and_level", {
+          const res = await axios.post(`${API_URL}/update_points_and_level`, {
             email: email_id,
             course_title: courseTitle,
             new_points: 5 * response.data.correct,
@@ -112,11 +110,7 @@ const LevelUp = () => {
         setIsSubmitted(true);
       }
     } catch (error) {
-      console.error("Error during submission:", error);
       toast.error("Error during submission, try again");
-      setResult(
-        "An error occurred while submitting your answers. Please try again."
-      );
     }
   };
 
@@ -126,9 +120,6 @@ const LevelUp = () => {
     return <div className="text-white text-center">Loading...</div>;
   }
 
-  if (error) {
-    return <div className="text-red-600 text-center">{error}</div>;
-  }
 
   return (
     <div className="bg-gray-900 min-h-screen py-12 sm:py-16 flex items-center justify-center">

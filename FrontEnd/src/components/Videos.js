@@ -5,6 +5,7 @@ import axios from "axios";
 import { setWatchedVideos } from "../store/progressSlice";
 
 const Videos = ({ courses, C_ID, level, courseTitle }) => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo?.userID; // Check if userInfo exist
@@ -16,7 +17,7 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
     const fetchWatchedVideos = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/get_watched_videos",
+          `${API_URL}/get_watched_videos`,
           {
             email_id,
             courseTitle,
@@ -28,7 +29,6 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
           throw new Error("Failed to fetch watched videos");
         }
       } catch (error) {
-        console.error("Error fetching watched videos:", error);
       }
     };
 

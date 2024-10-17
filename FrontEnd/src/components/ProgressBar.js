@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const watchedVideos = useSelector((state) => state.progress.watchedVideos);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [progress, setProgress] = useState(0);
@@ -14,7 +15,7 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
   useEffect(() => {
     const fetchUserPoints = async () => {
       try {
-        const response = await axios.post("http://localhost:1000/userpoints", {
+        const response = await axios.post(`${API_URL}/userpoints`, {
           email,
           course_title,
         });
@@ -23,11 +24,9 @@ const ProgressBar = ({ Level, course_title, total, courseLevel, C_ID }) => {
           const userPoints = response.data.data.points;
           setPoints(userPoints);
         } else {
-          console.warn(response.data.msg);
           setPoints(0);
         }
       } catch (error) {
-        console.error("Error fetching user points:", error);
         setPoints(0); // Handle error by setting points to 0
       }
     };

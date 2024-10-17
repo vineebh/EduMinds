@@ -3,8 +3,9 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Assessment = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const [selectedOption, setSelectedOption] = useState("");
-  const [skills, setSkills] = useState({}); // Updated to store fetched skills
+  const [skills, setSkills] = useState({});
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,10 +14,9 @@ const Assessment = () => {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await axios.get(`http://localhost:1000/skills/${C_ID}`);
+        const response = await axios.get(`${API_URL}/skills/${C_ID}`);
         setSkills(response.data); // Store the dynamically fetched skills
       } catch (error) {
-        console.error("Fetch error:", error);
         setError("Failed to fetch skills. Please try again later.");
       }
     };
@@ -26,9 +26,6 @@ const Assessment = () => {
     }
   }, [C_ID]);
 
-  if (error) {
-    return <div className="text-red-500 text-center">{error}</div>;
-  }
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
@@ -46,7 +43,7 @@ const Assessment = () => {
   };
 
   return (
-    <div className="bg-[#1B2433] max-h-lvh flex justify-center items-center py-12 mt-10">
+    <div className="bg-[#1B2433] max-h-lvh flex justify-center items-center py-12 mt-14">
       <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
         <div className="bg-gray-800 p-10 rounded-lg shadow-2xl flex flex-col items-center">
           <h2 className="text-3xl font-extrabold text-white text-center mb-8 tracking-wide">
@@ -59,8 +56,8 @@ const Assessment = () => {
                 key={level}
                 className={`py-3 px-8 rounded-lg font-semibold text-white transition-all duration-300 transform ${
                   selectedOption === level
-                    ? "bg-blue-600 scale-105 shadow-lg" // Changed to solid blue
-                    : "bg-gray-600 hover:bg-blue-500" // Changed to solid blue on hover
+                    ? "bg-blue-600 scale-105 shadow-lg"
+                    : "bg-gray-600 hover:bg-blue-500"
                 }`}
                 onClick={() => handleOptionChange(level)}
               >

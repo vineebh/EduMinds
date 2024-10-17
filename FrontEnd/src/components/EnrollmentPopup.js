@@ -7,18 +7,18 @@ const EnrollmentPopup = ({ courseName, onClose }) => {
   const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
-    setIsVisible(true); // Show the popup when component mounts
+    setIsVisible(true);
 
     const timer = setTimeout(() => {
       setIsVisible(false); // Auto close after 5 seconds
-      onClose(); // Trigger onClose callback
+      onClose();
     }, 5000);
 
-    return () => clearTimeout(timer); // Clear timeout on component unmount
+    return () => clearTimeout(timer);
   }, [onClose]);
 
   useEffect(() => {
-    const confettiTimer = setTimeout(() => setShowConfetti(false), 4000); // Stop confetti after 4 seconds
+    const confettiTimer = setTimeout(() => setShowConfetti(false), 4500); // Stop confetti after 4.5 seconds
     return () => clearTimeout(confettiTimer);
   }, []);
 

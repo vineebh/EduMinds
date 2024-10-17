@@ -100,12 +100,10 @@ const Auth = () => {
 
       }
     } catch (error) {
-      console.error("Authentication error:", error.message);
       setErrors((prevErrors) => ({
         ...prevErrors,
         firebase: error.message,
       }));
-      console.error(error.message); //notification for error
     }
   };
 
@@ -133,8 +131,6 @@ const Auth = () => {
       navigate(window.history.back());
 
     } catch (error) {
-      console.error("Google Sign-In Error:", error.message);
-      console.error("Google Sign-In Failed: " + error.message); // Toast notification for Google login error
     }
   };
 
@@ -236,10 +232,6 @@ const Auth = () => {
               : "Already Have an Account? Login"}
           </button>
 
-          {errors.firebase && (
-            <p className="text-red-500 mt-2">{errors.firebase}</p>
-          )}{" "}
-          {/* Display Firebase error */}
 
         </form>
       </div>

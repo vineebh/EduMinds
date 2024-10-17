@@ -5,17 +5,16 @@ import { useNavigate } from "react-router-dom";
 import ".././index.css";
 
 const Course = ({ courseData, Enroll }) => {
-  const { c_id, title, description, imageUrl, professorName, duration } =
-    courseData;
+  const { c_id, title, description, imageUrl, professorName, duration } = courseData;
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const navigate = useNavigate();
 
-  
-   const btnLabel = Enroll.some((course) => course.course_title === title)
+
+  const btnLabel = Enroll.some((course) => course.course_title === title)
     ? "Continue"
     : "Assess your level";
 
-  
+
 
   const enrolledCourse = Enroll.find((course) => course.course_title === title);
 
@@ -73,7 +72,7 @@ const Course = ({ courseData, Enroll }) => {
           </p>
         </div>
 
-        
+
       </div>
 
       {/* Assessment Button */}

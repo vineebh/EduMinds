@@ -37,7 +37,6 @@ const Chatbot = ({ setIsChatbotVisible }) => {
       // Call Gemini API to get a response
       const result = await model.generateContent(prompt);
       const response = await result.response;
-      console.log(response);
 
       // Add both user input and Gemini's response to the chat history
       setChatHistory((prevChat) => [
@@ -46,7 +45,6 @@ const Chatbot = ({ setIsChatbotVisible }) => {
         { type: "bot", message: response.text() },
       ]);
     } catch (error) {
-      console.error("Error sending message", error);
     } finally {
       setUserInput("");
       setIsLoading(false);
