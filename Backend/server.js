@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('./DBConn/sqlconn');
 const cors = require('cors');
 const app = express();
+const nodemailer = require('nodemailer')
 require('dotenv').config();
 
 app.use(cors());
@@ -26,21 +27,16 @@ app.get('/checkuser', async (req, res) => {
         if (!email) {
             return res.status(400).json({ msg: 'Email is required' });
         }
-
         const [data] = await db.query('SELECT course_title, level FROM users WHERE email_id = ?', [email]);
-
         if (data.length === 0) {
-            return res.status(201).json({ msg: 'Email not found',data: {course_title:'',level:''} });
+            return res.status(201).json({ msg: 'Email not found', data: { course_title: '', level: '' } });
         }
-
         const userCourses = data.map(course => ({
             course_title: course.course_title,
             level: course.level
         }));
-
         return res.status(200).json({ data: userCourses });
     } catch (error) {
-        console.error('Error occurred:', error);
         res.status(500).json({ error: 'Error during fetching data' });
     }
 });
@@ -62,7 +58,6 @@ app.get('/skills/:C_ID', async (req, res) => {
             res.status(404).json({ error: "No skills found for this course ID" });
         }
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: "Error fetching data" });
     }
 });
@@ -83,7 +78,6 @@ app.post('/assessment/questions', async (req, res) => {
     if (!course_title) {
         return res.status(400).json({ error: 'Invalid course ID' });
     }
-
     try {
         const [rows] = await db.query(
             `SELECT id, questions, option_1, option_2, option_3, option_4
@@ -93,15 +87,12 @@ app.post('/assessment/questions', async (req, res) => {
              LIMIT ?`,
             [level, limit]
         );
-
         if (rows.length === 0) {
             return res.status(404).json({ error: 'No questions available for this level' });
         }
-
         const questionsWithoutAnswers = rows;
         res.status(200).json(questionsWithoutAnswers);
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -131,14 +122,11 @@ app.post('/assessment/chapterQ', async (req, res) => {
              LIMIT ?`,
             [topic, limit]
         );
-
         if (rows.length === 0) {
             return res.status(404).json({ error: 'No questions available for this topic' });
         }
-
         res.status(200).json(rows);
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -172,10 +160,8 @@ app.post('/assessment/submit', async (req, res) => {
                 }
             }
         }
-
         res.status(200).json({ correct: correctCount, total: answers.length });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -201,7 +187,6 @@ app.post('/userdata', async (req, res) => {
         await db.query(query, [email_id, course_title, Level, points]);
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
-        console.error("Error in /userdata:", error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -232,7 +217,6 @@ app.get('/course/:c_id', async (req, res) => {
 
         res.json(data);
     } catch (err) {
-        console.error("Error fetching course data:", err);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -254,7 +238,6 @@ app.post('/get_watched_videos', async (req, res) => {
 
         res.status(200).json(watchedVideoIds);
     } catch (error) {
-        console.error("Error fetching watched videos:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -273,16 +256,15 @@ app.post('/watched_videos', async (req, res) => {
             'SELECT COUNT(*) AS count FROM progress WHERE email_id = ? AND course_title = ? AND watched_video_id = ?',
             [email_id, courseTitle, watched_video_id]
         );
-        
+
         if (existingRecord[0].count > 0) {
             return res.status(200).json({ message: 'Video already marked as watched' });
-        }        
+        }
 
-        await db.query('INSERT INTO progress (email_id, course_title, watched_video_id,last_updated) VALUES (?, ?, ?, NOW())', 
+        await db.query('INSERT INTO progress (email_id, course_title, watched_video_id,last_updated) VALUES (?, ?, ?, NOW())',
             [email_id, courseTitle, watched_video_id]);
         res.status(201).json({ message: 'Video marked as watched' });
     } catch (error) {
-        console.error("Error marking video as watched:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -308,12 +290,10 @@ app.post('/userpoints', async (req, res) => {
         if (data.length === 0) {
             return res.status(404).json({ msg: 'User not found or not enrolled in the course', data: { points: 0 } });
         }
-
         // Return the points if user found
         const userPoints = data[0].points;
         return res.status(200).json({ data: { points: userPoints } });
     } catch (error) {
-        console.error('Error occurred during fetching data:', error);
         res.status(500).json({ error: 'An error occurred while fetching user data' });
     }
 });
@@ -405,7 +385,6 @@ app.post('/completed_questions', async (req, res) => {
         }
 
         // Query the database for completed topics based on email and course_title
-        // Query the database for completed topics based on email and course_title
         const [data] = await db.query(
             
             'SELECT topic_name FROM users_questions WHERE email_id = ? AND course_title = ?',
@@ -413,16 +392,13 @@ app.post('/completed_questions', async (req, res) => {
         );
 
         // If no records found, return a message
-        // If no records found, return a message
         if (data.length === 0) {
             return res.status(200).json({ msg: 'User not found or no questions completed', data: { topic_name: [] } });
             
         }
 
-        // Extract topic names from the query result
         const topicNames = data.map((row) => row.topic_name);
 
-        // Return the list of completed topic names
         return res.status(200).json({ data: { topic_name: topicNames } });
     } catch (error) {
         console.error('Error occurred during fetching data:', error);
@@ -430,6 +406,91 @@ app.post('/completed_questions', async (req, res) => {
     }
 });
 
+
+app.post('/newsletter', async (req, res) => {
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'edumindsup20@gmail.com',
+            pass: 'xzmu dlvt pplb qhsk'
+        }
+    });
+
+    try {
+        const { email } = req.body;
+
+        if (!email || !validateEmail(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        const searchuserquery = 'SELECT * FROM newsletter WHERE email = ?';
+        const [existingsubscriber] = await db.query(searchuserquery, [email]);
+
+        if (existingsubscriber.length > 0) {
+            return res.status(200).json({ msg: 'This email is already subscribed' });
+        }
+
+        const insertquery = 'insert into newsletter (email,datentime) values (?,now())';
+        await db.query(insertquery, [email]);
+
+        const mailOptions = {
+            from: 'edumindsup20@gmail.com',
+            to: email,
+            subject: 'Welcome to the Edu-Minds Newsletter!',
+            text: `Hello,
+        
+Thank you for subscribing to the Edu-Minds newsletter! We're excited to have you on board. You’ll now receive regular updates on the latest courses, learning tips, and exciting features to help you on your educational journey.
+        
+Stay tuned for insightful content and exclusive offers designed to elevate your learning experience.
+        
+If you have any questions, feel free to reach out to us at any time.
+        
+Best regards,
+Edu-Minds Team.`
+        };
+
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return res.status(500).json({ error: 'Error sending subscription email' });
+            } else {
+                return res.status(200).json({ msg: 'Subscription successful! Email sent.' });
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    function validateEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+});
+
+app.post('/contactus', async (req, res) => {
+
+    try {
+        const { email_id, name, message } = req.body;
+
+        if (!email_id || !name || !message) {
+            res.status(404).json({ msg: 'All fields are required' })
+        }
+
+        const query = 'insert into contactUs (email_id,name,message,datentime) values (?,?,?,now())'
+        const response = await db.query(query, [email_id, name, message])
+        if (response.length > 0) {
+            res.status(201).json({ msg: 'Successfull' })
+        }
+        else {
+            res.status(401).json({ msg: 'Error occured while submiting your response' })
+        }
+    }
+    catch (error) {
+        res.status(500).json({ msg: 'Internal Server error' })
+    }
+})
 
 app.listen(process.env.PORT, () => {
     console.log("Server Started!");

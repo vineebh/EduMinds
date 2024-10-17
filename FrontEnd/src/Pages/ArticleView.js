@@ -14,7 +14,7 @@ const ArticleView = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const { articleData, topic_name, courseTitle, level ,C_ID} = location.state;
+  const { articleData, topic_name, courseTitle, level, C_ID } = location.state;
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [isTestPassed, setIsTestPassed] = useState(false);
   const userInfo = useSelector((state) => state.auth.userInfo);
