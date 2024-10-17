@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { FaMedal } from "react-icons/fa"; // Achievement icon
+import React, { useEffect, useState } from "react";
 import Confetti from "react-confetti"; // Party popper animation
+import { FaMedal } from "react-icons/fa"; // Achievement icon
 
 const EnrollmentPopup = ({ courseName, onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
