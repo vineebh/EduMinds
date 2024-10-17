@@ -95,7 +95,7 @@ const ArticleView = () => {
           </h1>
           <button
             onClick={toggleChatbot}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-200"
+            className="mt-4 px-4 py-2 bg-yellow-400 text-black  rounded-lg shadow-md hover:bg-gray-700 hover:text-white transition duration-200"
           >
             Ask to EduBot
           </button>

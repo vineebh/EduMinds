@@ -37,11 +37,10 @@ const Assessment = () => {
   const submitHandler = () => {
     if (selectedOption) {
       const level = selectedOption;
-      if (selectedOption === "Beginner"){ 
-        navigate("/dashboard" , { state: { C_ID, level, courseTitle ,State: "New",from: '/assessment'} , });
-      }//location.pathname
-      else {
-        navigate("/mcq" , { state: { C_ID, level, courseTitle }});
+      if (selectedOption === "Beginner") { 
+        navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "New", from: '/assessment' } });
+      } else {
+        navigate("/mcq", { state: { C_ID, level, courseTitle } });
       }
     }
   };
@@ -60,8 +59,8 @@ const Assessment = () => {
                 key={level}
                 className={`py-3 px-8 rounded-lg font-semibold text-white transition-all duration-300 transform ${
                   selectedOption === level
-                    ? "bg-gradient-to-r from-purple-600 to-blue-600 scale-105 shadow-lg"
-                    : "bg-gray-600 hover:bg-gradient-to-r hover:from-purple-500 hover:to-blue-500"
+                    ? "bg-blue-600 scale-105 shadow-lg" // Changed to solid blue
+                    : "bg-gray-600 hover:bg-blue-500" // Changed to solid blue on hover
                 }`}
                 onClick={() => handleOptionChange(level)}
               >
@@ -78,12 +77,12 @@ const Assessment = () => {
                   onClick={() => handleOptionChange(level)}
                   key={level}
                   className={`p-6 rounded-lg shadow-md ${
-                    selectedOption === level ? "bg-purple-700 border-2 border-purple-500" : "bg-gray-700"
+                    selectedOption === level ? "bg-blue-700 " : "bg-gray-700"
                   }`}
                 >
                   <h3
                     className={`text-lg font-semibold mb-3 ${
-                      selectedOption === level ? "text-white" : "text-purple-400"
+                      selectedOption === level ? "text-white" : "text-blue-500"
                     }`}
                   >
                     {level}
@@ -99,7 +98,7 @@ const Assessment = () => {
           </div>
 
           <button
-            className="py-3 px-8 text-lg rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-bold shadow-md hover:shadow-lg transition-transform duration-300 transform hover:scale-105"
+            className="py-3 px-3 text-sm rounded bg-blue-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
             onClick={submitHandler}
             disabled={!selectedOption}
           >

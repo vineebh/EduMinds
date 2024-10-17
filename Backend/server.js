@@ -375,21 +375,26 @@ app.post('/mark_questions', async (req, res) => {
 //  questions    get completed
 app.post('/completed_questions', async (req, res) => {
     try {
-
+        
         const { email_id, course_title } = req.body;
 
+        // Check if email is provided
+       
         if (!email_id) {
             return res.status(400).json({ msg: 'Email is required' });
         }
-        const [data] = await db.query(
 
+        // Query the database for completed topics based on email and course_title
+        const [data] = await db.query(
+            
             'SELECT topic_name FROM users_questions WHERE email_id = ? AND course_title = ?',
             [email_id, course_title]
         );
 
+        // If no records found, return a message
         if (data.length === 0) {
             return res.status(200).json({ msg: 'User not found or no questions completed', data: { topic_name: [] } });
-
+            
         }
 
         const topicNames = data.map((row) => row.topic_name);
