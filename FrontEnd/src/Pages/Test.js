@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const Test = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-fp6e21lv0-edu-minds-projects.vercel.app";
   const [answers, setAnswers] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const location = useLocation();

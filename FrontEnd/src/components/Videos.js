@@ -5,7 +5,7 @@ import axios from "axios";
 import { setWatchedVideos } from "../store/progressSlice";
 
 const Videos = ({ courses, C_ID, level, courseTitle }) => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-fp6e21lv0-edu-minds-projects.vercel.app";
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo?.userID; // Check if userInfo exist
