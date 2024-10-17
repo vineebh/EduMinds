@@ -5,7 +5,7 @@ import Loader from "../components/Loader";
 import { useSelector } from "react-redux";
 
 const Courses = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
   const [courses, setCourses] = useState([]);
   const [enroll, setEnroll] = useState([]);
   const [loading, setLoading] = useState(true);
