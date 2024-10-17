@@ -6,8 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const Test = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const [answers, setAnswers] = useState({});
-  const [result, setResult] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const location = useLocation();
   const { C_ID, topic, courseTitle } = location.state;
@@ -50,7 +50,7 @@ const Test = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:1000/assessment/submit",
+        `${API_URL}/assessment/submit`,
         {
           c_id: C_ID,
           answers: answerArray,
@@ -61,13 +61,13 @@ const Test = () => {
         toast.success(
           `You answered ${response.data.correct} out of ${questions.length} questions correctly!`
         );
-        const resp = await axios.post("http://localhost:1000/mark_questions", {
+        const resp = await axios.post(`${API_URL}/mark_questions`, {
           email_id: email_id,
           course_title: courseTitle,
           topic_name: topic,
         });
         if (resp.status === 201) {
-          const res = await axios.post("http://localhost:1000/update_points_and_level", {
+          const res = await axios.post(`${API_URL}/update_points_and_level`, {
             email: email_id,
             course_title: courseTitle,
             new_points: (5*response.data.correct),
@@ -80,11 +80,7 @@ const Test = () => {
         }
       }  
     } catch (error) {
-      console.error("Error during submission:", error);
       toast.error("Error during submission");
-      setResult(
-        "An error occurred while submitting your answers. Please try again."
-      );
     }
   };
 
@@ -173,12 +169,6 @@ const Test = () => {
             </button>
           )}
         </div>
-
-        {result && (
-          <div className="mt-8 p-6 bg-green-600 text-white font-semibold text-lg rounded-lg shadow-md">
-            {result}
-          </div>
-        )}
       </div>
     </div>
   );

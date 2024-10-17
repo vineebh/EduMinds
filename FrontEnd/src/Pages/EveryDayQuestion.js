@@ -6,11 +6,11 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const EveryDayQuestion = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
-  const [result, setResult] = useState("");
   const [error, setError] = useState("");
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -21,7 +21,7 @@ const EveryDayQuestion = () => {
   useEffect(() => {
     const everyDayQuestionHandler = async () => {
       const today = new Date().toISOString().split("T")[0];
-      const res = await axios.post("http://localhost:1000/getEverdaySubmitDate", {
+      const res = await axios.post(`${API_URL}/getEverdaySubmitDate`, {
         email_id,
         c_id: C_ID
       });
@@ -37,7 +37,7 @@ const EveryDayQuestion = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:1000/assessment/questions",
+          `${API_URL}/assessment/questions`,
           {
             level,
             c_id: C_ID,
@@ -55,7 +55,6 @@ const EveryDayQuestion = () => {
       } catch (error) {
         setLoading(false);
         setError("Error fetching questions. Please try again later.");
-        console.error("Error fetching questions:", error);
       }
     };
 
@@ -83,16 +82,15 @@ const EveryDayQuestion = () => {
 
     try {
         const response = await axios.post(
-            "http://localhost:1000/assessment/submit",
+            `${API_URL}/assessment/submit`,
             { c_id: C_ID, answers: answerArray }
         );
         if (response.status === 200) {
-            setResult("Your answers have been submitted!");
             setIsSubmitted(true);
             
             const today = new Date().toISOString().split("T")[0];
             const dateRes = await axios.post(
-                "http://localhost:1000/everdaySubmitDate", {
+                `${API_URL}/everdaySubmitDate`, {
                     email_id,
                     c_id: C_ID,
                     date: today,
@@ -103,7 +101,7 @@ const EveryDayQuestion = () => {
                 const correctAnswers = response.data.correct || 0;
                 if (correctAnswers !== 0) {
                     const pointRes = await axios.post(
-                        "http://localhost:1000/update_points_and_level", {
+                        `${API_URL}/update_points_and_level`, {
                             email: email_id,
                             course_title: courseTitle,
                             new_points: 5,
@@ -122,7 +120,6 @@ const EveryDayQuestion = () => {
     } catch (error) {
         console.error("Error during submission:", error);
         toast.error("Error during submission");
-        setResult("An error occurred while submitting your answers. Please try again.");
     }
 };
 
@@ -162,11 +159,6 @@ const EveryDayQuestion = () => {
           {currentQuestionIndex + 1}/{questions.length}
         </span>
 
-        {error && (
-          <div className="mb-4 p-4 bg-red-600 text-white font-semibold rounded-lg">
-            {error}
-          </div>
-        )}
 
         {questions.length > 0 && (
           <div className="mb-10">
@@ -232,11 +224,6 @@ const EveryDayQuestion = () => {
           )}
         </div>
 
-        {result && (
-          <div className="mt-8 p-6 bg-green-600 text-white font-semibold text-lg rounded-lg shadow-md">
-            {result}
-          </div>
-        )}
       </div>
     </div>
   );

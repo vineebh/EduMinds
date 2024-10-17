@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setWatchedVideos } from "../store/progressSlice";
 
 const VideoPlayerPage = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const location = useLocation();
   const navigate = useNavigate();
   const {
@@ -41,7 +42,7 @@ const VideoPlayerPage = () => {
       try {
         console.log(email_id ,courseTitle,videoId)
         const response = await axios.post(
-          "http://localhost:1000/watched_videos",
+          `${API_URL}/watched_videos`,
           {
             email_id,
             courseTitle: courseTitle,
@@ -52,7 +53,7 @@ const VideoPlayerPage = () => {
           dispatch(setWatchedVideos([...watchedVideos, videoId]));
           toast.success("Unlocking next video...");
           const res = await axios.post(
-            "http://localhost:1000/update_points_and_level",
+            `${API_URL}/update_points_and_level`,
             {
               email: email_id,
               course_title: courseTitle,
@@ -99,7 +100,6 @@ const VideoPlayerPage = () => {
           },
         });
       }else {
-        console.log("else")
         toast.error(
           "You must watch the current video before accessing the next one."
         );
@@ -194,7 +194,6 @@ const VideoPlayerPage = () => {
         <button
           onClick={handleNextVideo}
           className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
-          disabled={!watchedVideos.includes(videoId)}
         >
           Next
         </button>

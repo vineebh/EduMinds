@@ -20,7 +20,7 @@ const Article = ({ courses, C_ID ,courseTitle ,level}) => {
             // Parse the articles string to an object
             articleData = JSON.parse(course.articles);
           } catch (error) {
-            return null; // Skip rendering if there's a parsing error
+            return null;
           }
           
 

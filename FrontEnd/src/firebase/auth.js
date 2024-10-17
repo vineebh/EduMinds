@@ -24,10 +24,8 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     const token = result._tokenResponse.idToken;
-    console.log("Google Sign-In Success:", { user, token });
     return { user, token };
   } catch (error) {
-    console.error("Google Sign-In Error:", error.message);
     throw error;
   }
 };

@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "../components/Loader";
 
 const ArticleView = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const ArticleView = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:1000/assessment/chapterQ",
+        `${API_URL}/assessment/chapterQ`,
         {
           topic: topic_name,
           c_id: C_ID,
@@ -58,7 +59,7 @@ const ArticleView = () => {
     const fetchTestData = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:1000/completed_questions",
+          `${API_URL}/completed_questions`,
           {
             email_id: email_id,
             course_title: courseTitle,
