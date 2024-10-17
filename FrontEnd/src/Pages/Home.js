@@ -5,7 +5,7 @@ import bg from '../assests/img/bg.jpg';
 
 
 const Home = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-fp6e21lv0-edu-minds-projects.vercel.app";
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState(null);
 
