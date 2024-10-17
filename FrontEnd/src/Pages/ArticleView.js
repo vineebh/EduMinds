@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "../components/Loader";
 
 const ArticleView = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
+  const API_URL = "https://edu-minds-ebon.vercel.app";
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();

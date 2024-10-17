@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const LevelUp = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
+  const API_URL = "https://edu-minds-ebon.vercel.app";
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
