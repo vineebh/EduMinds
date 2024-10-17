@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaFacebookF,
@@ -8,14 +8,25 @@ import {
 import { BsTwitterX } from "react-icons/bs";
 import LOGO from "../assests/img/logo.jpeg";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Footer = () => {
-  const submitHandler = (email) => {
-    if (!email)
-    {
-      toast.success("you have successfully subscribed to our newsletter")
+  const [email, setEmail] = useState("");
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    if (!email) {
+      toast.error("Please enter a valid email address.");
+      return;
     }
-  }
+    try {
+      await axios.post("http://localhost:1000/newsletter", { email });
+      toast.success("You have successfully subscribed to our newsletter");
+      setEmail("");
+    } catch (error) {
+      toast.error("Subscription failed. Please try again.");
+    }
+  };
 
   return (
     <footer className="bg-[rgb(28,28,29)] text-gray-300 py-10">
@@ -71,11 +82,13 @@ const Footer = () => {
           <p className="text-gray-400 mt-2 text-sm">
             Subscribe to our newsletter to stay updated on our latest courses and offers.
           </p>
-          <form onSubmit={() =>submitHandler()} className="mt-4 flex">
+          <form className="mt-4 flex" onSubmit={submitHandler}>
             <input
               type="email"
               id="email"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
             />
             <button

@@ -23,7 +23,6 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
           }
         );
         if (response.status === 200) {
-          console.log(response);
           dispatch(setWatchedVideos(response.data)); // Assuming response.data contains watched video IDs
         } else {
           throw new Error("Failed to fetch watched videos");
@@ -50,11 +49,12 @@ const Videos = ({ courses, C_ID, level, courseTitle }) => {
       state: {
         videoUrl,
         topic_name,
+        videos:courses,
         currentIndex: index,
         videoId,
-        level,
-        C_ID,
         courseTitle,
+        level,
+        C_ID
       },
     });
   };

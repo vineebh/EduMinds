@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Course from "../components/Course";
-import Loader from "../components/Loader"; // Import Loader component
+import Loader from "../components/Loader";
 import { useSelector } from "react-redux";
 
 const Courses = () => {

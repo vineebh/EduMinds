@@ -15,19 +15,24 @@ const EveryDayQuestion = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const location = useLocation();
-  const { C_ID, level, courseTitle} = location.state || {};
+  const { C_ID, level, courseTitle } = location.state || {};
   const email_id = userInfo.userID;
 
   useEffect(() => {
     const everyDayQuestionHandler = async () => {
       const today = new Date().toISOString().split("T")[0];
-      const lastSubmitDate = localStorage.getItem("lastSubmitDate");
-
-      // Check if the question for today is already submitted
-      if (lastSubmitDate === today) {
-        setIsSubmitted(true);
-        setLoading(false);
-        return;
+      const res = await axios.post("http://localhost:1000/getEverdaySubmitDate", {
+        email_id,
+        c_id: C_ID
+      });
+      if (res.status === 200) {
+        const lastSubmitDate = res.data.data.date
+        // Check if the question for today is already submitted
+        if (lastSubmitDate === today) {
+          setIsSubmitted(true);
+          setLoading(false);
+          return;
+        }
       }
 
       try {
@@ -65,52 +70,61 @@ const EveryDayQuestion = () => {
   };
 
   const handleSubmit = async () => {
+    if (Object.keys(answers).length !== questions.length) {
+      toast.error("Please answer all the questions before submitting.");
+      return;
+  }
     const answerArray = Object.entries(answers).map(
-      ([questionId, selectedOption]) => ({
-        questionId: parseInt(questionId, 10),
-        selectedOption,
-      })
+        ([questionId, selectedOption]) => ({
+            questionId: parseInt(questionId, 10),
+            selectedOption,
+        })
     );
 
     try {
-      const response = await axios.post(
-        "http://localhost:1000/assessment/submit",
-        {
-          c_id: C_ID,
-          answers: answerArray,
+        const response = await axios.post(
+            "http://localhost:1000/assessment/submit",
+            { c_id: C_ID, answers: answerArray }
+        );
+        if (response.status === 200) {
+            setResult("Your answers have been submitted!");
+            setIsSubmitted(true);
+            
+            const today = new Date().toISOString().split("T")[0];
+            const dateRes = await axios.post(
+                "http://localhost:1000/everdaySubmitDate", {
+                    email_id,
+                    c_id: C_ID,
+                    date: today,
+                }
+            );
+
+            if (dateRes.status === 201 || dateRes.status ===200) {
+                const correctAnswers = response.data.correct || 0;
+                if (correctAnswers !== 0) {
+                    const pointRes = await axios.post(
+                        "http://localhost:1000/update_points_and_level", {
+                            email: email_id,
+                            course_title: courseTitle,
+                            new_points: 5,
+                        }
+                    );
+                    if (pointRes.status === 200) {
+                        toast.success("Correct answer, 5 points added!");
+                        window.history.back();
+                    }
+                } else {
+                    toast.error("Incorrect answer");
+                    window.history.back();
+                }
+            }
         }
-      );
-      if (response.status === 200)
-      {
-        setResult("Your answers have been submitted!");
-        setIsSubmitted(true);
-        const today = new Date().toISOString().split("T")[0];
-        localStorage.setItem("lastSubmitDate", today);
-        if(response.data.correct !== 0 ){
-          const res = await axios.post("http://localhost:1000/update_points_and_level", {
-            email: email_id,
-            course_title: courseTitle,
-            new_points: 5,
-          });
-          if ( res.status === 200)
-          {
-            toast.success("Correct answer")
-            toast.success("5 Points added");
-            window.history.back();
-          }
-        }
-        else{
-          toast.success("Incorrect answer")
-        }
-      }
-    }catch (error) {
-      console.error("Error during submission:", error);
-      toast.error("Error during submission");
-      setResult(
-        "An error occurred while submitting your answers. Please try again."
-      );
+    } catch (error) {
+        console.error("Error during submission:", error);
+        toast.error("Error during submission");
+        setResult("An error occurred while submitting your answers. Please try again.");
     }
-  };
+};
 
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
@@ -142,11 +156,11 @@ const EveryDayQuestion = () => {
     <div className="bg-gray-900 min-h-screen py-12 sm:py-16 flex items-center justify-center">
       <div className="bg-gray-800 p-10 rounded-lg shadow-lg max-w-4xl w-full">
         <h1 className="text-4xl text-white font-extrabold text-center mb-8">
-          Assessment
+          Every Day Question
         </h1>
-        <h2 className="text-2xl text-white mb-4">
-          Question {currentQuestionIndex + 1} of {questions.length}
-        </h2>
+        <span className="text-white text-lg font-bold bg-blue-600 py-1 px-3 rounded-lg shadow-md">
+          {currentQuestionIndex + 1}/{questions.length}
+        </span>
 
         {error && (
           <div className="mb-4 p-4 bg-red-600 text-white font-semibold rounded-lg">
@@ -187,8 +201,8 @@ const EveryDayQuestion = () => {
                     >
                       {answers[questions[currentQuestionIndex].id] ===
                         questions[currentQuestionIndex][optionKey] && (
-                        <span className="rounded-full h-3 w-3 bg-white"></span>
-                      )}
+                          <span className="rounded-full h-3 w-3 bg-white"></span>
+                        )}
                     </span>
                     <span className="text-xl text-white">
                       {questions[currentQuestionIndex][optionKey]}

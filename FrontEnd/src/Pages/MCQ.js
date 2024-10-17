@@ -38,7 +38,7 @@ const MCQ = () => {
 
     const handleChange = (questionId, selectedOption) => {
         setAnswers({ ...answers, [questionId]: selectedOption });
-        
+
     };
 
     const handlePrev = () => {
@@ -49,14 +49,14 @@ const MCQ = () => {
 
     const handleNext = () => {
         const currentQuestionId = questions[currentQuestionIndex].id;
-    
+
         if (!answers[currentQuestionId]) {
 
             toast.error("Please select an answer before proceeding to the next question.")
 
             return;
         }
-    
+
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         }
@@ -79,13 +79,13 @@ const MCQ = () => {
 
             if (response.data.correct >= 3) {
                 toast.success(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
-                navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "New",from: '/mcq' } });
+                navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "New", from: '/mcq' } });
             } else {
                 toast.warning(`You answered ${response.data.correct} out of ${questions.length} questions correctly!`);
                 if (level === "Advanced") {
-                    navigate("/dashboard", { state: { C_ID, level: "Intermediate", courseTitle, State: "New",from: '/mcq'  } });
+                    navigate("/dashboard", { state: { C_ID, level: "Intermediate", courseTitle, State: "New", from: '/mcq' } });
                 } else {
-                    navigate("/dashboard", { state: { C_ID, level: "Beginner", courseTitle, State: "New",from: '/mcq'  } });
+                    navigate("/dashboard", { state: { C_ID, level: "Beginner", courseTitle, State: "New", from: '/mcq' } });
                 }
             }
         } catch (error) {
@@ -105,7 +105,9 @@ const MCQ = () => {
         <div className='bg-gray-900 min-h-screen py-12 sm:py-16 flex items-center justify-center'>
             <div className="bg-gray-800 p-10 rounded-lg shadow-lg max-w-4xl w-full">
                 <h1 className="text-4xl text-white font-extrabold text-center mb-8">Assessment</h1>
-                <h1>{currentQuestionIndex+1}</h1>
+        <span className="text-white text-lg font-bold bg-blue-600 py-1 px-3 rounded-lg shadow-md">
+          {currentQuestionIndex + 1}/{questions.length}
+        </span>
 
                 {questions.length > 0 && (
                     <div className="mb-10">
@@ -116,8 +118,8 @@ const MCQ = () => {
                                     key={index}
                                     className="flex items-center p-4 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-all duration-200"
                                 >
-                                
-                                
+
+
                                     <input
                                         type="radio"
                                         name={`question-${questions[currentQuestionIndex].id}`}

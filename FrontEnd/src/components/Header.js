@@ -106,14 +106,14 @@ const Header = () => {
           {loginStatus ? (
             <button
               onClick={logoutHandler}
-              className="py-3 px-3 text-sm rounded bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
+              className="py-2 px-3 text-sm rounded bg-red-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
             >
               Logout
             </button>
           ) : (
             <Link
               to="/auth"
-              className="py-3 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
+              className="py-2 px-3 text-sm rounded bg-blue-500 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
             >
               Login
             </Link>
@@ -167,7 +167,7 @@ const Header = () => {
             {loginStatus ? (
               <button
                 onClick={logoutHandler}
-                className="py-1 px-4 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105 mt-4"
+                className="py-2 px-3 text-sm rounded bg-blue-500 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
               >
                 Logout
               </button>
@@ -175,7 +175,7 @@ const Header = () => {
               <Link
                 to="/auth"
                 onClick={handleLinkClick}
-                className="py-1 px-2 rounded-lg bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105 mt-4"
+                className="py-2 px-3 text-sm rounded bg-blue-500 text-white font-semibold shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-105"
               >
                 Login
               </Link>

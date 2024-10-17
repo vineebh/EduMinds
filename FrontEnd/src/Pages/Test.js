@@ -67,7 +67,6 @@ const Test = () => {
           topic_name: topic,
         });
         if (resp.status === 201) {
-          toast.success("Your Test has Submitted");
           const res = await axios.post("http://localhost:1000/update_points_and_level", {
             email: email_id,
             course_title: courseTitle,
@@ -75,7 +74,7 @@ const Test = () => {
           });
           if ( res.status === 200)
           {
-            toast.success(5*response.data.correct," Points added");
+            toast.success((5*response.data.correct)," Points added");
             window.history.back();
           }
         }
@@ -96,7 +95,7 @@ const Test = () => {
     <div className="bg-gray-900 min-h-screen py-12 sm:py-16 flex items-center justify-center">
       <div className="bg-gray-800 p-10 rounded-lg shadow-lg max-w-4xl w-full">
         <h1 className="text-4xl text-white font-extrabold text-center mb-8">
-          Assessment
+          Quiz
         </h1>
         <span className="text-white text-lg font-bold bg-blue-600 py-1 px-3 rounded-lg shadow-md">
           {currentQuestionIndex + 1}/{questions.length}

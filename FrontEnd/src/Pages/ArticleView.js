@@ -4,28 +4,26 @@ import Chatbot from "../components/Chatbot";
 import ReactMarkdown from "react-markdown";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuestions } from "../store/testSlice";
-import axios, { Axios } from "axios";
+import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { combineSlices } from "@reduxjs/toolkit";
+import Loader from "../components/Loader";
 
 const ArticleView = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const { articleData, topic_name, courseTitle, level ,C_ID} = location.state;
+  const { articleData, topic_name, courseTitle, level, C_ID } = location.state;
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const [isTestPassed, setIsTestPassed] = useState(false);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const email_id = userInfo.userID;
   const [completedTest, setCompletedTest] = useState([]);
 
-  // Track test completion status
-  const isMounted = true;
+  // Fetch questions from the backend
   const fetchQuestions = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await axios.post(
         "http://localhost:1000/assessment/chapterQ",
         {
@@ -34,56 +32,58 @@ const ArticleView = () => {
           limit: 5,
         }
       );
-      if (isMounted) {
-        // setQuestions(response.data);
-        dispatch(setQuestions(response.data)); // Update state only if the component is still mounted
-      }
+      dispatch(setQuestions(response.data)); // Update the state with questions
     } catch (error) {
-      if (isMounted) {
-        // Improved error message handling
-        const errorMsg =
-          error.response?.data?.error || "Failed to fetch questions";
-        toast.error(errorMsg);
-      }
+      const errorMsg = error.response?.data?.error || "Failed to fetch questions";
+      toast.error(errorMsg);
     } finally {
-      if (isMounted) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   };
+
+  // Test completion handler
   const testHandler = () => {
-    fetchQuestions();
     if (completedTest.includes(topic_name)) {
       toast.success("Test is Already Submitted");
-
       return;
     }
+    fetchQuestions(); // Fetch questions if the test hasn't been completed
     navigate("/test", {
       state: { C_ID, level, topic: topic_name, courseTitle },
     });
   };
 
+  // Fetch the test completion status
   useEffect(() => {
     const fetchTestData = async () => {
-      const res = await axios.post(
-        "http://localhost:1000/completed_questions",
-        {
-          email_id: email_id,
-          course_title: courseTitle,
+      try {
+        const res = await axios.post(
+          "http://localhost:1000/completed_questions",
+          {
+            email_id: email_id,
+            course_title: courseTitle,
+          }
+        );
+        if (res.status === 200) {
+          setCompletedTest(res?.data.data.topic_name || []);
+          setLoading(false)
         }
-      );
-      if (res.status === 200) {
-        const data = res?.data.data.topic_name;
-
-        setCompletedTest(data);
+      } catch (error) {
+        toast.error("Failed to load test data.");
       }
     };
+
     fetchTestData();
-  }, []);
+  }, [email_id, courseTitle]);
 
   const toggleChatbot = () => {
     setIsChatbotOpen((prev) => !prev);
   };
+
+  // Show loader while data is loading
+  if (loading) {
+    return <Loader size="20" color="from-yellow-300 to-blue-600" />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 py-10 px-6">
@@ -95,9 +95,9 @@ const ArticleView = () => {
           </h1>
           <button
             onClick={toggleChatbot}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-200"
+            className="mt-4 px-4 py-2 lg:ml-8 sm:ml-6 ml-4 bg-yellow-400 text-black rounded-lg shadow-md hover:bg-gray-700 hover:text-white transition duration-200"
           >
-            Ask to EduBot
+            Ask EduBot
           </button>
         </header>
 
@@ -112,20 +112,16 @@ const ArticleView = () => {
               <p>{articleData.content.introduction}</p>
             </div>
           ) : (
-            <div className="text-gray-400 italic">
-              No introduction available.
-            </div>
+            <div className="text-gray-400 italic">No introduction available.</div>
           )}
 
           {/* Main Content rendered with Markdown */}
           {articleData.content.main_content ? (
-            <div className="prose prose-invert text-gray-300 leading-relaxed  text-justify">
+            <div className="prose prose-invert text-gray-300 leading-relaxed text-justify">
               <ReactMarkdown>{articleData.content.main_content}</ReactMarkdown>
             </div>
           ) : (
-            <div className="text-gray-400 italic">
-              No main content available.
-            </div>
+            <div className="text-gray-400 italic">No main content available.</div>
           )}
         </section>
 
@@ -144,7 +140,7 @@ const ArticleView = () => {
             <div className="text-gray-400 italic">No conclusion available.</div>
           )}
 
-          {/* Back Button */}
+          {/* Back & Test Buttons */}
           <div className="flex items-center justify-between">
             <button
               onClick={() => window.history.back()}
@@ -153,20 +149,19 @@ const ArticleView = () => {
               Back
             </button>
 
-            {/* Test Button */}
             <button
               onClick={testHandler}
               className="mt-4 px-6 py-2 bg-yellow-400 text-black rounded-lg shadow-md hover:bg-gray-700 hover:text-white transition duration-200"
             >
               {completedTest.includes(topic_name)
-                ? " Test Completed"
+                ? "Test Completed"
                 : "Complete Test"}
             </button>
           </div>
         </section>
       </article>
 
-      {/* Conditionally render the Chatbot based on isChatbotOpen */}
+      {/* Chatbot */}
       {isChatbotOpen && (
         <div className="fixed bottom-0 right-0 m-4 z-50">
           <Chatbot setIsChatbotVisible={setIsChatbotOpen} />

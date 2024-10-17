@@ -10,16 +10,15 @@ import { setWatchedVideos } from "../store/progressSlice";
 const VideoPlayerPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const {
     videoUrl,
     topic_name,
     videos,
     currentIndex,
     videoId,
-    level,
-    C_ID,
     courseTitle,
+    level,
+    C_ID
   } = location.state || {};
 
   const [isChatbotVisible, setIsChatbotVisible] = useState(false);
@@ -83,7 +82,7 @@ const VideoPlayerPage = () => {
       videos &&
       Array.isArray(videos) &&
       currentIndex !== undefined &&
-      currentIndex < videos.length -1
+      currentIndex < videos.length - 1
     ) {
       const nextVideo = videos[currentIndex + 1];
       if (Array.isArray(watchedVideos) && watchedVideos.includes(videoId)) {
@@ -93,11 +92,14 @@ const VideoPlayerPage = () => {
             topic_name: nextVideo.topic_name,
             videos,
             currentIndex: currentIndex + 1,
-            watchedVideos,
             videoId: nextVideo.id,
+            courseTitle,
+            level,
+            C_ID
           },
         });
-      } else {
+      }else {
+        console.log("else")
         toast.error(
           "You must watch the current video before accessing the next one."
         );
@@ -112,20 +114,10 @@ const VideoPlayerPage = () => {
 
   const dashboardHandler = () => {
     navigate("/dashboard", { state: { C_ID, level, courseTitle, State: "abc" } });
-    toast.success("Your level is Completed. Time to Level up");
   };
 
   return (
     <div className="bg-slate-900 min-h-screen flex flex-col items-center px-4 sm:px-8 pt-16 pb-4 relative">
-      {/* Dashboard Button in Top-Left */}
-      <div className="absolute top-19 left-4">
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
-          onClick={dashboardHandler}
-        >
-          Dashboard
-        </button>
-      </div>
 
       <h2 className="text-4xl mt-4 font-bold text-center text-white shadow-lg mb-6 py-2 rounded-lg">
         {topic_name ? topic_name : "Now Playing"}
@@ -205,6 +197,12 @@ const VideoPlayerPage = () => {
           disabled={!watchedVideos.includes(videoId)}
         >
           Next
+        </button>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+          onClick={dashboardHandler}
+        >
+          Dashboard
         </button>
       </div>
 

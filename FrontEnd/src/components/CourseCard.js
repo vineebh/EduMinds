@@ -30,7 +30,7 @@ const CourseCard = ({ title, description, imageUrl, link }) => {
         {/* Learn More Button */}
         <div className="flex justify-center md:justify-end mt-4">
           <Link to={link}>
-            <button className="bg-yellow-500 hover:bg-yellow-600 text-sm md:text-base text-black px-6 py-3 rounded-md shadow-lg transition-all duration-300 w-full md:w-auto">
+            <button className="bg-blue-500 hover:bg-blue-600 text-sm md:text-base text-white px-6 py-3 rounded-md shadow-lg transition-all duration-300 w-full md:w-auto">
               Learn More
             </button>
           </Link>

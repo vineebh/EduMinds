@@ -8,7 +8,7 @@ const Article = ({ courses, C_ID ,courseTitle ,level}) => {
       state: { articleData: articleData, topic_name, C_ID, article_id ,courseTitle},
     });
   };
-  console.log(courseTitle)
+  
 
   return (
     <div className="text-white p-6">
@@ -20,9 +20,9 @@ const Article = ({ courses, C_ID ,courseTitle ,level}) => {
             // Parse the articles string to an object
             articleData = JSON.parse(course.articles);
           } catch (error) {
-            console.error("Invalid JSON structure in articles:", error);
             return null; // Skip rendering if there's a parsing error
           }
+          
 
           return (
             <div
