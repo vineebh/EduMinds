@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const Footer = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const [email, setEmail] = useState("");
 
   const submitHandler = async (event) => {
@@ -20,7 +21,7 @@ const Footer = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:1000/newsletter", { email });
+      await axios.post(`${API_URL}/newsletter`, { email });
       toast.success("You have successfully subscribed to our newsletter");
       setEmail("");
     } catch (error) {

@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-
+const FIREBASE_KEY = process.env.FIREBASE_API_KEY || "AIzaSyC26EwVsfq5-GTz6vk0JGxKzQkBjUJ2fVA";
 const firebaseConfig = {
-  apiKey: "AIzaSyC26EwVsfq5-GTz6vk0JGxKzQkBjUJ2fVA",
+  apiKey: FIREBASE_KEY,
   authDomain: "super20-d32d2.firebaseapp.com",
   projectId: "super20-d32d2",
   storageBucket: "super20-d32d2.appspot.com",

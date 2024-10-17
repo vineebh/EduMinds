@@ -25,7 +25,6 @@ const Header = () => {
       navigate("/auth");
       handleLinkClick();
     } catch (error) {
-      console.error("Logout error:", error);
     }
   };
 

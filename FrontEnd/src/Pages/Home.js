@@ -5,15 +5,15 @@ import bg from '../assests/img/bg.jpg';
 
 
 const Home = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState(null);
 
   // Fetch course data from backend
   useEffect(() => {
-    fetch("http://localhost:1000/courses")
+    fetch(`${API_URL}/courses`)
       .then((res) => {
         if (!res.ok) {
-          console.error("HTTP error:", res.status);
           throw new Error("Network response was not ok");
         }
         
@@ -21,7 +21,6 @@ const Home = () => {
       })
       .then((data) => setCourses(data))
       .catch((error) => {
-        console.error("Fetch error:", error);
         setError("Failed to fetch courses. Please try again later.");
       });
   }, []);

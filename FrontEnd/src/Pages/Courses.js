@@ -5,9 +5,10 @@ import Loader from "../components/Loader";
 import { useSelector } from "react-redux";
 
 const Courses = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const [courses, setCourses] = useState([]);
   const [enroll, setEnroll] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const userInfo = useSelector((state) => state.auth.userInfo);
 
@@ -15,13 +16,12 @@ const Courses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:1000/courses");
+        const response = await axios.get(`${API_URL}/courses`);
         setCourses(response.data);
       } catch (error) {
-        console.error("Fetch error:", error);
         setError("Failed to fetch courses. Please try again later.");
       } finally {
-        setLoading(false); // Stop loading once data is fetched
+        setLoading(false);
       }
     };
     fetchCourses();
@@ -32,7 +32,7 @@ const Courses = () => {
     const checkEnroll = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:1000/checkuser?email=${userInfo.userID}`
+          `${API_URL}/checkuser?email=${userInfo.userID}`
         );
 
         if (res.status === 200 && res.data.data) {
@@ -52,7 +52,6 @@ const Courses = () => {
             setError("No courses found for this email.");
           }
         } else {
-          console.error("Fetch error:", error);
           setError("Failed to fetch enrollment data. Please try again later.");
         }
       }
@@ -67,9 +66,6 @@ const Courses = () => {
     return <Loader size="20" color="from-yellow-300 to-blue-600" />; // Show loader while loading
   }
 
-  if (error) {
-    return <div className="text-red-500 text-center">{error}</div>;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-slate-700 to-slate-900 p-6">

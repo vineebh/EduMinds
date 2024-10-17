@@ -5,14 +5,15 @@ import axios from "axios";
 import Videos from "../components/Videos";
 import Article from "../components/Article";
 import ProgressBar from "../components/ProgressBar";
-import EnrollmentPopup from "../components/EnrollmentPopup"; // Import the popup
+import EnrollmentPopup from "../components/EnrollmentPopup";
 
 const DashBoard = () => {
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
   const [view, setView] = useState("video");
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
-  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
+  const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,12 +44,11 @@ const DashBoard = () => {
   useEffect(() => {
     const postUserData = async () => {
       try {
-        const response = await axios.post("http://localhost:1000/userdata", {
+        await axios.post(`${API_URL}/userdata`, {
           email_id: userInfo.userID,
           course_title: courseTitle,
           Level: level,
         });
-        console.log(response);
 
         setShowPopup(true);
         return true;
@@ -63,7 +63,7 @@ const DashBoard = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:1000/course/${C_ID}`
+          `${API_URL}/course/${C_ID}`
         );
 
         if (response.status === 200) {

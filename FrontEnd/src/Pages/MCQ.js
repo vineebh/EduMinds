@@ -5,9 +5,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const MCQ = () => {
+    const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
-    const [result, setResult] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -20,13 +20,12 @@ const MCQ = () => {
         const fetchQuestions = async () => {
             setLoading(true);
             try {
-                const response = await axios.post("http://localhost:1000/assessment/questions", {
+                const response = await axios.post(`${API_URL}/assessment/questions`, {
                     level: Level,
                     c_id: C_ID,
                     limit: 5
                 });
                 setQuestions(response.data);
-                console.log('Fetched questions:', response.data);
             } catch (error) {
                 toast.error('Failed to fetch questions:', error)
             } finally {
@@ -68,10 +67,9 @@ const MCQ = () => {
             selectedOption,
         }));
 
-        console.log('Submitting answers:', answerArray);
 
         try {
-            const response = await axios.post('http://localhost:1000/assessment/submit', {
+            const response = await axios.post(`${API_URL}/assessment/submit`, {
                 c_id: C_ID,
                 answers: answerArray,
             });
@@ -89,9 +87,7 @@ const MCQ = () => {
                 }
             }
         } catch (error) {
-            console.error('Error during submission:', error);
             toast.error('Error during submission:', error)
-            setResult('An error occurred while submitting your answers. Please try again.');
         }
     };
 
@@ -164,12 +160,6 @@ const MCQ = () => {
                         </button>
                     )}
                 </div>
-
-                {result && (
-                    <div className="mt-8 p-6 bg-green-600 text-white font-semibold text-lg rounded-lg shadow-md">
-                        {result}
-                    </div>
-                )}
             </div>
         </div>
     );
