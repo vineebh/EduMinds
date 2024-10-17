@@ -16,7 +16,7 @@ const Courses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`https://edu-minds-fp6e21lv0-edu-minds-projects.vercel.app/courses`);
+        const response = await axios.get(`https://edu-minds-ebon.vercel.app/courses`);
         setCourses(response.data);
       } catch (error) {
         setError("Failed to fetch courses. Please try again later.");

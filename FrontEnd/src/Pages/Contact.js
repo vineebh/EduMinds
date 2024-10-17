@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
 
 const Contact = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-fp6e21lv0-edu-minds-projects.vercel.app";
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-ebon.vercel.app";
   const dispatch = useDispatch();
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const userInfo = useSelector((state) => state.auth.userInfo);
