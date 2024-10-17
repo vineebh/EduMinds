@@ -3,7 +3,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Assessment = () => {
-  const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:1000";
+  const API_URL = process.env.REACT_APP_API_BASE_URL || "https://edu-minds-fp6e21lv0-edu-minds-projects.vercel.app";
   const [selectedOption, setSelectedOption] = useState("");
   const [skills, setSkills] = useState({});
   const [error, setError] = useState("");
